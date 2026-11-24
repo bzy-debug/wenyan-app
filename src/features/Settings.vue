@@ -133,10 +133,10 @@ async function restore() {
       <p v-if="notice" role="status">{{ notice }}</p>
     </section>
     <section>
-      <h2>参与试用</h2>
+      <h2>阅读自测</h2>
       <p>开始学习前读一篇，学过一段时间再读另一篇，看看自己能读懂多少。</p>
       <RouterLink class="text-link" to="/pilot"
-        ><NotebookPen :size="16" />去试读 <ArrowRight :size="16"
+        ><NotebookPen :size="16" />去做自测 <ArrowRight :size="16"
       /></RouterLink>
     </section>
   </main>

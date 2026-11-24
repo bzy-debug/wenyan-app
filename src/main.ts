@@ -1,7 +1,7 @@
 import { createApp } from "vue";
 import { createRouter, createWebHashHistory } from "vue-router";
 import App from "./app/App.vue";
-import { course } from "./content";
+import { learningPath } from "./features/learningPath";
 import "./app/styles.css";
 
 const learn = () => import("./features/Learn.vue");
@@ -57,7 +57,7 @@ const router = createRouter({
     {
       path: "/pilot",
       component: () => import("./features/Pilot.vue"),
-      meta: { title: "阅读试用" },
+      meta: { title: "阅读自测" },
     },
     {
       path: "/author",
@@ -70,7 +70,7 @@ const router = createRouter({
     const level = to.query.level;
     if (
       to.path === "/path" &&
-      course.levels.some((item) => item.id === level)
+      learningPath.levels.some((item) => item.id === level)
     ) {
       const section = document.getElementById("level-" + level);
       // Path handles deep links after the learning record and the sections load.

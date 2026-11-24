@@ -10,65 +10,59 @@ import {
   Flag,
   Play,
 } from "@lucide/vue";
-import { byId, course } from "../content";
-import type { Unit } from "../content/schema";
+import {
+  completedCount,
+  inProgress,
+  learningPath,
+  type LearningUnit,
+} from "./learningPath";
 import { progress } from "../storage/progress";
 
-import { inProgress } from "./learningPath";
-
-const props = defineProps<{ unit: Unit; currentId?: string; home?: boolean }>();
+const props = defineProps<{
+  unit: LearningUnit;
+  currentId?: string;
+  home?: boolean;
+}>();
 const levelUnits = computed(() =>
-  course.units.filter((unit) => unit.level === props.unit.level),
+  learningPath.units.filter((unit) => unit.level === props.unit.level),
 );
 const position = computed(
   () => levelUnits.value.findIndex((unit) => unit.id === props.unit.id) + 1,
 );
 const levelLessons = computed(() =>
-  levelUnits.value.flatMap((unit) => unit.lessonIds),
+  levelUnits.value.flatMap((unit) => unit.lessons.map((lesson) => lesson.id)),
 );
-const completed = computed(
-  () =>
-    props.unit.lessonIds.filter((id) =>
-      progress.value.completedIds.includes(id),
-    ).length,
-);
+const completed = computed(() => completedCount(props.unit.lessons));
 const steps = computed(() => {
-  const lessons = props.unit.lessonIds.map((id) => {
-    const lesson = byId(course.lessons, id);
-    return {
-      id,
-      title: lesson.title,
-      available: lesson.stage === "available",
-      label: "第 " + (levelLessons.value.indexOf(id) + 1) + " 课",
-      description: lesson.intro,
-      questions: lesson.questionIds.length,
-      isCheck: false,
-    };
-  });
-  const assessment = byId(course.assessments, props.unit.assessmentId);
-  return [
-    ...lessons,
-    {
-      id: assessment.id,
-      title: assessment.title,
-      available: assessment.stage === "available",
+  const steps = props.unit.lessons.map((lesson) => ({
+    id: lesson.id,
+    title: lesson.title,
+    label: "第 " + (levelLessons.value.indexOf(lesson.id) + 1) + " 课",
+    description: lesson.intro,
+    questions: lesson.questionIds.length,
+    isCheck: false,
+  }));
+  const check = props.unit.assessment;
+  if (check) {
+    steps.push({
+      id: check.id,
+      title: check.title,
       label: "单元自测",
       description: props.unit.description,
-      questions: assessment.questionIds.length,
+      questions: check.questionIds.length,
       isCheck: true,
-    },
-  ].map((step) => {
-    return { ...step, state: status(step.id, step.available) };
-  });
+    });
+  }
+  return steps.map((step) => ({ ...step, state: status(step.id) }));
 });
 const activeUnit = computed(() =>
   steps.value.some((step) => step.id === props.currentId),
 );
 
-function status(id: string, available: boolean) {
+function status(id: string) {
   if (props.currentId === id) return "current";
   if (progress.value.completedIds.includes(id)) return "completed";
-  return available ? "open" : "planned";
+  return "open";
 }
 function startLabel(id: string, isCheck: boolean) {
   if (inProgress(id)) return "继续学习";
@@ -92,17 +86,18 @@ function startLabel(id: string, isCheck: boolean) {
         <h2 :id="'unit-title-' + unit.id">{{ unit.title }}</h2>
       </div>
       <div
+        v-if="unit.lessons.length"
         class="unit-progress"
         :aria-label="
-          '已完成 ' + completed + ' 课，共 ' + unit.lessonIds.length + ' 课'
+          '已完成 ' + completed + ' 课，共 ' + unit.lessons.length + ' 课'
         "
       >
-        <span>{{ completed }} / {{ unit.lessonIds.length }} 课</span>
+        <span>{{ completed }} / {{ unit.lessons.length }} 课</span>
         <span class="mini-track" aria-hidden="true">
           <i
-            v-for="id in unit.lessonIds"
-            :key="id"
-            :class="{ filled: progress.completedIds.includes(id) }"
+            v-for="lesson in unit.lessons"
+            :key="lesson.id"
+            :class="{ filled: progress.completedIds.includes(lesson.id) }"
           />
         </span>
       </div>
@@ -124,9 +119,8 @@ function startLabel(id: string, isCheck: boolean) {
           <Flag v-else-if="step.isCheck" :size="17" />
           <CirclePlay v-else :size="17" />
         </span>
-        <component
-          :is="step.available ? RouterLink : 'div'"
-          v-bind="step.available ? { to: '/learn/' + step.id } : {}"
+        <RouterLink
+          :to="'/learn/' + step.id"
           :class="[
             step.isCheck ? 'assessment-row' : 'lesson-row',
             'step-content',
@@ -147,7 +141,6 @@ function startLabel(id: string, isCheck: boolean) {
               <template v-if="step.state === 'completed'"
                 >已完成 · 再练</template
               >
-              <template v-else-if="!step.available">编写中</template>
               <template
                 v-else-if="step.state !== 'current' && inProgress(step.id)"
                 >继续学习 · {{ step.questions }} 道练习</template
@@ -166,12 +159,12 @@ function startLabel(id: string, isCheck: boolean) {
             </span>
           </span>
           <ChevronRight
-            v-if="step.available && !(step.state === 'current' && home)"
+            v-if="!(step.state === 'current' && home)"
             class="enter-icon"
             :size="17"
             aria-hidden="true"
           />
-        </component>
+        </RouterLink>
       </li>
     </ol>
   </section>
@@ -377,9 +370,6 @@ a.step-content:hover {
 }
 .current .step-info strong {
   color: #272044;
-}
-.planned .step-info strong {
-  color: #525c70;
 }
 .step-intro,
 .step-detail {

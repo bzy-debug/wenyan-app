@@ -18,6 +18,7 @@ async function startFirstLesson(page: Page, level: string) {
   await expect(
     page.getByRole("heading", { name: question.prompt, exact: true }),
   ).toBeVisible();
+  return question;
 }
 
 test("首页的等级路标只定位，后退能回到原等级，也能直接学高阶课程", async ({
@@ -65,7 +66,13 @@ test("L5 深链定位后可直接学该级课程，整篇自读可查词、自�
 }) => {
   await page.goto("./#/path?level=L5");
   await expect(page.locator("#title-L5")).toBeInViewport();
-  await startFirstLesson(page, "L5");
+  const question = await startFirstLesson(page, "L5");
+  const source = course.passages.find((p) => p.id === question.passageId)!.source!;
+  const credit = page.locator(".source-caption");
+  await expect(credit).toHaveText(source.work);
+  await expect(credit.getByRole("link", { name: source.work })).toHaveAttribute(
+    "href", source.url!,
+  );
   await page.goBack();
   await expect(page).toHaveURL(/level=L5$/);
   await page.getByRole("link", { name: "整篇自读" }).click();
@@ -84,8 +91,9 @@ test("L5 深链定位后可直接学该级课程，整篇自读可查词、自�
   await expect(prompt.locator("blockquote")).toHaveText(gorge.prompts[1].evidence);
   await expect(page.getByRole("link", { name: "核对底本" })).toHaveAttribute(
     "href",
-    /KR2k0058/,
+    gorge.source,
   );
+  await expect(page.locator("article footer").getByText(gorge.edition, { exact: true })).toBeVisible();
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= innerWidth,

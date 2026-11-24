@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
-import { cleanup, fireEvent, render, screen } from "@testing-library/vue";
+import { cleanup, fireEvent, render, screen, within } from "@testing-library/vue";
 import userEvent from "@testing-library/user-event";
 import { createMemoryHistory, createRouter } from "vue-router";
 import { course } from "../../src/content";
@@ -127,9 +127,12 @@ it("知识库可按进度及搜索词筛选，展开后可读取释义", async (
   await userEvent.click(screen.getByRole("checkbox", { name: /只看已学/ }));
   expect(screen.getByRole("status").textContent).toContain("1");
   await userEvent.click(screen.getByText(skill.word + " · " + skill.meaning));
-  expect((await screen.findByText(skill.detail)).closest("details")?.open).toBe(
-    true,
-  );
+  const definition = (await screen.findByText(skill.detail)).closest("details")!;
+  expect(definition.open).toBe(true);
+  const entry = within(definition);
+  expect(entry.getByText("教学例句", { exact: true })).toBeTruthy();
+  expect(entry.getByText(/下次复习/)).toBeTruthy();
+  expect(entry.queryByText(/^(?:待审核|已审核|已发布|草稿)$/)).toBeNull();
   await userEvent.type(screen.getByRole("searchbox"), "完全无法匹配的词");
   expect(screen.getByText("没有查到，试试换个字或清除筛选。")).toBeTruthy();
 });

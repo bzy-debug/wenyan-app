@@ -75,7 +75,7 @@ const isIndex = computed(() => !route.params.id);
           class="text-link"
           >核对底本 <ExternalLink :size="14" aria-hidden="true"
         /></a>
-        <p>{{ current.edition }} · {{ current.status }}</p>
+        <p>{{ current.edition }}</p>
       </footer>
     </article>
     <h1 v-else>找不到这篇文章</h1>

@@ -19,6 +19,8 @@ test("首页默认显示完整路线，能从今日学习返回并直接开始�
   await expect(
     page.getByRole("heading", { name: "课程路径", exact: true }),
   ).toBeVisible();
+  const editorialNote = page.getByText("课程试读稿，待审校", { exact: true });
+  await expect(editorialNote).toHaveCount(0);
   const start = page.getByRole("link", { name: /^开始学习 · / });
   await expect(start).toHaveAttribute("href", /#\/learn\/l1\.1$/);
   await page.evaluate(() => document.fonts.ready);
@@ -26,6 +28,7 @@ test("首页默认显示完整路线，能从今日学习返回并直接开始�
   await page.getByRole("link", { name: "今日学习", exact: true }).click();
   await expect(page).toHaveURL(/#\/today$/);
   await expect(page.getByRole("heading", { name: "今日学习" })).toBeVisible();
+  await expect(editorialNote).toHaveCount(0);
   const current = page.locator('.track [aria-current="step"]');
   await expect(current.getByRole("link", { name: /开始学习/ })).toHaveAttribute(
     "href",
@@ -41,6 +44,7 @@ test("首页默认显示完整路线，能从今日学习返回并直接开始�
   await expect(
     page.getByRole("heading", { name: first.prompt, exact: true }),
   ).toBeVisible();
+  await expect(page.locator(".source-caption")).toHaveText("教学例句");
   await expect(page.getByRole("button", { name: /关键提示/ })).toHaveCount(0);
   await guide.click();
   await expect(page.getByRole("dialog").getByText("见犬而走。", { exact: true })).toBeVisible();
