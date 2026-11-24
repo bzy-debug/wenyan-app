@@ -46,6 +46,17 @@ export function unlocked(
   }
   return false;
 }
+export function passingScore(
+  course: Course,
+  kind: RoundKind,
+  targetId: string,
+): number {
+  if (kind === "review" || kind === "mistake") return 1;
+  const targets = kind === "lesson" ? course.lessons : course.assessments;
+  const target = targets.find((item) => item.id === targetId);
+  if (!target) throw new Error("找不到本轮关卡：" + targetId);
+  return target.passCount;
+}
 export function roundResult(course: Course, round: Round): Result {
   const independent = round.questionIds.filter(
     (id) => round.attempts[id]?.correct && !round.attempts[id]?.hinted,
@@ -59,7 +70,7 @@ export function roundResult(course: Course, round: Round): Result {
   const passed =
     summary?.passed ??
     (allSubmitted &&
-      independent.length >= (round.kind === "assessment" ? 4 : 1));
+      independent.length >= passingScore(course, round.kind, round.targetId));
   return {
     roundId: round.id,
     kind: round.kind,

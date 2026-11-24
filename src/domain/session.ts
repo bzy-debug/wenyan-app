@@ -31,7 +31,7 @@ export function summarize(
     total: items.filter((q) => q.skillId === id).length,
   }));
   const complete =
-    lesson.questionIds.length === 8 &&
+    lesson.questionIds.length > 0 &&
     lesson.questionIds.every((id) => attempts[id]);
   return {
     complete,
@@ -39,7 +39,7 @@ export function summarize(
     coverage,
     passed:
       complete &&
-      independent.length >= 6 &&
+      independent.length >= lesson.passCount &&
       coverage.every((s) => s.earned > 0),
   };
 }

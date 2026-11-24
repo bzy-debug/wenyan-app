@@ -95,7 +95,7 @@ export function validateCourse(raw: unknown) {
       lesson.intro &&
         lesson.mainSkills.length &&
         lesson.exampleIds.length === lesson.mainSkills.length &&
-        items.length === 8,
+        items.length >= lesson.passCount,
       "关卡内容不完整 " + lesson.id,
     );
     for (const id of lesson.mainSkills) {
@@ -109,15 +109,12 @@ export function validateCourse(raw: unknown) {
   for (const a of course.assessments) {
     checkPublication(a, a.questionIds.map(getQuestion));
     requireContent(
-      a.stage === "planned" || a.questionIds.length === 6,
+      a.stage === "planned" || a.questionIds.length >= a.passCount,
       "检查题数错误 " + a.id,
     );
   }
-  const l1 = course.units.filter((u) => u.level === "L1");
-  requireContent(
-    l1.length === 4 && l1.every((u) => u.lessonIds.length === 3),
-    "L1 应含四单元，每单元三课",
-  );
+  const getLevel = index(course.levels);
+  course.units.forEach((u) => getLevel(u.level));
   const lessons = course.units.flatMap((u) => u.lessonIds);
   lessons.forEach(getLesson);
   course.units.forEach((u) => getAssessment(u.assessmentId));
@@ -160,21 +157,37 @@ export function validateCourse(raw: unknown) {
   return course;
 }
 
-/** Run at publication/build time. Planned courses outside L1 can still coexist. */
-export function validateCompleteL1(course: Course) {
-  const l1 = course.units.filter((u) => u.level === "L1");
+/** Publishing policy is declared by the course author in the manifest. */
+export function validateCompleteness(course: Course) {
+  const policy = course.completeness;
+  if (!policy) return;
+  const units = course.units.filter((u) => u.level === policy.level);
+  requireContent(
+    units.length === policy.units &&
+      units.every((u) => u.lessonIds.length === policy.lessonsPerUnit),
+    "课程规模与完整性声明不符：" + policy.level,
+  );
   const lesson = index(course.lessons);
   const assessment = index(course.assessments);
-  const targets = l1.flatMap((u) => [
+  const targets = units.flatMap((u) => [
     ...u.lessonIds.map(lesson),
     assessment(u.assessmentId),
   ]);
   requireContent(
-    targets.every((t) => t.stage === "available"),
-    "L1 的所有课程与单元检查均须具备可学内容",
+    units.every(
+      (u) =>
+        u.lessonIds.every(
+          (id) => lesson(id).questionIds.length === policy.lessonSize,
+        ) && assessment(u.assessmentId).questionIds.length === policy.checkSize,
+    ),
+    "关卡题数与完整性声明不符",
   );
   requireContent(
-    targets.flatMap((t) => t.questionIds).length === 120,
-    "完整 L1 应有 120 道独立计分题",
+    targets.every((t) => t.stage === "available"),
+    "完整课程含有未开放的关卡",
+  );
+  requireContent(
+    targets.flatMap((t) => t.questionIds).length === policy.questions,
+    "计分题总数与完整性声明不符：" + policy.questions,
   );
 }

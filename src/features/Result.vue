@@ -1,22 +1,21 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed } from "vue";
 import { RouterLink } from "vue-router";
-import { ArrowRight, BookOpen, Check, CircleCheck } from "@lucide/vue";
+import {
+  ArrowRight,
+  BookOpen,
+  Check,
+  CircleDot,
+  Flag,
+  RotateCcw,
+  Sparkles,
+  Target,
+} from "@lucide/vue";
 import { byId, course } from "../content";
-import { initProgress, progress } from "../storage/progress";
+import { progress } from "../storage/progress";
+import "./study.css";
 import { roundTitle } from "./roundLabels";
 
-const loading = ref(true);
-const error = ref("");
-onMounted(async () => {
-  try {
-    await initProgress();
-  } catch (e) {
-    error.value = e instanceof Error ? e.message : "无法读取本地成绩。";
-  } finally {
-    loading.value = false;
-  }
-});
 const result = computed(() => progress.value.lastResult);
 const courseRound = computed(
   () => result.value?.kind === "lesson" || result.value?.kind === "assessment",
@@ -29,6 +28,11 @@ const heading = computed(() => {
   if (!r.passed) return "本轮练习完成";
   return r.kind === "lesson" ? "本课已通过" : "单元检查已通过";
 });
+const target = computed(() =>
+  result.value?.kind === "lesson"
+    ? course.lessons.find((l) => l.id === result.value?.targetId)
+    : course.assessments.find((a) => a.id === result.value?.targetId),
+);
 const nextTarget = computed(() => {
   const r = result.value;
   if (!r || !courseRound.value || !r.passed) return null;
@@ -45,81 +49,113 @@ const nextTarget = computed(() => {
     : null;
 });
 </script>
-
 <template>
-  <main class="reading">
-    <p v-if="loading" role="status">正在读取结算…</p>
-    <p v-else-if="error" role="alert">{{ error }}</p>
-    <section v-else-if="!result">
-      <h1>还没有结算记录</h1>
-      <RouterLink class="primary" to="/path"
-        >查看课程路径<ArrowRight
-      /></RouterLink>
-    </section>
-    <template v-else>
-      <div class="eyebrow"><CircleCheck :size="18" />练习结算</div>
-      <h1>{{ heading }}</h1>
-      <p class="lead">{{ roundTitle(result.kind, result.targetId) }}</p>
-      <section class="score">
-        <span>无提示首答正确</span
-        ><strong
-          >{{ result.earned }}<small> / {{ result.total }}</small></strong
-        ><span>本轮经验 +{{ result.xp }} XP</span>
+  <main class="study-result">
+    <div class="study-width result-content">
+      <section v-if="!result">
+        <h1>还没有结算记录</h1>
+        <RouterLink class="primary" to="/path"
+          >查看课程路径<ArrowRight aria-hidden="true"
+        /></RouterLink>
       </section>
-      <template v-if="result.coverage.length">
-        <h2>本轮知识点表现</h2>
-        <div class="coverage">
-          <div v-for="item in result.coverage" :key="item.id">
-            <span
-              >{{ byId(course.skills, item.id).word }} ·
-              {{ byId(course.skills, item.id).meaning }}</span
-            >
-            <b
-              >{{ item.earned }} / {{ item.total }}
-              <Check v-if="item.earned > 0" :size="15" aria-hidden="true"
-            /></b>
+      <template v-else>
+        <div
+          class="result-icon"
+          :class="{ replay: !result.passed }"
+          aria-hidden="true"
+        >
+          <component :is="result.passed ? Flag : RotateCcw" :size="31" />
+        </div>
+        <h1>{{ heading }}</h1>
+        <p class="result-title">
+          {{ roundTitle(result.kind, result.targetId) }}
+        </p>
+        <dl class="result-stats">
+          <div class="score">
+            <dt><Target :size="16" aria-hidden="true" />无提示首答正确</dt>
+            <dd>
+              <strong
+                >{{ result.earned }}<small> / {{ result.total }}</small></strong
+              >
+            </dd>
           </div>
+          <div>
+            <dt><Sparkles :size="16" aria-hidden="true" />本轮经验</dt>
+            <dd>+{{ result.xp }} <small>XP</small></dd>
+          </div>
+        </dl>
+        <section v-if="result.coverage.length" class="result-coverage">
+          <h2>本轮知识点表现</h2>
+          <ul>
+            <li v-for="item in result.coverage" :key="item.id">
+              <Check
+                v-if="item.earned"
+                class="skill-mark"
+                :size="16"
+                aria-hidden="true"
+              /><CircleDot
+                v-else
+                class="skill-missed"
+                :size="16"
+                aria-hidden="true"
+              />
+              <span
+                >{{ byId(course.skills, item.id).word }} ·
+                {{ byId(course.skills, item.id).meaning }}</span
+              ><b>{{ item.earned }} / {{ item.total }}</b>
+            </li>
+          </ul>
+        </section>
+        <p v-if="result.kind === 'review' && progress.cards[result.targetId]">
+          下次复习
+          <time :datetime="progress.cards[result.targetId].due">{{
+            progress.cards[result.targetId].due
+          }}</time>
+        </p>
+        <p v-if="result.kind === 'mistake' && !result.passed">
+          这道题会留在错题里。再试一次，无提示首答正确即可移出。
+        </p>
+        <p v-if="courseRound && !result.passed">
+          下次争取 {{ target?.passCount }} 题无提示首答正确{{
+            result.kind === "lesson" ? "，并覆盖每个主要知识点" : ""
+          }}，就能通过。
+        </p>
+        <p v-if="courseRound && result.passed && !nextTarget">
+          你已完成《{{
+            course.title
+          }}》的全部课程。到复习页换个语境，试试自己能否独立读懂。
+        </p>
+        <div class="result-actions">
+          <RouterLink
+            v-if="nextTarget"
+            class="primary"
+            :to="'/learn/' + nextTarget.id"
+            >下一关 · {{ nextTarget.title }}<ArrowRight aria-hidden="true"
+          /></RouterLink>
+          <RouterLink
+            v-else-if="courseRound && !result.passed"
+            class="primary"
+            :to="'/learn/' + result.targetId"
+            >再学一次<RotateCcw :size="16" aria-hidden="true"
+          /></RouterLink>
+          <RouterLink
+            :class="
+              courseRound && (nextTarget || !result.passed)
+                ? 'secondary'
+                : 'primary'
+            "
+            :to="courseRound ? '/path' : '/review'"
+            >{{ courseRound ? "查看课程路径" : "返回复习"
+            }}<ArrowRight :size="16" aria-hidden="true"
+          /></RouterLink>
+          <RouterLink
+            v-if="courseRound && result.passed"
+            class="secondary"
+            :to="'/learn/' + result.targetId"
+            ><BookOpen :size="16" aria-hidden="true" />再学一次</RouterLink
+          >
         </div>
       </template>
-      <p v-if="result.kind === 'review' && progress.cards[result.targetId]">
-        下次复习日期 ·
-        <time :datetime="progress.cards[result.targetId].due">{{
-          progress.cards[result.targetId].due
-        }}</time>
-      </p>
-      <p v-if="result.kind === 'mistake' && !result.passed">
-        本题保留在错题中。下一次订正时，无提示首答正确即可移出。
-      </p>
-      <p v-if="!result.passed && courseRound">
-        {{
-          result.kind === "lesson"
-            ? "通过条件为至少 6 题无提示首答正确，且每个主要知识点至少 1 题达标。"
-            : "通过条件为至少 4 题无提示首答正确。"
-        }}
-        可以重开一轮练习。
-      </p>
-      <p v-if="courseRound && result.passed && !nextTarget">
-        你已通过 L1 的最后一关，接下来可用到期知识卡巩固阅读能力。
-      </p>
-      <div class="actions">
-        <RouterLink
-          v-if="nextTarget"
-          class="primary"
-          :to="'/learn/' + nextTarget.id"
-          >下一关 · {{ nextTarget.title }}<ArrowRight
-        /></RouterLink>
-        <RouterLink
-          :class="nextTarget ? 'secondary' : 'primary'"
-          :to="courseRound ? '/path' : '/review'"
-          >{{ courseRound ? "查看课程路径" : "返回复习" }}<ArrowRight
-        /></RouterLink>
-        <RouterLink
-          v-if="courseRound"
-          class="secondary"
-          :to="'/learn/' + result.targetId"
-          ><BookOpen :size="16" />再学一次</RouterLink
-        >
-      </div>
-    </template>
+    </div>
   </main>
 </template>

@@ -147,3 +147,10 @@ it("到期日先做普通练习，备份保留最新语境，随后到期复习�
   const next = byId(course.questions, progress.value.active!.questionIds[0]);
   expect(next.passageId).not.toBe(q.passageId);
 });
+
+it("拒绝来自另一门课程的备份", async () => {
+  const backup = JSON.parse(await exportBackup());
+  backup.courseId = "different-course";
+  await expect(importBackup(JSON.stringify(backup))).rejects.toThrow();
+  expect(progress.value).toEqual(emptyProgress());
+});

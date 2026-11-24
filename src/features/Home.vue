@@ -1,44 +1,42 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed } from "vue";
 import { RouterLink } from "vue-router";
 import {
   ArrowRight,
   ArrowUpRight,
-  BookOpen,
-  Bookmark,
-  Clock3,
+  CheckCheck,
+  ChevronRight,
   Flame,
   Layers,
-  ListChecks,
-  Map,
-  Sparkles,
+  ListRestart,
+  Zap,
 } from "@lucide/vue";
-import { byId, course } from "../content";
-import { dueCards, isUnlocked, progress, streak } from "../storage/progress";
+import { course } from "../content";
+import { dueCards, progress, streak } from "../storage/progress";
+import { currentTarget, isDraftCourse } from "./learningPath";
 import UnitPath from "./UnitPath.vue";
 
 const active = computed(() => progress.value.active);
-const unfinishedTarget = computed(() =>
-  course.units
-    .flatMap((unit) => [...unit.lessonIds, unit.assessmentId])
-    .find((id) => isUnlocked(id) && !progress.value.passedIds.includes(id)),
-);
-const taskId = computed(() => {
-  const round = active.value;
-  if (round && (round.kind === "lesson" || round.kind === "assessment"))
-    return round.targetId;
-  return unfinishedTarget.value;
-});
-const taskLesson = computed(() =>
-  course.lessons.find((lesson) => lesson.id === taskId.value),
+const taskId = computed(currentTarget);
+const firstUnfinishedUnit = computed(() =>
+  course.units.find((unit) =>
+    [...unit.lessonIds, unit.assessmentId].some(
+      (id) => !progress.value.passedIds.includes(id),
+    ),
+  ),
 );
 const unit = computed(
   () =>
     course.units.find(
-      (u) =>
-        u.lessonIds.includes(taskId.value || "") ||
-        u.assessmentId === taskId.value,
-    ) ?? course.units.at(-1)!,
+      (unit) =>
+        unit.lessonIds.includes(taskId.value || "") ||
+        unit.assessmentId === taskId.value,
+    ) ??
+    firstUnfinishedUnit.value ??
+    course.units.at(-1)!,
+);
+const level = computed(() =>
+  course.levels.find((level) => level.id === unit.value.level)!,
 );
 const passedLessons = computed(
   () =>
@@ -46,321 +44,309 @@ const passedLessons = computed(
       progress.value.passedIds.includes(lesson.id),
     ).length,
 );
-const check = computed(() =>
-  course.assessments.find((assessment) => assessment.id === taskId.value),
+const practicing = computed(
+  () => active.value?.kind === "review" || active.value?.kind === "mistake",
 );
-
-const task = computed(() => {
-  const round = active.value;
-  const unitLabel = unit.value.title;
-  if (round && (round.kind === "review" || round.kind === "mistake")) {
-    const review = round.kind === "review";
-    return {
-      tag: "进行中",
-      unitLabel: "复习与巩固",
-      title: review ? "知识卡复习" : "错题纠正",
-      intro: review
-        ? "换一个语境，重新辨认学过的用法。"
-        : "回到原句，找出上一次遗漏的线索。",
-      path: "/practice",
-      button: "继续练习",
-      quantity: round.questionIds.length + " 道练习",
-      time: "",
-    };
-  }
-  const lesson = taskLesson.value;
-  if (lesson || check.value) {
-    const title = lesson?.title ?? "单元检查";
-    const quantity = (lesson ?? check.value)!.questionIds.length + " 道练习";
-    return {
-      tag: round ? "进行中" : "当前课程",
-      unitLabel,
-      title: title.split("：").at(-1)!,
-      intro: lesson?.intro ?? "回顾本单元的知识，在新的语境中检验阅读能力。",
-      path: "/learn/" + taskId.value,
-      button: round ? "继续学习" : lesson ? "开始学习" : "开始检查",
-      quantity,
-      time: lesson ? "5–8 分钟" : "单元检查",
-    };
-  }
-  return {
-    tag: "L1 已完成",
-    unitLabel: "读懂单句",
-    title: "温故知新",
-    intro: "你已走完本级课程。通过间隔复习，保持对这些义项和句式的熟悉。",
-    path: "/review",
-    button: "前往复习",
-    quantity: "",
-    time: "",
-  };
-});
-
-const noteLesson = computed(
-  () => taskLesson.value ?? byId(course.lessons, unit.value.lessonIds.at(-1)!),
+const percent = computed(() =>
+  Math.round((passedLessons.value / course.lessons.length) * 100),
 );
-const noteIndex = ref(0);
-watch(
-  () => noteLesson.value.id,
-  () => {
-    noteIndex.value = 0;
-  },
-);
-const noteSkills = computed(() =>
-  noteLesson.value.mainSkills.map((id) => byId(course.skills, id)),
-);
-const noteLabels = computed(() =>
-  noteSkills.value.map((entry) =>
-    noteSkills.value.some(
-      (other) => other.id !== entry.id && other.word === entry.word,
-    )
-      ? entry.meaning
-      : entry.word,
-  ),
-);
-const skill = computed(() => noteSkills.value[noteIndex.value]);
-const passage = computed(() =>
-  byId(course.passages, noteLesson.value.exampleIds[noteIndex.value]),
-);
-const highlight = computed(() => {
-  const start = passage.value.text.indexOf(skill.value.word);
-  if (start < 0) return { before: passage.value.text, word: "", after: "" };
-  return {
-    before: passage.value.text.slice(0, start),
-    word: skill.value.word,
-    after: passage.value.text.slice(start + skill.value.word.length),
-  };
-});
 </script>
 
 <template>
-  <main class="shell">
-    <div class="page-heading">
-      <div>
-        <div class="eyebrow"><span class="dash" /> L1 · 读懂单句</div>
-        <h1>今日学习</h1>
-      </div>
-      <div class="course-progress">
-        <span>课程进度</span> <b>{{ passedLessons }}</b> /
-        {{ course.lessons.length }} 课
-        <progress
-          :value="passedLessons"
-          :max="course.lessons.length"
-          aria-label="已通过课程"
-        />
-      </div>
-    </div>
-
-    <section class="hero" aria-labelledby="continue-title">
-      <div class="hero-copy">
-        <div class="tagline">
-          <span class="tag">{{ task.tag }}</span><span>{{
-            task.unitLabel
-          }}</span>
+  <main class="shell dashboard">
+    <header class="home-heading">
+      <h1>今日学习</h1>
+      <p>
+        <b>{{ level.id }}</b>{{ level.title }}
+      </p>
+    </header>
+    <div class="dashboard-grid">
+      <div class="main-column">
+        <div v-if="practicing || !taskId" class="resume">
+          <component
+            :is="practicing ? ListRestart : CheckCheck"
+            :size="24"
+            aria-hidden="true"
+          />
+          <div>
+            <h2>
+              {{
+                practicing
+                  ? active?.kind === "review"
+                    ? "知识卡复习进行中"
+                    : "错题订正进行中"
+                  : firstUnfinishedUnit
+                    ? "后续课程准备中"
+                    : "已完成课程路径"
+              }}
+            </h2>
+            <RouterLink
+              class="resume-action"
+              :to="practicing ? '/practice' : '/review'"
+            >
+              {{ practicing ? "继续练习" : "前往复习"
+              }}<ArrowRight :size="16" />
+            </RouterLink>
+          </div>
         </div>
-        <h2
-          id="continue-title"
-          :class="{ 'long-title': task.title.length > 6 }"
-        >
-          {{ task.title }}
-        </h2>
-        <p>{{ task.intro }}</p>
-        <div v-if="task.time || task.quantity" class="meta">
-          <span v-if="task.time"><Clock3 />{{ task.time }}</span>
-          <i v-if="task.time && task.quantity" aria-hidden="true" />
-          <span v-if="task.quantity"><ListChecks />{{ task.quantity }}</span>
-        </div>
-        <RouterLink class="primary" :to="task.path"
-          >{{ task.button }}<ArrowRight :size="18"
-        /></RouterLink>
-      </div>
-      <div
-        class="hero-art"
-        role="img"
-        aria-label="青绿色山水版画，旅人沿河过桥"
-      />
-    </section>
-
-    <dl class="study-strip">
-      <div>
-        <dt><Flame />连续学习</dt>
-        <dd>{{ streak() }} <small>天</small></dd>
-      </div>
-      <div>
-        <dt><Sparkles />累计经验</dt>
-        <dd>{{ progress.xp }} <small>XP</small></dd>
-      </div>
-      <div>
-        <dt><Layers />到期复习</dt>
-        <dd>
-          <RouterLink to="/review" aria-label="查看到期复习"
-            >{{ dueCards().length }} <small>张</small><ArrowUpRight :size="14"
-          /></RouterLink>
-        </dd>
-      </div>
-    </dl>
-
-    <div class="home-grid">
-      <section>
-        <div class="section-head">
-          <h2 class="section-title"><Map />课程路径</h2>
-          <RouterLink class="text-link" to="/path"
-            >查看全部 <ArrowUpRight :size="15"
+        <div class="track-heading">
+          <h2>当前单元</h2>
+          <RouterLink to="/path"
+            >完整路径<ArrowUpRight :size="15" aria-hidden="true"
           /></RouterLink>
         </div>
-        <UnitPath :unit="unit" compact />
-      </section>
-      <section v-if="skill">
-        <div class="section-head">
-          <h2 class="section-title"><Bookmark />字词手记</h2>
-        </div>
-        <div class="note">
-          <div class="note-top">
-            <span>{{ skill.area }} · {{ unit.title }}</span
-            ><span class="folio"
-              >{{ String(noteIndex + 1).padStart(2, "0") }} /
-              {{ String(noteSkills.length).padStart(2, "0") }}</span
+        <UnitPath :unit="unit" :current-id="taskId" :home="!practicing" />
+      </div>
+      <aside class="record" aria-labelledby="record-title">
+        <h2 id="record-title">学习概览</h2>
+        <div class="record-panel">
+          <div class="completion">
+            <svg viewBox="0 0 64 64" class="completion-ring" aria-hidden="true">
+              <circle class="ring-track" cx="32" cy="32" r="27" />
+              <circle
+                v-if="percent > 0"
+                class="ring-filled"
+                cx="32"
+                cy="32"
+                r="27"
+                pathLength="100"
+                :stroke-dasharray="percent + ' 100'"
+              />
+            </svg>
+            <strong class="completion-label"
+              >{{ percent }}<small>%</small></strong
             >
+            <div class="completion-copy">
+              <b>课程进度</b>
+              <span
+                >已通过 {{ passedLessons }} /
+                {{ course.lessons.length }} 课</span
+              >
+            </div>
           </div>
-          <div class="word-line">
-            <strong :class="{ 'long-word': skill.word.length > 3 }">{{
-              skill.word
-            }}</strong><span>{{ skill.meaning }}</span>
-          </div>
-          <blockquote>
-            {{ highlight.before }}<em>{{ highlight.word }}</em
-            >{{ highlight.after }}
-          </blockquote>
-          <small>{{
-            passage.kind === "teaching" ? "教学例句" : passage.source?.work
-          }}</small>
-          <div class="word-buttons" role="group" aria-label="选择知识点">
-            <button
-              v-for="(s, i) in noteSkills"
-              :key="s.id"
-              type="button"
-              :aria-pressed="i === noteIndex"
-              @click="noteIndex = i"
-            >
-              {{ noteLabels[i] }}
-            </button>
-          </div>
+          <dl class="metrics">
+            <div>
+              <Flame aria-hidden="true" :size="17" />
+              <dt>连续学习</dt>
+              <dd>{{ streak() }} 天</dd>
+            </div>
+            <div>
+              <Zap aria-hidden="true" :size="17" />
+              <dt>累计经验</dt>
+              <dd>{{ progress.xp }} XP</dd>
+            </div>
+          </dl>
+          <RouterLink class="review-link" to="/review"
+            ><Layers aria-hidden="true" :size="17" /><span>到期复习</span
+            ><b>{{ dueCards().length }} 张</b><ChevronRight :size="14"
+          /></RouterLink>
         </div>
-      </section>
+      </aside>
     </div>
-
-    <footer>
-      <BookOpen :size="14" />文言拾阶<span>教学内容 · 草稿试用</span>
-    </footer>
+    <small v-if="isDraftCourse" class="content-state"
+      >课程内容 · 草稿试用</small
+    >
   </main>
 </template>
 
 <style scoped>
-.course-progress {
-  color: var(--muted);
-  font-size: 13px;
-  min-width: 128px;
+.dashboard {
+  min-width: 0;
 }
-.course-progress b {
-  color: var(--green);
-  font-size: 15px;
-  margin-left: 4px;
+.home-heading {
+  margin: 0 0 28px;
 }
-.course-progress progress {
-  height: 4px;
-  margin: 5px 0 0;
+.home-heading h1 {
+  font-family: inherit;
+  font-size: clamp(28px, 3.3vw, 38px);
+  line-height: 1.25;
+  letter-spacing: -0.04em;
 }
-.long-title {
-  font-size: clamp(32px, 3.2vw, 45px);
-  line-height: 1.45;
-}
-.hero-copy > .primary {
-  margin-top: 15px;
-}
-.meta + .primary {
-  margin-top: 0;
-}
-.study-strip {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  border-block: 1px solid var(--line);
-  padding-block: 15px;
-  margin: 20px 0 0;
-}
-.study-strip > div {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-}
-.study-strip > div + div {
-  border-left: 1px solid var(--line);
-}
-.study-strip dt,
-.study-strip dd a {
+.home-heading p {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  gap: 8px;
+  margin: 9px 0 0;
+  color: #626c80;
+  font-size: 14px;
 }
-.study-strip dt {
-  color: var(--muted);
+.home-heading p b {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1px 6px;
+  border-radius: 5px;
+  background: #eeedff;
+  color: var(--accent-strong);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.5;
+  letter-spacing: 0.035em;
+}
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(210px, 0.43fr);
+  gap: clamp(18px, 3vw, 42px);
+  align-items: start;
+}
+.main-column {
+  min-width: 0;
+}
+.track-heading,
+.record > h2 {
+  margin: 0 0 13px;
+}
+.record > h2,
+.track-heading h2,
+.resume h2 {
+  margin-top: 0;
+  font-family: inherit;
+  font-size: 18px;
+  line-height: 1.4;
+  font-weight: 730;
+  letter-spacing: -0.025em;
+}
+.track-heading h2,
+.resume h2 {
+  margin-bottom: 0;
+}
+.track-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.track-heading a,
+.resume-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--accent-strong);
+  font-size: 13px;
+  font-weight: 650;
+}
+.record-panel {
+  border: 1px solid #e0e4ed;
+  border-radius: 14px;
+  background: #fff;
+  padding: 19px;
+}
+.completion {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr);
+  column-gap: 13px;
+  align-items: center;
+}
+.completion-ring,
+.completion-label {
+  grid-row: 1;
+  grid-column: 1;
+}
+.completion-ring {
+  width: 58px;
+  height: 58px;
+  transform: rotate(-90deg);
+}
+.completion-ring circle {
+  fill: none;
+  stroke-width: 5px;
+}
+.ring-track {
+  stroke: #e8e7fa;
+}
+.ring-filled {
+  stroke: var(--accent);
+  stroke-linecap: round;
+}
+.completion-label {
+  text-align: center;
+  font-size: 19px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: #393456;
+}
+.completion-label small {
+  font-size: 10px;
+}
+.completion-copy {
+  display: grid;
+  gap: 3px;
+}
+.completion-copy b {
+  font-size: 14px;
+}
+.completion-copy span {
+  color: #647087;
+  font-size: 12px;
+}
+.metrics {
+  display: grid;
+  gap: 12px;
+  padding: 16px 0;
+  margin: 16px 0 0;
+  border-block: 1px solid #e8eaf1;
+}
+.metrics div,
+.review-link {
+  display: flex;
+  align-items: center;
+  gap: 7px;
   font-size: 13px;
 }
-.study-strip dt svg {
-  width: 17px;
-  height: 17px;
-  color: var(--green);
+.metrics svg {
+  color: #746abf;
 }
-.study-strip dd {
-  margin: 0;
-  color: var(--green);
-  font: 650 23px/1.25 var(--serif);
+.metrics dd,
+.review-link b {
+  margin-left: auto;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  font-weight: 650;
 }
-.study-strip dd small {
-  font:
-    12px/1 system-ui,
-    sans-serif;
+.review-link {
+  min-height: 40px;
+  padding-top: 10px;
+  color: var(--accent-strong);
 }
-.study-strip dd a {
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 4px;
+.resume {
+  display: flex;
+  gap: 13px;
+  align-items: start;
+  padding: 17px 19px;
+  border: 1px solid #d9d6fb;
+  background: #f6f5ff;
+  border-radius: 12px;
+  margin-bottom: 21px;
+  color: #4941b2;
 }
-.word-line {
-  flex-wrap: wrap;
-  gap: 10px;
+.resume-action {
+  margin-top: 8px;
+  min-height: 38px;
+  padding-inline: 13px;
+  border-radius: 7px;
+  background: var(--accent-strong);
+  color: #fff;
 }
-.word-line .long-word {
-  font-size: 34px;
+.content-state {
+  display: block;
+  margin: 22px 0 3px;
+  color: #667187;
+  font-size: 12px;
 }
-.word-buttons {
-  flex-wrap: wrap;
-}
-@media (max-width: 570px) {
-  .study-strip > div {
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
+@media (max-width: 1040px) and (min-width: 840px), (max-width: 680px) {
+  .dashboard-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
   }
-  .study-strip {
-    margin-top: 17px;
-    padding-block: 12px;
+  .record-panel {
+    max-width: none;
   }
-  .study-strip dt svg {
-    width: 14px;
-    height: 14px;
+}
+@media (max-width: 560px) {
+  .home-heading {
+    margin-bottom: 19px;
   }
-  .study-strip dt {
-    font-size: 12px;
-  }
-  .course-progress {
-    min-width: 0;
-    font-size: 11px;
-  }
-  .course-progress b {
-    font-size: 12px;
-  }
-  .long-title {
-    font-size: 30px;
+  .home-heading h1 {
+    font-size: 29px;
   }
 }
 </style>

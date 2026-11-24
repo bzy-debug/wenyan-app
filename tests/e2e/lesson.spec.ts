@@ -6,9 +6,12 @@ test("从首页到结算，重试与关键提示保留首答", async ({ page }, 
   await expect(page.getByRole("heading", { name: "今日学习" })).toBeVisible();
   await page.evaluate(() => document.fonts.ready);
   await save("home");
-  await page.getByRole("button", { name: "去", exact: true }).click();
-  await expect(page.locator(".note blockquote")).toHaveText("客辞主人而去。");
-  await page.getByRole("link", { name: "查看全部" }).click();
+  const current = page.locator('.track [aria-current="step"]');
+  await expect(current.getByRole("link", { name: /开始学习/ })).toHaveAttribute(
+    "href",
+    /#\/learn\/l1\.1$/,
+  );
+  await page.getByRole("link", { name: "完整路径" }).click();
   await expect(page.locator(".path-grid section")).toHaveCount(4);
   await expect(page.locator(".lesson-row")).toHaveCount(12);
   await page.locator("a.lesson-row").click();
@@ -36,7 +39,10 @@ test("从首页到结算，重试与关键提示保留首答", async ({ page }, 
     [/老师已离开，学生仍在堂中/],
   ];
   for (const [i, items] of answers.entries()) {
-    if (i === 1) await save("span");
+    if (i === 1) {
+      await expect(page.getByRole("button", { name: /^钟声$/ })).toBeEnabled();
+      await save("span");
+    }
     for (const name of items) await page.getByRole("button", { name }).click();
     await submit.click();
     await expect(page.getByRole("heading", { name: "回答正确" })).toBeVisible();

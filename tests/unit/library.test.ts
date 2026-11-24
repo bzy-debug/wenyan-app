@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen } from "@testing-library/vue";
+import { cleanup, render, screen, within } from "@testing-library/vue";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { createMemoryHistory, createRouter } from "vue-router";
 import { course } from "../../src/content";
@@ -35,16 +35,20 @@ beforeEach(() => {
 });
 afterEach(cleanup);
 
-it("首页可切换教学例句，并从下一个可学关卡开始", async () => {
+it("首页将主操作放在唯一的当前节点，后续课程保留锁定状态", async () => {
   await show(Home);
+  const track = screen.getByRole("list", { name: "古今词义学习顺序" });
+  expect(within(track).getAllByRole("listitem")).toHaveLength(4);
+  const active = track.querySelector('[aria-current="step"]') as HTMLElement;
   expect(
-    screen.getByRole("link", { name: "开始学习" }).getAttribute("href"),
+    within(active)
+      .getByRole("link", { name: /开始学习/ })
+      .getAttribute("href"),
   ).toBe("/learn/l1.1");
-  await fireEvent.click(screen.getByRole("button", { name: "去" }));
+  expect(within(track).getAllByRole("link")).toHaveLength(1);
   expect(
-    screen.getByText("去", { selector: "blockquote em" }).parentElement
-      ?.textContent,
-  ).toBe("客辞主人而去。");
+    screen.getByRole("link", { name: "完整路径" }).getAttribute("href"),
+  ).toBe("/path");
 });
 
 it("三课通过后，首页继续当前单元检查，路径暂时保留下一单元的锁", async () => {
@@ -52,7 +56,7 @@ it("三课通过后，首页继续当前单元检查，路径暂时保留下一�
   progress.value = { ...emptyProgress(), passedIds: [...unit.lessonIds] };
   await show(Home);
   expect(
-    screen.getByRole("link", { name: "开始检查" }).getAttribute("href"),
+    screen.getByRole("link", { name: /开始检查/ }).getAttribute("href"),
   ).toBe("/learn/" + unit.assessmentId);
   cleanup();
   await show(Path);
@@ -102,14 +106,13 @@ it("复习中途回首页能接着本轮学习，课程全部通过后推荐复�
   ).toBe("/review");
 });
 
-it("同一字的不同义项分别有可辨识的入口", async () => {
+it("通过首课后，已通过节点仍能重练，主操作推进到第二课", async () => {
   progress.value = { ...emptyProgress(), passedIds: ["l1.1"] };
   await show(Home);
-  expect(screen.getByRole("button", { name: "书写" })).toBeDefined();
-  const letter = screen.getByRole("button", { name: "书信" });
-  await fireEvent.click(letter);
-  expect(letter.getAttribute("aria-pressed")).toBe("true");
-  expect(
-    screen.getByText("书信", { selector: ".word-line span" }),
-  ).toBeDefined();
+  const track = screen.getByRole("list", { name: "古今词义学习顺序" });
+  const passed = within(track).getByRole("link", { name: /已通过 · 可重练/ });
+  expect(passed.getAttribute("href")).toBe("/learn/l1.1");
+  const next = within(track).getByRole("link", { name: /开始学习/ });
+  expect(next.getAttribute("href")).toBe("/learn/l1.2");
+  expect(next.closest("li")?.getAttribute("aria-current")).toBe("step");
 });

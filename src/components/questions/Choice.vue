@@ -1,25 +1,42 @@
 <script setup lang="ts">
-import { Check } from "@lucide/vue";
+import { Circle, CircleCheck, CircleX } from "@lucide/vue";
 import type { InputProps } from "./types";
-defineProps<InputProps>();
+const props = defineProps<InputProps>();
 defineEmits<{ select: [ids: string[]] }>();
+function state(id: string) {
+  if (props.feedback != null && props.question.answer.includes(id))
+    return "correct";
+  if (props.feedback === false && props.selected.includes(id)) return "missed";
+  return props.selected.includes(id) ? "selected" : "";
+}
 </script>
-
 <template>
-  <div class="choices" role="group" aria-label="选择一个答案">
+  <div class="q-choices" role="group" aria-label="选择一个答案">
     <button
-      v-for="(option, index) in question.options"
+      v-for="(option, i) in question.options"
       :key="option.id"
       type="button"
-      :aria-pressed="selected[0] === option.id"
+      :class="state(option.id)"
+      :aria-pressed="selected.includes(option.id)"
       :disabled="locked"
+      :aria-keyshortcuts="String(i + 1)"
       @click="$emit('select', [option.id])"
     >
-      <span class="letter" aria-hidden="true">{{
-        String.fromCharCode(65 + index)
+      <span class="q-key" aria-hidden="true">{{ i + 1 }}</span><span>{{
+        option.label
       }}</span>
-      {{ option.label
-      }}<Check v-if="selected[0] === option.id" :size="16" aria-hidden="true" />
+      <component
+        class="option-icon"
+        :is="
+          state(option.id) === 'missed'
+            ? CircleX
+            : state(option.id)
+              ? CircleCheck
+              : Circle
+        "
+        :size="19"
+        aria-hidden="true"
+      />
     </button>
   </div>
 </template>

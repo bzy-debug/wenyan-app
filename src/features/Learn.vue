@@ -1,12 +1,21 @@
 <script setup lang="ts">
-import { computed, nextTick, ref, watch } from "vue";
+import { computed, nextTick, onMounted, ref, watch } from "vue";
 import { RouterLink, useRoute, useRouter } from "vue-router";
-import { ArrowLeft, ArrowRight, CircleHelp, RotateCcw } from "@lucide/vue";
+import {
+  ArrowRight,
+  Check,
+  CircleHelp,
+  Lightbulb,
+  RotateCcw,
+  X,
+} from "@lucide/vue";
 import { byId, course, optionText } from "../content";
+import RichText from "../components/RichText.vue";
+import LessonReading from "../components/LessonReading.vue";
+import "./study.css";
 import QuestionInput from "../components/questions/QuestionInput.vue";
 import {
   advance,
-  initProgress,
   isUnlocked,
   progress,
   retryAnswer,
@@ -16,7 +25,8 @@ import {
   startRound,
   submitAnswer,
 } from "../storage/progress";
-import { passageLabel, roundTitle, studyLink } from "./roundLabels";
+import SourceCredit from "../components/SourceCredit.vue";
+import { roundTitle, studyLink } from "./roundLabels";
 
 const route = useRoute();
 const router = useRouter();
@@ -50,13 +60,6 @@ const question = computed(() => {
 const passage = computed(() =>
   question.value ? byId(course.passages, question.value.passageId) : null,
 );
-const examples = computed(
-  () =>
-    lesson.value?.mainSkills.map((id, i) => ({
-      skill: byId(course.skills, id),
-      passage: byId(course.passages, lesson.value!.exampleIds[i]),
-    })) ?? [],
-);
 const names = { choice: "单项选择", order: "事件排序", span: "原文选段" };
 const completeInput = computed(
   () =>
@@ -76,7 +79,11 @@ const mismatch = computed(() => {
 const error = ref("");
 const loading = ref(true);
 const saving = ref(false);
-const unavailable = ref(false);
+const unavailable = computed(() => {
+  if (!targetId.value) return false;
+  const target = lesson.value ?? assessment.value;
+  return target?.stage !== "available" || !isUnlocked(target.id);
+});
 const prompt = ref<HTMLElement | null>(null);
 const feedbackHeading = ref<HTMLElement | null>(null);
 const finishedRound = ref("");
@@ -87,35 +94,17 @@ async function openTarget() {
   await startRound(lesson.value ? "lesson" : "assessment", id);
 }
 
-watch(
-  () => route.path,
-  async (_path, _old, cleanup) => {
-    let current = true;
-    cleanup(() => {
-      current = false;
-    });
-    loading.value = true;
-    error.value = "";
-    unavailable.value = false;
-    finishedRound.value = "";
-    try {
-      await initProgress();
-      if (!current) return;
-      if (!reviewMode.value) {
-        const target = lesson.value || assessment.value;
-        if (target?.stage !== "available" || !isUnlocked(target.id))
-          unavailable.value = true;
-        else if (!active.value || round.value) await openTarget();
-      }
-    } catch (e) {
-      if (current)
-        error.value = e instanceof Error ? e.message : "读取进度失败。";
-    } finally {
-      if (current) loading.value = false;
-    }
-  },
-  { immediate: true },
-);
+onMounted(async () => {
+  try {
+    if (!reviewMode.value && !unavailable.value && !active.value)
+      await openTarget();
+  } catch (e) {
+    error.value =
+      e instanceof Error ? e.message : "无法开启本关，请返回课程路径重试。";
+  } finally {
+    loading.value = false;
+  }
+});
 
 async function act(operation: () => Promise<void>) {
   if (saving.value) return;
@@ -161,7 +150,7 @@ function next() {
 }
 
 watch(
-  () => question.value?.id,
+  () => (loading.value ? undefined : question.value?.id),
   async (id) => {
     if (!id) return;
     await nextTick();
@@ -177,186 +166,272 @@ watch(
     feedbackHeading.value?.focus({ preventScroll: true });
   },
 );
-</script>
 
+function onStudyKey(event: KeyboardEvent) {
+  const r = round.value,
+    q = question.value;
+  if (
+    !r ||
+    !q ||
+    saving.value ||
+    event.defaultPrevented ||
+    event.repeat ||
+    event.isComposing ||
+    event.ctrlKey ||
+    event.altKey ||
+    event.metaKey ||
+    event.shiftKey
+  )
+    return;
+  const target = event.target;
+  if (
+    !(target instanceof HTMLElement) ||
+    target.closest("input,textarea,select,[contenteditable=true]")
+  )
+    return;
+  if (/^[1-9]$/.test(event.key) && r.feedback === null) {
+    const main = event.currentTarget as HTMLElement;
+    const option = main.querySelector<HTMLButtonElement>(
+      'button[aria-keyshortcuts="' + event.key + '"]',
+    );
+    if (option && !option.disabled) {
+      event.preventDefault();
+      option.click();
+    }
+    return;
+  }
+  if (event.key !== "Enter") return;
+  const control = target.closest("button,a,summary");
+  // Enter activates a focused control normally. After choosing an option it
+  // also allows a keyboard learner to check the selected answer.
+  if (
+    control &&
+    !control.matches('button[aria-pressed="true"][aria-keyshortcuts]')
+  )
+    return;
+  if (r.feedback !== null) {
+    event.preventDefault();
+    next();
+  } else if (completeInput.value) {
+    event.preventDefault();
+    questionAction(submitAnswer);
+  }
+}
+</script>
 <template>
-  <main class="reading">
-    <RouterLink class="back" :to="reviewMode ? '/review' : '/path'"
-      ><ArrowLeft aria-hidden="true" />{{
-        reviewMode ? "复习" : "课程路径"
-      }}</RouterLink
-    >
-    <p v-if="error" role="alert" class="issue">{{ error }}</p>
-    <p v-if="loading" role="status">正在读取学习进度…</p>
-    <section v-else-if="unavailable">
-      <h1>本关尚未解锁</h1>
-      <p class="lead">请回到课程路径，完成前一关。</p>
-      <RouterLink class="primary" to="/path">查看课程路径</RouterLink>
-    </section>
-    <section v-else-if="!round && active && !reviewMode">
-      <h1>还有一轮练习未完成</h1>
-      <p class="lead">
-        已保存「{{
-          roundTitle(active.kind, active.targetId)
-        }}」。开启新关会结束这一轮，已结算的成绩会保留。
-      </p>
-      <div class="actions">
-        <RouterLink class="primary" :to="studyLink(active)"
-          >继续已保存的练习</RouterLink
-        >
-        <button class="secondary" :disabled="saving" @click="act(openTarget)">
-          结束旧练习并开启本关
-        </button>
-      </div>
-    </section>
-    <section v-else-if="!round && !finishedRound">
-      <h1>暂无进行中的练习</h1>
-      <RouterLink class="primary" :to="reviewMode ? '/review' : '/path'">{{
-        reviewMode ? "查看复习任务" : "查看课程路径"
-      }}</RouterLink>
-    </section>
-    <template v-else-if="round && round.index < 0">
-      <div class="eyebrow">
-        {{ unit?.title }} · {{ lesson ? "课前讲解" : "单元检查" }}
-      </div>
-      <h1>{{ roundTitle(round.kind, round.targetId) }}</h1>
-      <p class="lead">
-        {{ lesson?.intro || "读一组新的例句，综合运用本单元学到的阅读方法。" }}
-      </p>
-      <div v-if="lesson" class="teaching">
-        <article v-for="example in examples" :key="example.skill.id">
-          <div
-            class="character"
-            :class="{ long: example.skill.word.length > 1 }"
-            aria-hidden="true"
-          >
-            {{ example.skill.word }}
-          </div>
-          <div>
-            <h2>{{ example.skill.meaning }}</h2>
-            <p>{{ example.skill.detail }}</p>
-            <blockquote>{{ example.passage.text }}</blockquote>
-            <small
-              >{{ passageLabel(example.passage) }} ·
-              {{ example.passage.gloss }}</small
+  <main class="study" @keydown="onStudyKey">
+    <header class="study-head">
+      <div class="study-width study-top">
+        <RouterLink
+          class="study-exit"
+          :to="reviewMode ? '/review' : '/path'"
+          aria-label="退出练习，进度已保存"
+          title="退出练习，进度已保存"
+          ><X :size="21" aria-hidden="true"
+        /></RouterLink>
+        <div class="study-meter">
+          <div class="meter-caption">
+            <span>{{
+              round && question
+                ? roundTitle(round.kind, round.targetId)
+                : course.title
+            }}</span>
+            <strong v-if="round && question"
+              >第 {{ round.index + 1 }} /
+              {{ round.questionIds.length }} 题</strong
             >
+            <strong v-else-if="round">课前准备</strong>
           </div>
-        </article>
+          <progress
+            v-if="round"
+            :value="Math.max(0, round.index) + (round.feedback != null ? 1 : 0)"
+            :max="round.questionIds.length"
+            aria-label="本轮已完成题数"
+          />
+        </div>
       </div>
-      <p class="fine">
-        {{ (lesson || assessment)?.status === "draft" ? "草稿练习 · " : ""
-        }}{{
-          lesson
-            ? "8 题中至少 6 题无提示首答正确，并覆盖每个主要知识点，即可通过。"
-            : "6 题中至少 4 题无提示首答正确，即可通过。"
-        }}
-      </p>
-      <button class="primary" :disabled="saving" @click="next">
-        开始练习<ArrowRight aria-hidden="true" />
-      </button>
-    </template>
-    <template v-else-if="round && question && passage">
-      <div class="question-top">
-        <span>{{ roundTitle(round.kind, round.targetId) }}</span><b
-          >{{ round.index + 1 }} / {{ round.questionIds.length }}</b
-        >
-      </div>
-      <progress
-        :value="round.index + 1"
-        :max="round.questionIds.length"
-        aria-label="当前题号"
-      />
-      <div class="eyebrow">
-        {{ names[question.mode] }} · {{ passageLabel(passage)
-        }}{{ question.status === "draft" ? " · 草稿" : "" }}
-      </div>
-      <h1 ref="prompt" class="prompt" tabindex="-1">{{ question.prompt }}</h1>
-      <blockquote v-if="question.mode !== 'span'" class="passage">
-        {{ passage.text }}
-      </blockquote>
-      <QuestionInput
-        :question="question"
-        :selected="round.selected"
-        :locked="saving || round.feedback !== null"
-        @select="changeSelection"
-      />
-      <template v-if="round.feedback === null">
-        <button
-          class="hint"
-          :disabled="saving || round.hinted"
-          @click="questionAction(showHint)"
-        >
-          <CircleHelp aria-hidden="true" />查看关键提示（影响首答）
-        </button>
-        <p v-if="round.hinted" class="hint-text" role="status">
-          {{ question.hint }}
+    </header>
+    <div class="study-width study-content">
+      <p v-if="error" role="alert" class="study-issue">{{ error }}</p>
+      <p v-if="loading" role="status">正在读取学习进度…</p>
+      <section v-else-if="unavailable">
+        <h1>本关尚未解锁</h1>
+        <p>完成前一关后，就可以来这里学习。</p>
+        <RouterLink class="primary" to="/path">查看课程路径</RouterLink>
+      </section>
+      <section v-else-if="!round && active && !reviewMode">
+        <h1>继续上次练习？</h1>
+        <p>
+          「{{
+            roundTitle(active.kind, active.targetId)
+          }}」进度已保存。如果开启本关，上次练习会结束。
         </p>
-        <button
-          class="primary"
-          :disabled="saving || !completeInput"
-          @click="questionAction(submitAnswer)"
-        >
-          提交答案<ArrowRight aria-hidden="true" />
-        </button>
-      </template>
-      <section
-        v-else
-        class="feedback"
-        :class="round.feedback ? 'right' : 'wrong'"
-        aria-live="polite"
-      >
-        <h2 ref="feedbackHeading" tabindex="-1">
-          {{ round.feedback ? "回答正确" : "再读一遍原文" }}
-        </h2>
-        <b
-          >答案 ·
-          {{
-            question.answer.map((id) => optionText(question!, id)).join(" → ")
-          }}</b
-        >
-        <p v-if="round.feedback === false">
-          {{ mismatch || byId(question.options, round.selected[0]).reason }}
-        </p>
-        <p>{{ question.analysis }}</p>
-        <small>句意 · {{ passage.gloss }}</small>
         <div class="actions">
-          <button class="primary" :disabled="saving" @click="next">
+          <RouterLink class="primary" :to="studyLink(active)"
+            >继续已保存的练习</RouterLink
+          ><button
+            class="secondary"
+            :disabled="saving"
+            @click="act(openTarget)"
+          >
+            结束旧练习并开启本关
+          </button>
+        </div>
+      </section>
+      <section v-else-if="!round && !finishedRound">
+        <h1>暂无进行中的练习</h1>
+        <RouterLink class="primary" :to="reviewMode ? '/review' : '/path'">{{
+          reviewMode ? "查看复习任务" : "查看课程路径"
+        }}</RouterLink>
+      </section>
+      <template v-else-if="round && round.index < 0">
+        <p class="study-kicker">
+          {{ unit?.title }} · {{ lesson ? "课前讲解" : "单元检查" }}
+        </p>
+        <h1>{{ roundTitle(round.kind, round.targetId) }}</h1>
+        <div
+          v-if="!lesson || lesson.body.trim() !== lesson.intro?.trim()"
+          class="study-intro"
+        >
+          <RichText
+            :source="
+              lesson?.intro || '读一组新的例句，综合运用本单元学到的阅读方法。'
+            "
+          />
+        </div>
+        <LessonReading v-if="lesson" :course="course" :lesson="lesson" />
+        <p class="study-fine">
+          {{ (lesson || assessment)?.status === "draft" ? "教学草稿 · " : ""
+          }}{{ round.questionIds.length }} 题中至少
+          {{ (lesson || assessment)?.passCount }} 题无提示首答正确{{
+            lesson ? "，并覆盖每个主要知识点" : ""
+          }}，即可通过。
+        </p>
+      </template>
+      <template v-else-if="round && question && passage">
+        <p class="study-kicker">{{ names[question.mode] }}</p>
+        <h1 ref="prompt" class="prompt" tabindex="-1">
+          <RichText :source="question.prompt" inline />
+        </h1>
+        <div class="source-caption">
+          <SourceCredit :passage="passage" />{{
+            question.status === "draft" ? " · 草稿" : ""
+          }}
+        </div>
+        <blockquote v-if="question.mode !== 'span'" class="q-passage">
+          {{ passage.text }}
+        </blockquote>
+        <QuestionInput
+          :course="course"
+          :question="question"
+          :selected="round.selected"
+          :feedback="round.feedback"
+          :locked="saving || round.feedback !== null"
+          @select="changeSelection"
+        />
+        <template v-if="round.feedback === null">
+          <button
+            class="study-hint"
+            :disabled="saving || round.hinted"
+            @click="questionAction(showHint)"
+          >
+            <CircleHelp :size="16" aria-hidden="true" />查看关键提示（影响首答）
+          </button>
+          <div v-if="round.hinted" role="status" class="hint-box">
+            <RichText :source="question.hint" />
+          </div>
+        </template>
+      </template>
+    </div>
+    <footer
+      v-if="!loading && round && !unavailable"
+      class="study-dock"
+      :class="{
+        positive: round.feedback === true,
+        correction: round.feedback === false,
+      }"
+    >
+      <div class="study-width">
+        <section
+          v-if="question && passage && round.feedback != null"
+          class="explanation"
+          aria-live="polite"
+        >
+          <h2 ref="feedbackHeading" tabindex="-1">
+            <component
+              :is="round.feedback ? Check : Lightbulb"
+              :size="19"
+              aria-hidden="true"
+            />{{ round.feedback ? "回答正确" : "再读一遍原文" }}
+          </h2>
+          <p class="answer">
+            <b>答案</b>
+            {{
+              question.answer.map((id) => optionText(question!, id)).join(" → ")
+            }}
+          </p>
+          <RichText
+            v-if="round.feedback === false"
+            :source="
+              mismatch || byId(question.options, round.selected[0]).reason
+            "
+          />
+          <RichText :source="question.analysis" />
+          <div class="gloss">
+            <b>句意</b> <RichText :source="passage.gloss" inline />
+          </div>
+        </section>
+        <div class="study-bar">
+          <button
+            v-if="round.feedback === false"
+            class="study-retry"
+            :disabled="saving"
+            @click="questionAction(retryAnswer)"
+          >
+            <RotateCcw :size="16" aria-hidden="true" />重试本题
+          </button>
+          <small
+            v-else-if="question && round.feedback === null"
+            class="shortcuts"
+            ><kbd>1–{{ question.options.length }}</kbd> 选答案
+            <kbd>Enter</kbd> 提交</small
+          >
+          <small v-else-if="question" class="shortcuts"
+            ><kbd>Enter</kbd> 继续</small
+          >
+          <small v-else class="start-count"
+            >{{ round.questionIds.length }} 道练习</small
+          >
+          <button
+            v-if="round.index < 0"
+            class="primary study-action"
+            :disabled="saving"
+            @click="next"
+          >
+            开始练习<ArrowRight aria-hidden="true" />
+          </button>
+          <button
+            v-else-if="round.feedback === null"
+            class="primary study-action"
+            :disabled="saving || !completeInput"
+            @click="questionAction(submitAnswer)"
+          >
+            提交答案<ArrowRight aria-hidden="true" />
+          </button>
+          <button
+            v-else
+            class="primary study-action"
+            :disabled="saving"
+            @click="next"
+          >
             {{
               round.index + 1 === round.questionIds.length
                 ? "查看结算"
                 : "下一题"
             }}<ArrowRight aria-hidden="true" />
           </button>
-          <button
-            v-if="!round.feedback"
-            class="secondary"
-            :disabled="saving"
-            @click="questionAction(retryAnswer)"
-          >
-            <RotateCcw aria-hidden="true" />重试本题
-          </button>
         </div>
-      </section>
-    </template>
+      </div>
+    </footer>
   </main>
 </template>
-
-<style scoped>
-.character.long {
-  font-size: 14px;
-  text-align: center;
-  padding: 4px;
-  height: auto;
-  min-height: 48px;
-  align-self: flex-start;
-  overflow-wrap: anywhere;
-}
-.issue {
-  color: #8f4026;
-  margin-bottom: 1rem;
-}
-.prompt:focus,
-.feedback h2:focus {
-  outline: none;
-}
-</style>
