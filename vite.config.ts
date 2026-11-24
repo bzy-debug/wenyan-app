@@ -5,6 +5,16 @@ import { VitePWA } from "vite-plugin-pwa";
 
 export default defineConfig(({ command, isPreview }) => ({
   base: command === "build" || isPreview ? "/wenyan-app/" : "/",
+  build: {
+    rollupOptions: {
+      output: {
+        // UI-only releases can reuse the independently hashed course data.
+        manualChunks(id) {
+          if (id === "\0virtual:wenyan-course") return "course-data";
+        },
+      },
+    },
+  },
   plugins: [
     courseMarkdown(),
     vue(),

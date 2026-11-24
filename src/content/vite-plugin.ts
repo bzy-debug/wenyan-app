@@ -1,13 +1,18 @@
 import { join, relative, resolve } from "node:path";
 import type { Plugin } from "vite";
 import { compileCourse } from "./compile";
+import { compileReadings } from "./compileReadings";
 import { compilePilot } from "./compilePilot";
 import { readSources } from "./node";
 
 /** Markdown is compiled on the build machine. The browser receives only
  * the validated data module unless the author opens the preview editor. */
 export function courseMarkdown(): Plugin {
-  const groups = { course: compileCourse, pilot: compilePilot };
+  const groups = {
+    course: compileCourse,
+    pilot: compilePilot,
+    readings: compileReadings,
+  };
   let contentRoot = "";
   const prefix = "virtual:wenyan-";
   const moduleFor = (id: string) =>

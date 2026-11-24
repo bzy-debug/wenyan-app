@@ -36,12 +36,14 @@ async function submit(
   await page.getByRole("button", { name: "提交答案" }).click();
 }
 
-test("自由进入所有课程，求助或答错均可完成全部 120 道练习", async ({
+test("自由选择等级与课程，完成五级全部练习、求助和独立检查", async ({
   page,
 }) => {
-  test.setTimeout(240_000);
+  test.setTimeout(900_000);
   await page.goto("./#/path");
-  await expect(page.locator('main a[href*="#/learn/"]')).toHaveCount(16);
+  await expect(
+    page.getByRole("combobox", { name: "学习等级" }).locator("option"),
+  ).toHaveCount(5);
   const ids = course.units.flatMap((unit) => [
     ...unit.lessonIds,
     unit.assessmentId,
@@ -51,6 +53,12 @@ test("自由进入所有课程，求助或答错均可完成全部 120 道练习
     const lesson = course.lessons.find((l) => l.id === targetId);
     const check = course.assessments.find((a) => a.id === targetId);
     const target = lesson ?? check!;
+    const unit = course.units.find(
+      (u) => u.assessmentId === targetId || u.lessonIds.includes(targetId),
+    )!;
+    await page
+      .getByRole("combobox", { name: "学习等级" })
+      .selectOption(unit.level);
     await page.locator('main a[href$="#/learn/' + targetId + '"]').click();
     for (const [index, id] of target.questionIds.entries()) {
       const question = byId(course.questions, id);
@@ -92,17 +100,20 @@ test("自由进入所有课程，求助或答错均可完成全部 120 道练习
       await expect(page.getByText(/首答正确|通过率|及格线/)).toHaveCount(0);
       await page.goto("./#/review");
       await expect(page.getByText("目前没有需要订正的题目。")).toBeVisible();
-      await page.getByRole("navigation").getByRole("link", { name: "课程路径" }).click();
+      await page
+        .getByRole("navigation")
+        .getByRole("link", { name: "课程路径" })
+        .click();
     } else {
       await page.getByRole("link", { name: "查看课程路径" }).click();
     }
   }
-  expect(submitted).toBe(120);
+  expect(submitted).toBe(1140);
   await page.reload();
-  await expect(page.locator(".overview")).toContainText("12 / 12");
-  await expect(page.locator(".overview")).toContainText("4 / 4");
+  await expect(page.locator(".overview")).toContainText("114 / 114");
+  await expect(page.locator(".overview")).toContainText("38 / 38");
   await page.getByRole("link", { name: "今日学习" }).click();
-  await expect(page.getByText("360 XP", { exact: true })).toBeVisible();
+  await expect(page.getByText("3420 XP", { exact: true })).toBeVisible();
 });
 
 test("从空记录直接进末单元检查，切换课程后仍可继续原题", async ({ page }) => {

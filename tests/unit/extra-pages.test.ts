@@ -127,7 +127,9 @@ it("知识库可按进度及搜索词筛选，展开后可读取释义", async (
   await userEvent.click(screen.getByRole("checkbox", { name: /只看已学/ }));
   expect(screen.getByRole("status").textContent).toContain("1");
   await userEvent.click(screen.getByText(skill.word + " · " + skill.meaning));
-  expect(screen.getByText(skill.detail).closest("details")?.open).toBe(true);
+  expect((await screen.findByText(skill.detail)).closest("details")?.open).toBe(
+    true,
+  );
   await userEvent.type(screen.getByRole("searchbox"), "完全无法匹配的词");
   expect(screen.getByText("没有找到匹配的知识点。")).toBeTruthy();
 });

@@ -1,6 +1,7 @@
 import { resolve } from "node:path";
 import { expect, it } from "vitest";
 import { compileCourse } from "../../src/content/compile";
+import { validateCompleteness } from "../../src/content/validate";
 import { readSources } from "../../src/content/node";
 
 const file = "lesson.md";
@@ -90,4 +91,68 @@ it("古籍底本链接仅接受 HTTPS 并保留到原文出处", () => {
     "javascript:alert(1)",
   );
   expect(() => compileCourse(source)).toThrow(/lesson\.md:\d+.*url/);
+});
+
+function withPolicy(policy: string) {
+  return {
+    ...example,
+    "course.md": example["course.md"].replace(
+      "单元：measurement",
+      "单元：measurement\n完整性：" + policy,
+    ),
+  };
+}
+it("可为课程自定完整性规格，单行声明仍可使用", () => {
+  expect(compileCourse(withPolicy("beginner 1 1 2 1 3")).completeness).toEqual([
+    {
+      level: "beginner",
+      units: 1,
+      lessonsPerUnit: 1,
+      lessonSize: 2,
+      checkSize: 1,
+      questions: 3,
+    },
+  ]);
+});
+it.each([
+  ["beginner 1 1 2 1 3\n  advanced 3 1 2 1 9", "等级不存在"],
+  ["beginner 1 1 2 1 3\n  beginner 1 1 2 1 3", "声明重复"],
+  ["beginner 1 1 2 1 3\n  advanced 5 -1 2 1 9", "完整性声明"],
+  ["beginner 1 1 2 1 30", "总数应为 30"],
+  ["beginner 1 1 4 1 3", "课题数"],
+])("逐行检查声明 %s", (rule, reason) => {
+  expect(() => compileCourse(withPolicy(rule))).toThrow(reason);
+});
+it("定位没有被讲解或练习引用的原文", () => {
+  const source = {
+    ...example,
+    [file]:
+      example[file] +
+      "\n## 原文：教学例句 {#unused}\n> 多余材料。\n译文：多余材料。\n",
+  };
+  expect(() => compileCourse(source)).toThrow(/lesson\.md:\d+.*未被.*unused/);
+});
+
+it("一旦声明教材规格，有学习单元的每个等级均需声明", () => {
+  const source = withPolicy("beginner 1 1 2 1 3");
+  const course = compileCourse(source);
+  course.levels.push({ id: "advanced", title: "进阶", goal: "综合运用" });
+  course.units.push({
+    ...course.units[0],
+    id: "measurement-next",
+    level: "advanced",
+  });
+  expect(() => validateCompleteness(course)).toThrow(
+    /缺少完整性声明：advanced/,
+  );
+});
+
+it("检查使用独立于本单元示范和正课练习的新文段", () => {
+  const repeated = example["check.md"].replace(
+    "山下早晨 6 ℃，中午 9 ℃。",
+    "昨晨 5 ℃。今晨 8 ℃！",
+  );
+  expect(() => compileCourse({ ...example, "check.md": repeated })).toThrow(
+    "单元检查须使用新语境",
+  );
 });

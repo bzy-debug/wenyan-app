@@ -18,6 +18,11 @@ const router = createRouter({
       meta: { title: "课程路径" },
     },
     {
+      path: "/read/:id?",
+      component: () => import("./features/ReadingRoom.vue"),
+      meta: { title: "整篇自读" },
+    },
+    {
       path: "/learn/:id",
       component: learn,
       meta: { title: "阅读练习", focused: true },

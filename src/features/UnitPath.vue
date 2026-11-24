@@ -17,8 +17,14 @@ import { progress } from "../storage/progress";
 import { inProgress } from "./learningPath";
 
 const props = defineProps<{ unit: Unit; currentId?: string; home?: boolean }>();
+const levelUnits = computed(() =>
+  course.units.filter((unit) => unit.level === props.unit.level),
+);
 const position = computed(
-  () => course.units.findIndex((unit) => unit.id === props.unit.id) + 1,
+  () => levelUnits.value.findIndex((unit) => unit.id === props.unit.id) + 1,
+);
+const levelLessons = computed(() =>
+  levelUnits.value.flatMap((unit) => unit.lessonIds),
 );
 const completed = computed(
   () =>
@@ -33,7 +39,7 @@ const steps = computed(() => {
       id,
       title: lesson.title,
       available: lesson.stage === "available",
-      label: "第 " + (course.lessons.indexOf(lesson) + 1) + " 课",
+      label: "第 " + (levelLessons.value.indexOf(id) + 1) + " 课",
       description: lesson.intro,
       questions: lesson.questionIds.length,
       isCheck: false,
