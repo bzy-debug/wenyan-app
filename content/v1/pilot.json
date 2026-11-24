@@ -1,0 +1,97 @@
+{
+  "version": 1,
+  "forms": [
+    {
+      "id": "pilot.ferry",
+      "title": "渡口候舟",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学短文",
+      "glossRights": "项目自撰解析与选项",
+      "passage": "客至津，闻水声甚急。舟子曰：『水未平，未可渡也。』客乃坐树下。久之，水缓，舟子招客，客始登舟。",
+      "glossary": "津：渡口。舟子：船夫。",
+      "questions": [
+        {
+          "id": "ferry.sense",
+          "target": "从对象判断动作",
+          "prompt": "客人最先是怎样察觉水流很急的？",
+          "options": ["听见湍急的水声", "从船夫口中得知", "看见船夫招手"],
+          "correct": 0,
+          "explanation": "“闻”后面紧接“水声”，先写听觉所得，船夫开口在后。"
+        },
+        {
+          "id": "ferry.actor",
+          "target": "辨认动作发出者",
+          "prompt": "树下等待的是谁？",
+          "options": ["船夫", "客人", "船夫和客人"],
+          "correct": 1,
+          "explanation": "“客乃坐树下”明写主语。船夫先劝阻渡河，后来招手。"
+        },
+        {
+          "id": "ferry.turn",
+          "target": "联系条件与后果",
+          "prompt": "哪项变化使客人终于能够登舟？",
+          "options": [
+            "客人找到了树荫",
+            "客人听清了船夫的话",
+            "水流渐缓，船夫示意可渡"
+          ],
+          "correct": 2,
+          "explanation": "“水未平”是起初不能渡河的条件，“水缓”照应它并引出“始登舟”。"
+        }
+      ],
+      "extension": {
+        "text": "日已暮众人渡毕舟子系舟而归",
+        "segmented": "日已暮／众人渡毕／舟子系舟而归",
+        "interpretation": "天色已晚，大家渡完了河，船夫系好船回家。",
+        "explanation": "“日”“众人”“舟子”先后充当主语。“系舟而归”的两个动作都属于船夫。"
+      }
+    },
+    {
+      "id": "pilot.lamp",
+      "title": "夜行遇桥",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学短文",
+      "glossRights": "项目自撰解析与选项",
+      "passage": "樵者负薪夜归，至桥，见桥上有隙，止而未进。童子闻其呼声，举灯照之。樵者见可行之处，乃过桥。",
+      "glossary": "樵者：打柴的人。薪：柴。隙：缺口。",
+      "questions": [
+        {
+          "id": "lamp.sense",
+          "target": "从对象判断动作",
+          "prompt": "童子是怎样注意到樵者的？",
+          "options": ["看见樵者举灯", "听见樵者呼喊", "发现桥面有缺口"],
+          "correct": 1,
+          "explanation": "“闻其呼声”说明童子听见呼喊。“见桥上有隙”是樵者的发现。"
+        },
+        {
+          "id": "lamp.actor",
+          "target": "辨认动作发出者",
+          "prompt": "是谁把灯举起来的？",
+          "options": ["樵者", "樵者与童子一同举灯", "童子"],
+          "correct": 2,
+          "explanation": "“童子闻其呼声，举灯照之”前后承接，举灯沿用前一小句的主语“童子”。"
+        },
+        {
+          "id": "lamp.turn",
+          "target": "联系条件与后果",
+          "prompt": "樵者从停步到过桥，直接原因是什么？",
+          "options": [
+            "借灯光看清能走的地方",
+            "桥上的缺口已被修补",
+            "有人替他背走了柴"
+          ],
+          "correct": 0,
+          "explanation": "“见可行之处，乃过桥”将看清落脚处与过桥连起来，文中没有修桥或卸柴的动作。"
+        }
+      ],
+      "extension": {
+        "text": "童子收灯樵者谢之负薪而归",
+        "segmented": "童子收灯／樵者谢之／负薪而归",
+        "interpretation": "孩子收起灯，樵夫向他道谢，背着柴回家。",
+        "explanation": "“童子”与“樵者”分别引出动作；“负薪而归”承接樵者的动作，也可以与上一句连读。"
+      }
+    }
+  ]
+}

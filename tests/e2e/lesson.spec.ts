@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 test("从首页到结算，重试与关键提示保留首答", async ({ page }, info) => {
-  await page.goto("/");
+  await page.goto("./");
   const save = (name: string) =>
     page.screenshot({ path: info.outputPath(name + ".png"), fullPage: true });
   await expect(page.getByRole("heading", { name: "今日学习" })).toBeVisible();
@@ -18,6 +18,8 @@ test("从首页到结算，重试与关键提示保留首答", async ({ page }, 
   await expect(submit).toBeDisabled();
   await page.getByRole("button", { name: /缓步前行/ }).click();
   await submit.click();
+  await expect(page.getByText(/缓行不合情境/)).toBeVisible();
+  await page.reload();
   await expect(page.getByText(/缓行不合情境/)).toBeVisible();
   await page.getByRole("button", { name: "重试本题" }).click();
   await page.getByRole("button", { name: /奔跑/ }).click();
@@ -53,5 +55,5 @@ test("从首页到结算，重试与关键提示保留首答", async ({ page }, 
     ),
   ).toBe(true);
   await page.getByRole("link", { name: "查看课程路径" }).click();
-  await expect(page.getByText("本次已通过 · 可重练")).toBeVisible();
+  await expect(page.getByText(/已通过 · 可重练/)).toBeVisible();
 });
