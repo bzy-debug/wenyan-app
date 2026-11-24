@@ -10,7 +10,9 @@ test("子路径的生产包可安装，离线刷新后可开始学习", async ({
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto("./");
-  await expect(page.getByRole("heading", { name: "今日学习" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "课程路径", exact: true }),
+  ).toBeVisible();
   const manifest = await (
     await page.request.get("./manifest.webmanifest")
   ).json();
@@ -23,7 +25,7 @@ test("子路径的生产包可安装，离线刷新后可开始学习", async ({
   try {
     await context.setOffline(true);
     await page.reload();
-    await page.getByRole("link", { name: "开始学习" }).click();
+    await page.getByRole("link", { name: /^开始学习 · / }).click();
     await expect(
       page.getByRole("heading", { name: first.prompt, exact: true }),
     ).toBeVisible();
