@@ -1,6 +1,6 @@
 # 文言拾阶
 
-面向中文母语成人的文言文阅读练习。L1 草稿试用版包含 4 个单元、12 节课、4 次单元检查，共 120 道计分题。每节课先读讲解，再借上下文辨义、定位证据和梳理事件。课程、练习、复习和学习记录都在浏览器内运行。
+面向中文母语成人的文言文阅读练习。L1 草稿试用版包含 4 个单元、12 节课、4 次单元检查，共 120 道练习。可以从任意一课或单元检查开始。点进课程就读句子、动手作答，需要时再打开本课讲解。课程、练习、复习和学习记录都在浏览器内运行。
 
 ## 编写与预览课程
 
@@ -24,11 +24,13 @@ npx playwright install --with-deps chromium
 npm run test:e2e
 ```
 
-`check` 执行 vue-tsc、课程完整性检查和 Vitest。Playwright 在桌面和手机视口测试 dist 生产包，包含首次提示、刷新、重试和断网场景。云环境已有 Chromium 时可设置 `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium`。运行 `npm run preview` 后访问输出地址的 `/wenyan-app/` 路径。
+`check` 执行 vue-tsc、课程完整性检查和 Vitest。Playwright 在桌面和手机视口测试 dist 生产包，涵盖自由选课、跨课续学、求助、作答反馈、刷新和断网场景。云环境已有 Chromium 时可设置 `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium`。运行 `npm run preview` 后访问输出地址的 `/wenyan-app/` 路径。
 
 ## 学习记录和离线使用
 
-普通课需要至少 6/8 题首次无提示答对，并覆盖全部主要义项。检查门槛为 4/6。完成检查即可继续下一单元。复习页按到期知识卡抽取不同语境，错题可单独纠正。经验值、连续学习记录和进度保存在当前浏览器；设置页支持备份导出与恢复。首次联网打开后，等待应用资源缓存完毕，即可在此设备离线学习。安装入口随浏览器而异。
+课程目录提供建议顺序。每节课都能随时进入、离开和续学。在普通课里点「不知道」可以看答案和点拨，按自己的节奏继续。看完一轮题目就算完成，同一种练习的完成经验固定。首次作答情况用于安排下次复习的时间，到期复习会换一个语境。经验值、连续学习记录和进度保存在当前浏览器，设置页支持备份导出与恢复。首次联网打开后，等待应用资源缓存完毕，即可在此设备离线学习。安装入口随浏览器而异。
+
+新版会自动迁移上一版的本地进度，也能导入其 v2 备份。旧格式只保存过关清单与最近一次练习结果，能据此恢复的完成记录会一并带入。
 
 ## GitHub Pages 发布
 
@@ -54,5 +56,5 @@ npm run test:e2e
 | 学习环节 | 桌面浏览器 | 手机尺寸浏览器 |
 | --- | --- | --- |
 | 今日学习 | [桌面首页](docs/screenshots/desktop-home.webp) | [手机首页](docs/screenshots/mobile-home.webp) |
-| 点选原文证据 | [桌面练习](docs/screenshots/desktop-span.webp) | [手机练习](docs/screenshots/mobile-span.webp) |
-| 首答与知识点结算 | [桌面结算](docs/screenshots/desktop-result.webp) | [手机结算](docs/screenshots/mobile-result.webp) |
+| 从原文找证据 | [桌面练习](docs/screenshots/desktop-span.webp) | [手机练习](docs/screenshots/mobile-span.webp) |
+| 完成一课 | [桌面结算](docs/screenshots/desktop-result.webp) | [手机结算](docs/screenshots/mobile-result.webp) |

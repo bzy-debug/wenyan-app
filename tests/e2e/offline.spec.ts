@@ -1,4 +1,7 @@
 import { expect, test } from "@playwright/test";
+import { readCourse } from "../../src/content/node";
+
+const first = readCourse().questions.find((q) => q.id === "q.1")!;
 
 test("子路径的生产包可安装，离线刷新后可开始学习", async ({
   page,
@@ -21,8 +24,9 @@ test("子路径的生产包可安装，离线刷新后可开始学习", async ({
     await context.setOffline(true);
     await page.reload();
     await page.getByRole("link", { name: "开始学习" }).click();
-    await expect(page.getByRole("button", { name: "开始练习" })).toBeVisible();
-    await page.getByRole("button", { name: "开始练习" }).click();
+    await expect(
+      page.getByRole("heading", { name: first.prompt, exact: true }),
+    ).toBeVisible();
     await expect(page.getByRole("button", { name: "提交答案" })).toBeDisabled();
     await page.reload();
     await expect(page.getByRole("button", { name: "提交答案" })).toBeDisabled();

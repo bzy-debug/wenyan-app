@@ -35,7 +35,12 @@ export function reviewCard(
   questionId: string,
   independent: boolean,
 ): CardState {
-  if (previous.lastDay >= day || previous.due > day) return previous;
+  if (
+    previous.lastDay > day ||
+    (independent && (previous.lastDay === day || previous.due > day))
+  ) {
+    return { ...previous, lastQuestionId: questionId };
+  }
   const level = independent
     ? Math.min(previous.level + 1, intervals.length - 1)
     : 0;

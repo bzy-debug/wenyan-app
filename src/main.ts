@@ -30,7 +30,7 @@ const router = createRouter({
     {
       path: "/result",
       component: () => import("./features/Result.vue"),
-      meta: { title: "本轮结算", focused: true },
+      meta: { title: "练习完成", focused: true },
     },
     {
       path: "/review",

@@ -5,7 +5,7 @@ import { compilePilot } from "../../src/content/compilePilot";
 
 const [before] = compilePilot(readSources("content/v1/pilot")).forms;
 
-test("志愿试读先同意，记录独立首答、译意与反馈，可导出及删除", async ({
+test("志愿试读先同意，在无标点短文标记停顿，保存、导出与删除反馈", async ({
   page,
 }) => {
   await page.goto("./#/pilot");
@@ -22,18 +22,17 @@ test("志愿试读先同意，记录独立首答、译意与反馈，可导出�
       .nth(index)
       .check();
   }
-  await page.getByRole("button", { name: /^在第 1 字/ }).click();
+  const text = page.getByRole("group", { name: "在无标点原文中标记停顿" });
+  await expect(text).toHaveText(before.extension.text);
+  await expect(text).not.toContainText(/[。，；！？、]/);
+  await text.getByRole("button", { name: /^在第 1 字/ }).click();
   const interpretation = "我试着把句子中人物和动作对应起来。";
   await page.getByLabel("用自己的话译出或概括这句续文").fill(interpretation);
   await page.getByLabel("试读反馈（选填）").fill("第二题需要回读前句。");
-  await page.getByRole("button", { name: "保存首答与反馈" }).click();
-  await expect(
-    page.getByText(
-      `独立首答 ${before.questions.length - 1} / ${before.questions.length}`,
-    ),
-  ).toBeVisible();
+  await page.getByRole("button", { name: "保存作答与反馈" }).click();
+  await expect(page.getByText("试读已保存", { exact: true })).toBeVisible();
   await page.reload();
-  await page.getByText("查看首答与解析").click();
+  await page.getByText("查看作答与解析").click();
   await expect(
     page.getByText(
       "你的断句：" +

@@ -21,7 +21,7 @@ const taskId = computed(currentTarget);
 const firstUnfinishedUnit = computed(() =>
   course.units.find((unit) =>
     [...unit.lessonIds, unit.assessmentId].some(
-      (id) => !progress.value.passedIds.includes(id),
+      (id) => !progress.value.completedIds.includes(id),
     ),
   ),
 );
@@ -38,17 +38,17 @@ const unit = computed(
 const level = computed(() =>
   course.levels.find((level) => level.id === unit.value.level)!,
 );
-const passedLessons = computed(
+const completedLessons = computed(
   () =>
     course.lessons.filter((lesson) =>
-      progress.value.passedIds.includes(lesson.id),
+      progress.value.completedIds.includes(lesson.id),
     ).length,
 );
 const practicing = computed(
   () => active.value?.kind === "review" || active.value?.kind === "mistake",
 );
 const percent = computed(() =>
-  Math.round((passedLessons.value / course.lessons.length) * 100),
+  Math.round((completedLessons.value / course.lessons.length) * 100),
 );
 </script>
 
@@ -119,7 +119,7 @@ const percent = computed(() =>
             <div class="completion-copy">
               <b>课程进度</b>
               <span
-                >已通过 {{ passedLessons }} /
+                >已完成 {{ completedLessons }} /
                 {{ course.lessons.length }} 课</span
               >
             </div>

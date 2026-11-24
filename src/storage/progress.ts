@@ -1,12 +1,7 @@
 import Dexie, { liveQuery, type Table, type Subscription } from "dexie";
 import { shallowRef } from "vue";
 import { byId, course } from "../content";
-import {
-  roundResult,
-  unlocked,
-  type Round,
-  type RoundKind,
-} from "../domain/progression";
+import { roundResult, type Round, type RoundKind } from "../domain/progression";
 import {
   currentStreak,
   learnCard,
@@ -15,7 +10,7 @@ import {
   reviewCard,
 } from "../domain/review";
 import { grade, recordFirst } from "../domain/session";
-import { backupText, validateBackup } from "./backup";
+import { backupText, migratePrevious, validateBackup } from "./backup";
 import { emptyProgress, type Progress } from "./model";
 
 export { validateBackup };
@@ -46,7 +41,16 @@ function publish(row: Row | undefined) {
   updateDay();
 }
 export async function initProgress(): Promise<void> {
-  publish(await records.get(key));
+  const stored = await db.transaction("rw", records, async () => {
+    const row = await records.get(key);
+    if (row && "passedIds" in row.state) {
+      row.state = migratePrevious(row.state);
+      row.revision++;
+      await records.put(row);
+    }
+    return row;
+  });
+  publish(stored);
   observer ??= liveQuery(() => records.get(key)).subscribe(publish);
   if (!dateTimer && typeof window !== "undefined") {
     dateTimer = setInterval(updateDay, 30_000);
@@ -64,9 +68,6 @@ async function edit(fn: (state: Progress) => void) {
   });
   publish(row);
 }
-export function isUnlocked(targetId: string): boolean {
-  return unlocked(course, progress.value.passedIds, targetId);
-}
 export function dueCards() {
   const records = progress.value.cards;
   return course.cards
@@ -83,7 +84,12 @@ export async function importBackup(text: string): Promise<void> {
   const parsed = validateBackup(text);
   // An open tab from before a restore must not apply an in-flight answer to
   // the restored copy of an old round.
-  if (parsed.active) parsed.active.id = crypto.randomUUID();
+  for (const round of [
+    ...parsed.paused,
+    ...(parsed.active ? [parsed.active] : []),
+  ]) {
+    round.id = crypto.randomUUID();
+  }
   await edit((state) => Object.assign(state, parsed));
 }
 export async function startRound(
@@ -93,14 +99,23 @@ export async function startRound(
   await edit((state) => {
     if (state.active?.kind === kind && state.active.targetId === targetId)
       return;
+    const pausedIndex = state.paused.findIndex(
+      (r) => r.kind === kind && r.targetId === targetId,
+    );
+    if (state.active) state.paused.push(state.active);
+    if (pausedIndex !== -1) {
+      state.active = state.paused.splice(pausedIndex, 1)[0];
+      return;
+    }
     let questionIds: string[];
     if (kind === "lesson" || kind === "assessment") {
-      if (!unlocked(course, state.passedIds, targetId))
-        throw new Error("请先通过前一关");
-      questionIds =
+      const target =
         kind === "lesson"
-          ? byId(course.lessons, targetId).questionIds
-          : byId(course.assessments, targetId).questionIds;
+          ? byId(course.lessons, targetId)
+          : byId(course.assessments, targetId);
+      if (target.stage !== "available" || !target.questionIds.length)
+        throw new Error("这份练习尚未开放");
+      questionIds = target.questionIds;
     } else if (kind === "review") {
       const card = byId(course.cards, targetId),
         schedule = state.cards[card.id];
@@ -118,7 +133,7 @@ export async function startRound(
       kind,
       targetId,
       questionIds: [...questionIds],
-      index: kind === "lesson" || kind === "assessment" ? -1 : 0,
+      index: 0,
       attempts: {},
       selected: [],
       feedback: null,
@@ -136,12 +151,6 @@ function requireRound(state: Progress, roundId: string, qid?: string): Round {
   )
     throw new Error("学习进度已更新，请查看当前题目");
   return round;
-}
-export async function startQuestions(roundId: string) {
-  await edit((state) => {
-    const r = requireRound(state, roundId);
-    if (r.index === -1) r.index = 0;
-  });
 }
 export async function selectAnswer(
   roundId: string,
@@ -162,53 +171,77 @@ export async function selectAnswer(
     r.selected = selection;
   });
 }
-export async function showHint(roundId: string, qid: string) {
-  await edit((state) => {
-    const r = requireRound(state, roundId, qid);
-    if (r.feedback === null) r.hinted = true;
-  });
-}
 function addUnique(items: string[], id: string) {
   if (!items.includes(id)) items.push(id);
 }
-export async function submitAnswer(roundId: string, qid: string) {
+
+function recordResponse(
+  state: Progress,
+  round: Round,
+  qid: string,
+  correct: boolean,
+) {
+  round.feedback = correct;
+  // A successful correction can retire a practice item; retries never rewrite
+  // the original evidence or change a card's interval for this question.
+  if (!correct && round.selected.length) addUnique(state.mistakes, qid);
+  if (round.kind === "mistake" && correct)
+    state.mistakes = state.mistakes.filter((id) => id !== qid);
+  if (Object.hasOwn(round.attempts, qid)) return;
+  round.attempts = recordFirst(round.attempts, qid, {
+    correct,
+    hinted: round.hinted,
+  });
+  const independent = correct && !round.hinted;
+  const day = localDay();
+  addUnique(state.days, day);
+  const q = byId(course.questions, qid);
+  for (const card of course.cards.filter((c) => c.skillId === q.skillId)) {
+    const previous = state.cards[card.id];
+    state.cards[card.id] = previous
+      ? reviewCard(previous, day, qid, independent)
+      : learnCard(day, qid);
+  }
+}
+
+export async function revealAnswer(roundId: string, qid: string) {
+  await edit((state) => {
+    const r = requireRound(state, roundId, qid);
+    if (r.kind === "assessment") throw new Error("单元检查请先自行作答");
+    if (r.feedback !== null) return;
+    r.hinted = true;
+    r.selected = [];
+    recordResponse(state, r, qid, false);
+  });
+}
+
+export async function submitAnswer(
+  roundId: string,
+  qid: string,
+  ids?: string[],
+) {
   const expected = progress.value.active?.selected;
+  const selected = ids && [...ids];
   await edit((state) => {
     const r = requireRound(state, roundId, qid);
     if (r.feedback !== null) return;
     const q = byId(course.questions, qid);
-    if (r.selected.length !== q.answer.length) throw new Error("请先完成选择");
     if (
-      !expected ||
-      expected.length !== r.selected.length ||
-      !expected.every((id, i) => id === r.selected[i])
+      !selected &&
+      (!expected ||
+        expected.length !== r.selected.length ||
+        !expected.every((id, i) => id === r.selected[i]))
     )
       throw new Error("选项已在其他窗口更新，请重新确认");
-    const correct = grade(q, r.selected);
-    r.feedback = correct;
-    if (r.attempts[qid]) return;
-    r.attempts = recordFirst(r.attempts, qid, { correct, hinted: r.hinted });
-    const independent = correct && !r.hinted;
-    const day = localDay();
-    addUnique(state.days, day);
-    if (!independent) addUnique(state.mistakes, qid);
-    if (r.kind === "mistake" && independent)
-      state.mistakes = state.mistakes.filter((id) => id !== qid);
-    if (r.kind === "review") {
-      const previous = state.cards[r.targetId];
-      const next = reviewCard(previous, day, qid, independent);
-      if (next !== previous && independent) {
-        r.xp = 5;
-        state.xp += r.xp;
-      }
-      state.cards[r.targetId] = next;
-    } else {
-      for (const card of course.cards.filter((c) => c.skillId === q.skillId)) {
-        const previous = state.cards[card.id];
-        if (previous) previous.lastQuestionId = qid;
-        else state.cards[card.id] = learnCard(day, qid);
-      }
-    }
+    const answer = selected ?? r.selected;
+    if (
+      answer.length !== q.answer.length ||
+      new Set(answer).size !== answer.length ||
+      !answer.every((id) => q.options.some((o) => o.id === id))
+    )
+      throw new Error("请先完成选择");
+    r.selected = answer;
+    recordResponse(state, r, qid, grade(q, answer));
   });
 }
 export async function retryAnswer(roundId: string, qid: string) {
@@ -221,7 +254,7 @@ export async function retryAnswer(roundId: string, qid: string) {
 }
 export async function advance(roundId: string, qid: string) {
   await edit((state) => {
-    if (!state.active && state.lastResult?.roundId === roundId) return;
+    if (state.lastResult?.roundId === roundId) return;
     const r = requireRound(state, roundId, qid);
     if (r.feedback === null) throw new Error("请先提交本题");
     if (r.index + 1 < r.questionIds.length) {
@@ -231,16 +264,11 @@ export async function advance(roundId: string, qid: string) {
       r.feedback = null;
       return;
     }
-    const result = roundResult(course, r);
-    if (
-      (r.kind === "lesson" || r.kind === "assessment") &&
-      result.passed &&
-      !state.passedIds.includes(r.targetId)
-    ) {
-      state.passedIds.push(r.targetId);
-      result.xp = r.kind === "lesson" ? 20 : 30;
-      state.xp += result.xp;
-    }
+    const result = roundResult(r);
+    if (r.kind === "lesson" || r.kind === "assessment")
+      addUnique(state.completedIds, r.targetId);
+    addUnique(state.days, localDay());
+    state.xp += result.xp - r.xp;
     state.lastResult = result;
     state.active = null;
   });

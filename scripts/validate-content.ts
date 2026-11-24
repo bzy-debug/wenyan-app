@@ -10,5 +10,5 @@ for (const form of pilot.forms) {
     throw new Error("陌生试读文本与课程重合 " + form.id);
 }
 console.log(
-  `${course.title} · ${course.units.length} 个单元、${course.lessons.length} 节课、${course.assessments.length} 次检查、${course.questions.length} 道计分题；${pilot.forms.length} 篇独立试读。Markdown 编译及校验通过。`,
+  `${course.title} · ${course.units.length} 个单元、${course.lessons.length} 节课、${course.assessments.length} 次检查、${course.questions.length} 道练习、${pilot.forms.length} 篇独立试读。Markdown 编译及校验通过。`,
 );

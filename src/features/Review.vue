@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { computed, nextTick, ref } from "vue";
+import { computed, ref } from "vue";
 import { RouterLink, useRouter } from "vue-router";
 import { ArrowRight, BookOpen, CalendarDays, PencilLine } from "@lucide/vue";
-import { studyLink } from "./roundLabels";
+import { studyLink, roundTitle } from "./roundLabels";
 import RichText from "../components/RichText.vue";
 import { byId, course } from "../content";
 import { dueCards, progress, startRound } from "../storage/progress";
@@ -31,30 +31,29 @@ const mistakes = computed(() =>
     };
   }),
 );
-const active = computed(() => progress.value.active);
-const confirmHeading = ref<HTMLElement>();
-const pending = ref<Practice | null>(null);
+const resumable = computed(() => {
+  const { active, paused } = progress.value;
+  const recent = active ?? paused.at(-1);
+  return recent
+    ? [
+        recent,
+        ...paused.filter(
+          (round) =>
+            round.id !== recent.id &&
+            (round.kind === "review" || round.kind === "mistake"),
+        ),
+      ]
+    : [];
+});
 const busy = ref(false);
 const error = ref("");
-async function begin(request: Practice, replace = false) {
+async function begin(request: Practice) {
   if (busy.value) return;
-  const round = active.value;
-  if (
-    !replace &&
-    round &&
-    (round.kind !== request.kind || round.targetId !== request.id)
-  ) {
-    pending.value = request;
-    await nextTick();
-    confirmHeading.value?.focus();
-    return;
-  }
   busy.value = true;
   error.value = "";
   try {
     await startRound(request.kind, request.id);
     await router.push("/practice");
-    pending.value = null;
   } catch (cause) {
     error.value =
       cause instanceof Error ? cause.message : "练习未能打开，请重试。";
@@ -75,23 +74,25 @@ async function begin(request: Practice, replace = false) {
         ><BookOpen :size="16" aria-hidden="true" />查看知识库</RouterLink
       >
     </header>
-    <div v-if="active" class="resume">
-      <span>有一轮练习尚未完成。</span
-      ><RouterLink class="text-link" :to="studyLink(active)"
-        >继续上次练习 <ArrowRight :size="15"
+    <div v-for="(round, index) in resumable" :key="round.id" class="resume">
+      <span>已保存 · {{ roundTitle(round.kind, round.targetId) }}</span>
+      <button
+        v-if="
+          round.id !== progress.active?.id &&
+          (round.kind === 'review' || round.kind === 'mistake')
+        "
+        type="button"
+        class="text-link"
+        :disabled="busy"
+        @click="begin({ kind: round.kind, id: round.targetId })"
+      >
+        继续{{ index ? "练习" : "上次练习" }}
+        <ArrowRight :size="15" aria-hidden="true" />
+      </button>
+      <RouterLink v-else class="text-link" :to="studyLink(round)"
+        >继续上次练习 <ArrowRight :size="15" aria-hidden="true"
       /></RouterLink>
     </div>
-    <section v-if="pending" class="confirm" role="alert">
-      <h2 ref="confirmHeading" tabindex="-1">替换正在进行的练习？</h2>
-      <p>开始这一题会结束当前未完成的练习。已结算的成绩会保留。</p>
-      <div class="actions">
-        <button class="primary" :disabled="busy" @click="begin(pending, true)">
-          替换并开始</button
-        ><button class="secondary" :disabled="busy" @click="pending = null">
-          保留原练习
-        </button>
-      </div>
-    </section>
     <p v-if="error" role="alert">{{ error }}</p>
     <div class="review-columns">
       <section class="schedule">
@@ -108,7 +109,7 @@ async function begin(request: Practice, replace = false) {
             </div>
             <button
               class="secondary"
-              :disabled="busy || !!pending"
+              :disabled="busy"
               :aria-label="'复习：' + skill.word + ' · ' + skill.meaning"
               @click="begin({ kind: 'review', id: card.id })"
             >
@@ -145,7 +146,7 @@ async function begin(request: Practice, replace = false) {
           </div>
           <button
             class="secondary"
-            :disabled="busy || !!pending"
+            :disabled="busy"
             @click="begin({ kind: 'mistake', id: q.id })"
           >
             订正
@@ -211,7 +212,6 @@ async function begin(request: Practice, replace = false) {
   font-size: 17px;
 }
 .quiet p,
-.confirm p,
 .empty {
   color: var(--muted);
   line-height: 1.7;
@@ -255,8 +255,7 @@ async function begin(request: Practice, replace = false) {
   line-height: 1.7;
   color: var(--muted);
 }
-.resume,
-.confirm {
+.resume {
   margin: 14px 0;
   background: var(--accent-tint);
   border-radius: 10px;
@@ -265,9 +264,6 @@ async function begin(request: Practice, replace = false) {
 .resume {
   flex-wrap: wrap;
   font-size: 14px;
-}
-.confirm h2 {
-  font-size: 19px;
 }
 @media (max-width: 720px) {
   .review-columns {

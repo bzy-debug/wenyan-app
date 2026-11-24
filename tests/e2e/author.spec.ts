@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { buffer } from "node:stream/consumers";
 
-test("作者在浏览器校稿、定位错误并试做锁定课程，无需更改学习记录", async ({
+test("作者在浏览器校稿、定位错误并试做任意课程，无需更改学习记录", async ({
   page,
 }) => {
   await page.goto("./#/author");

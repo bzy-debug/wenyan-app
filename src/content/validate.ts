@@ -95,7 +95,7 @@ export function validateCourse(raw: unknown) {
       lesson.intro &&
         lesson.mainSkills.length &&
         lesson.exampleIds.length === lesson.mainSkills.length &&
-        items.length >= lesson.passCount,
+        items.length > 0,
       "关卡内容不完整 " + lesson.id,
     );
     for (const id of lesson.mainSkills) {
@@ -109,7 +109,7 @@ export function validateCourse(raw: unknown) {
   for (const a of course.assessments) {
     checkPublication(a, a.questionIds.map(getQuestion));
     requireContent(
-      a.stage === "planned" || a.questionIds.length >= a.passCount,
+      a.stage === "planned" || a.questionIds.length > 0,
       "检查题数错误 " + a.id,
     );
   }

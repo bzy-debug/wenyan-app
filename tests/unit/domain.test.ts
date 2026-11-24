@@ -1,21 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { course } from "../../src/content";
-import {
-  grade,
-  recordFirst,
-  summarize,
-  type Attempts,
-} from "../../src/domain/session";
-const lesson = course.lessons[0],
-  questions = course.questions;
-function attempts(wrong: number[] = [], hinted: number[] = []): Attempts {
-  return Object.fromEntries(
-    questions.map((q, i) => [
-      q.id,
-      { correct: !wrong.includes(i + 1), hinted: hinted.includes(i + 1) },
-    ]),
-  );
-}
+import { grade, recordFirst } from "../../src/domain/session";
+import { roundResult, type RoundKind } from "../../src/domain/progression";
+const questions = course.questions;
 describe("首答与判定", () => {
   it("重试保留初次结果及提示标记", () => {
     const first = recordFirst({}, "q.1", { correct: false, hinted: true });
@@ -37,28 +24,47 @@ describe("首答与判定", () => {
       expect(grade(q, ["other"])).toBe(false);
     }
   });
-  it("恰好六道独立首答、三个义项均覆盖时通过", () => {
-    expect(summarize(lesson, questions, attempts([1], [2]))).toMatchObject({
-      earned: 6,
-      passed: true,
-    });
-  });
-  it("五题不能通过", () =>
-    expect(summarize(lesson, questions, attempts([1, 2, 3])).passed).toBe(
-      false,
-    ));
-  it("六题正确但缺少闻义项不能通过", () =>
-    expect(summarize(lesson, questions, attempts([], [3, 6]))).toMatchObject({
-      earned: 6,
-      passed: false,
-    }));
-  it("题数未完成不能结算通过", () => {
-    const a = { ...attempts() };
-    delete a["q.8"];
-    expect(summarize(lesson, questions, a)).toMatchObject({
-      earned: 7,
-      complete: false,
-      passed: false,
-    });
-  });
+  it.each([
+    ["lesson", 20],
+    ["assessment", 30],
+    ["review", 5],
+    ["mistake", 5],
+  ] as const)(
+    "完成 %s 的奖励与正误及提示无关",
+    (kind: RoundKind, xp: number) => {
+      const round = {
+        id: "r",
+        kind,
+        targetId: "t",
+        questionIds: ["a", "b"],
+        index: 1,
+        selected: [],
+        feedback: false,
+        hinted: true,
+        xp: 0,
+      };
+      const withAnswers = (correct: boolean, hinted: boolean) =>
+        roundResult({
+          ...round,
+          attempts: {
+            a: { correct, hinted },
+            b: { correct, hinted },
+          },
+        });
+      expect(withAnswers(false, true)).toEqual(withAnswers(true, false));
+      expect(withAnswers(false, false)).toEqual({
+        roundId: "r",
+        kind,
+        targetId: "t",
+        total: 2,
+        xp,
+      });
+      expect(() =>
+        roundResult({
+          ...round,
+          attempts: { a: { correct: true, hinted: false } },
+        }),
+      ).toThrow("完成");
+    },
+  );
 });

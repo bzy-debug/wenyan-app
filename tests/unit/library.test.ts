@@ -6,22 +6,21 @@ import { progress } from "../../src/storage/progress";
 import { emptyProgress } from "../../src/storage/model";
 import Home from "../../src/features/Home.vue";
 import Path from "../../src/features/Path.vue";
+import Result from "../../src/features/Result.vue";
+import type { Round } from "../../src/domain/progression";
 
 vi.mock("../../src/storage/progress", async () => {
   const { shallowRef } = await import("vue");
   const { emptyProgress } = await import("../../src/storage/model");
-  const { unlocked } = await import("../../src/domain/progression");
-  const { course } = await import("../../src/content");
   const progress = shallowRef(emptyProgress());
   return {
     progress,
-    isUnlocked: (id: string) => unlocked(course, progress.value.passedIds, id),
     dueCards: () => [],
     streak: () => 0,
   };
 });
 
-async function show(page: typeof Home | typeof Path) {
+async function show(page: typeof Home | typeof Path | typeof Result) {
   const router = createRouter({
     history: createMemoryHistory(),
     routes: [{ path: "/:rest(.*)*", component: page }],
@@ -35,7 +34,7 @@ beforeEach(() => {
 });
 afterEach(cleanup);
 
-it("首页将主操作放在唯一的当前节点，后续课程保留锁定状态", async () => {
+it("首页推荐一项练习，本单元其余课与检查可直接进入", async () => {
   await show(Home);
   const track = screen.getByRole("list", { name: "古今词义学习顺序" });
   expect(within(track).getAllByRole("listitem")).toHaveLength(4);
@@ -45,34 +44,56 @@ it("首页将主操作放在唯一的当前节点，后续课程保留锁定状�
       .getByRole("link", { name: /开始学习/ })
       .getAttribute("href"),
   ).toBe("/learn/l1.1");
-  expect(within(track).getAllByRole("link")).toHaveLength(1);
+  expect(within(track).getAllByRole("link")).toHaveLength(4);
   expect(
     screen.getByRole("link", { name: "完整路径" }).getAttribute("href"),
   ).toBe("/path");
 });
 
-it("三课通过后，首页继续当前单元检查，路径暂时保留下一单元的锁", async () => {
-  const unit = course.units[0];
-  progress.value = { ...emptyProgress(), passedIds: [...unit.lessonIds] };
+it("课程路径随时可任选已开放的课与检查，并显示暂停中的课程", async () => {
+  const first = course.lessons[0];
+  const last = course.lessons.at(-1)!;
+  const round: Round = {
+    id: "resume-first",
+    kind: "lesson",
+    targetId: first.id,
+    index: 1,
+    questionIds: first.questionIds,
+    selected: [],
+    hinted: false,
+    feedback: null,
+    attempts: {},
+    xp: 0,
+  };
+  progress.value = {
+    ...emptyProgress(),
+    paused: [round],
+    active: {
+      ...round,
+      id: "reading-last",
+      targetId: last.id,
+      questionIds: last.questionIds,
+    },
+  };
+  await show(Path);
+  const links = screen.getAllByRole("link");
+  const ids = course.units.flatMap((unit) => [
+    ...unit.lessonIds,
+    unit.assessmentId,
+  ]);
+  expect(links.map((link) => link.getAttribute("href"))).toEqual(
+    ids.map((id) => "/learn/" + id),
+  );
+  expect(links[0].textContent).toContain("继续学习");
+  cleanup();
+  progress.value = { ...progress.value, active: null };
   await show(Home);
   expect(
-    screen.getByRole("link", { name: /开始检查/ }).getAttribute("href"),
-  ).toBe("/learn/" + unit.assessmentId);
-  cleanup();
-  await show(Path);
-  expect(screen.getAllByRole("link")).toHaveLength(4);
-  expect(
-    screen.getByRole("link", { name: /单元检查/ }).getAttribute("href"),
-  ).toBe("/learn/" + unit.assessmentId);
-  expect(
-    screen
-      .getByText(course.units[1].title)
-      .closest("section")
-      ?.querySelector("a"),
-  ).toBeNull();
+    screen.getByRole("link", { name: /继续学习/ }).getAttribute("href"),
+  ).toBe("/learn/" + first.id);
 });
 
-it("复习中途回首页能接着本轮学习，课程全部通过后推荐复习", async () => {
+it("复习中途回首页能接着本轮学习，课程全部完成后推荐复习", async () => {
   const allIds = course.units.flatMap((unit) => [
     ...unit.lessonIds,
     unit.assessmentId,
@@ -80,7 +101,7 @@ it("复习中途回首页能接着本轮学习，课程全部通过后推荐复�
   const card = course.cards[0];
   progress.value = {
     ...emptyProgress(),
-    passedIds: allIds,
+    completedIds: allIds,
     active: {
       id: "round",
       kind: "review",
@@ -106,13 +127,41 @@ it("复习中途回首页能接着本轮学习，课程全部通过后推荐复�
   ).toBe("/review");
 });
 
-it("通过首课后，已通过节点仍能重练，主操作推进到第二课", async () => {
-  progress.value = { ...emptyProgress(), passedIds: ["l1.1"] };
+it("完成首课后仍能再练，并推荐第二课", async () => {
+  progress.value = { ...emptyProgress(), completedIds: ["l1.1"] };
   await show(Home);
   const track = screen.getByRole("list", { name: "古今词义学习顺序" });
-  const passed = within(track).getByRole("link", { name: /已通过 · 可重练/ });
-  expect(passed.getAttribute("href")).toBe("/learn/l1.1");
+  const completed = within(track).getByRole("link", { name: /已完成 · 再练/ });
+  expect(completed.getAttribute("href")).toBe("/learn/l1.1");
   const next = within(track).getByRole("link", { name: /开始学习/ });
   expect(next.getAttribute("href")).toBe("/learn/l1.2");
   expect(next.closest("li")?.getAttribute("aria-current")).toBe("step");
+});
+
+it("直接完成最后一课时，结算展示参与记录并建议未做的课，回看讲解不另开练习", async () => {
+  const last = course.lessons.at(-1)!;
+  progress.value = {
+    ...emptyProgress(),
+    completedIds: [last.id],
+    lastResult: {
+      roundId: "round-last",
+      targetId: last.id,
+      kind: "lesson",
+      total: last.questionIds.length,
+      xp: 20,
+    },
+  };
+  await show(Result);
+  expect(screen.getByRole("heading", { name: "本课已完成" })).toBeTruthy();
+  expect(screen.getByText("已练习").nextElementSibling?.textContent).toMatch(
+    /8\s*题/,
+  );
+  expect(screen.getByText("本轮经验").nextElementSibling?.textContent).toMatch(
+    /\+20\s*XP/,
+  );
+  expect(
+    screen.getByRole("link", { name: /推荐练习/ }).getAttribute("href"),
+  ).toBe("/learn/" + course.lessons[0].id);
+  screen.getByText("回看讲解").click();
+  expect(progress.value.active).toBeNull();
 });

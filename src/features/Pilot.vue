@@ -72,8 +72,7 @@ const forms = computed(() =>
         selection: answer ? question.options[answer.selected] : "",
       };
     });
-    const score = record?.answers.filter((answer) => answer.correct).length;
-    return { form, record, score, explanations, hasMaterial };
+    return { form, record, explanations, hasMaterial };
   }),
 );
 async function load() {
@@ -114,7 +113,7 @@ async function submit() {
     records.value = [...records.value, record];
     active.value = undefined;
     consent.value = false;
-    message.value = "本次首答与反馈已保存在此浏览器。";
+    message.value = "本次作答与反馈已保存在此浏览器。";
   } catch {
     await load();
     if (active.value && findRecord(active.value)) active.value = undefined;
@@ -175,16 +174,16 @@ async function download() {
       <p class="lead">学习前后各读一篇新短文，看看哪些文意可以独立读通。</p>
 
       <div class="pilot-permission">
-        <p>首答与反馈仅保存在此设备。试读结束后，可以自行下载并分享记录。</p>
+        <p>作答与反馈仅保存在此设备。试读结束后，可以自行下载并分享记录。</p>
         <label v-if="forms.some((item) => !item.record)" class="permission">
           <input
             v-model="consent"
             type="checkbox"
-          />我同意在本机记录试读首答与自愿填写的反馈。
+          />我同意在本机记录试读作答与自愿填写的反馈。
         </label>
       </div>
       <section
-        v-for="{ form, record, score, explanations, hasMaterial } in forms"
+        v-for="{ form, record, explanations, hasMaterial } in forms"
         :key="form.id"
         class="pilot-section"
       >
@@ -194,10 +193,10 @@ async function download() {
         >
         <h2>{{ form.title }}</h2>
         <template v-if="record">
-          <p>独立首答 {{ score }} / {{ record.answers.length }}</p>
+          <p>试读已保存</p>
           <details v-if="hasMaterial">
             <summary>
-              查看首答与解析 <ChevronDown :size="16" aria-hidden="true" />
+              查看作答与解析 <ChevronDown :size="16" aria-hidden="true" />
             </summary>
             <blockquote>{{ form.passage }}</blockquote>
             <div
@@ -227,11 +226,14 @@ async function download() {
                 form.extension.explanation
               }}
             </p>
+            <p v-for="other in form.extension.alternatives ?? []" :key="other">
+              另一种读法：{{ other }}
+            </p>
             <p>你的译意或概括：{{ record.interpretation || "未填写" }}</p>
             <p>参考大意：{{ form.extension.interpretation }}</p>
             <p v-if="record.feedback">你的反馈：{{ record.feedback }}</p>
           </details>
-          <p v-else>这份记录使用旧版试读材料。可导出原始首答与反馈。</p>
+          <p v-else>这份记录使用旧版试读材料。可导出原始作答与反馈。</p>
         </template>
         <button
           v-else
@@ -296,8 +298,14 @@ async function download() {
       </fieldset>
       <fieldset class="extension">
         <legend>续读 · 断句与译意（选做，自评）</legend>
-        <p>点选一个字，在该字后加停顿；再次点选即可取消。</p>
-        <div class="segmentation" aria-label="给短句断句">
+        <p>
+          这段续文省去了标点。你会在哪里停顿？点选停顿前的字，再点一次可取消。
+        </p>
+        <div
+          class="segmentation"
+          role="group"
+          aria-label="在无标点原文中标记停顿"
+        >
           <template
             v-for="(char, i) in Array.from(active.extension.text)"
             :key="i"
@@ -332,7 +340,7 @@ async function download() {
       />
       <div class="actions">
         <button class="primary" :disabled="busy || !complete">
-          保存首答与反馈
+          保存作答与反馈
         </button>
         <button
           type="button"

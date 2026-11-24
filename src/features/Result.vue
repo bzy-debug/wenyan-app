@@ -5,157 +5,128 @@ import {
   ArrowRight,
   BookOpen,
   Check,
-  CircleDot,
-  Flag,
+  ListChecks,
   RotateCcw,
   Sparkles,
-  Target,
 } from "@lucide/vue";
-import { byId, course } from "../content";
+import { course } from "../content";
+import LessonReading from "../components/LessonReading.vue";
 import { progress } from "../storage/progress";
-import "./study.css";
+import { currentTarget } from "./learningPath";
 import { roundTitle } from "./roundLabels";
+import "./study.css";
 
 const result = computed(() => progress.value.lastResult);
 const courseRound = computed(
   () => result.value?.kind === "lesson" || result.value?.kind === "assessment",
 );
-const heading = computed(() => {
-  const r = result.value;
-  if (!r) return "";
-  if (r.kind === "review") return "本次复习完成";
-  if (r.kind === "mistake") return r.passed ? "本题已订正" : "仍需订正";
-  if (!r.passed) return "本轮练习完成";
-  return r.kind === "lesson" ? "本课已通过" : "单元检查已通过";
-});
-const target = computed(() =>
+const lesson = computed(() =>
   result.value?.kind === "lesson"
-    ? course.lessons.find((l) => l.id === result.value?.targetId)
-    : course.assessments.find((a) => a.id === result.value?.targetId),
+    ? course.lessons.find((lesson) => lesson.id === result.value?.targetId)
+    : null,
 );
-const nextTarget = computed(() => {
-  const r = result.value;
-  if (!r || !courseRound.value || !r.passed) return null;
-  const ids = course.units.flatMap((u) => [...u.lessonIds, u.assessmentId]);
-  const nextId = ids[ids.indexOf(r.targetId) + 1];
-  return nextId
-    ? {
-        id: nextId,
-        title: roundTitle(
-          course.lessons.some((l) => l.id === nextId) ? "lesson" : "assessment",
-          nextId,
-        ),
-      }
-    : null;
+const headings = {
+  lesson: "本课已完成",
+  assessment: "单元检查已完成",
+  review: "本次复习完成",
+  mistake: "本次订正完成",
+};
+const recommended = computed(() => {
+  if (!courseRound.value) return;
+  const id = currentTarget();
+  if (!id || id === result.value?.targetId) return;
+  return (
+    course.lessons.find((lesson) => lesson.id === id) ??
+    course.assessments.find((check) => check.id === id)
+  );
 });
 </script>
+
 <template>
   <main class="study-result">
     <div class="study-width result-content">
       <section v-if="!result">
-        <h1>还没有结算记录</h1>
+        <h1>还没有完成的练习</h1>
         <RouterLink class="primary" to="/path"
           >查看课程路径<ArrowRight aria-hidden="true"
         /></RouterLink>
       </section>
       <template v-else>
-        <div
-          class="result-icon"
-          :class="{ replay: !result.passed }"
-          aria-hidden="true"
-        >
-          <component :is="result.passed ? Flag : RotateCcw" :size="31" />
-        </div>
-        <h1>{{ heading }}</h1>
+        <div class="result-icon" aria-hidden="true"><Check :size="31" /></div>
+        <h1>{{ headings[result.kind] }}</h1>
         <p class="result-title">
           {{ roundTitle(result.kind, result.targetId) }}
         </p>
         <dl class="result-stats">
-          <div class="score">
-            <dt><Target :size="16" aria-hidden="true" />无提示首答正确</dt>
-            <dd>
-              <strong
-                >{{ result.earned }}<small> / {{ result.total }}</small></strong
-              >
-            </dd>
+          <div>
+            <dt><ListChecks :size="16" aria-hidden="true" />已练习</dt>
+            <dd>{{ result.total }} <small>题</small></dd>
           </div>
           <div>
             <dt><Sparkles :size="16" aria-hidden="true" />本轮经验</dt>
             <dd>+{{ result.xp }} <small>XP</small></dd>
           </div>
         </dl>
-        <section v-if="result.coverage.length" class="result-coverage">
-          <h2>本轮知识点表现</h2>
-          <ul>
-            <li v-for="item in result.coverage" :key="item.id">
-              <Check
-                v-if="item.earned"
-                class="skill-mark"
-                :size="16"
-                aria-hidden="true"
-              /><CircleDot
-                v-else
-                class="skill-missed"
-                :size="16"
-                aria-hidden="true"
-              />
-              <span
-                >{{ byId(course.skills, item.id).word }} ·
-                {{ byId(course.skills, item.id).meaning }}</span
-              ><b>{{ item.earned }} / {{ item.total }}</b>
-            </li>
-          </ul>
-        </section>
         <p v-if="result.kind === 'review' && progress.cards[result.targetId]">
           下次复习
           <time :datetime="progress.cards[result.targetId].due">{{
             progress.cards[result.targetId].due
           }}</time>
         </p>
-        <p v-if="result.kind === 'mistake' && !result.passed">
-          这道题会留在错题里。再试一次，无提示首答正确即可移出。
-        </p>
-        <p v-if="courseRound && !result.passed">
-          下次争取 {{ target?.passCount }} 题无提示首答正确{{
-            result.kind === "lesson" ? "，并覆盖每个主要知识点" : ""
-          }}，就能通过。
-        </p>
-        <p v-if="courseRound && result.passed && !nextTarget">
-          你已完成《{{
-            course.title
-          }}》的全部课程。到复习页换个语境，试试自己能否独立读懂。
+        <p
+          v-if="
+            result.kind === 'mistake' &&
+            progress.mistakes.includes(result.targetId)
+          "
+        >
+          这道题保存在错题中，可以随时再练。
         </p>
         <div class="result-actions">
           <RouterLink
-            v-if="nextTarget"
+            v-if="recommended"
             class="primary"
-            :to="'/learn/' + nextTarget.id"
-            >下一关 · {{ nextTarget.title }}<ArrowRight aria-hidden="true"
-          /></RouterLink>
+            :to="'/learn/' + recommended.id"
+          >
+            推荐练习 · {{ recommended.title }}<ArrowRight aria-hidden="true" />
+          </RouterLink>
           <RouterLink
-            v-else-if="courseRound && !result.passed"
-            class="primary"
-            :to="'/learn/' + result.targetId"
-            >再学一次<RotateCcw :size="16" aria-hidden="true"
-          /></RouterLink>
-          <RouterLink
-            :class="
-              courseRound && (nextTarget || !result.passed)
-                ? 'secondary'
-                : 'primary'
-            "
+            :class="recommended ? 'secondary' : 'primary'"
             :to="courseRound ? '/path' : '/review'"
-            >{{ courseRound ? "查看课程路径" : "返回复习"
-            }}<ArrowRight :size="16" aria-hidden="true"
-          /></RouterLink>
+          >
+            {{ courseRound ? "查看课程路径" : "返回复习"
+            }}<ArrowRight :size="16" aria-hidden="true" />
+          </RouterLink>
           <RouterLink
-            v-if="courseRound && result.passed"
+            v-if="courseRound"
             class="secondary"
             :to="'/learn/' + result.targetId"
-            ><BookOpen :size="16" aria-hidden="true" />再学一次</RouterLink
           >
+            <RotateCcw :size="16" aria-hidden="true" />再练一次
+          </RouterLink>
         </div>
+        <details v-if="lesson" class="result-guide">
+          <summary><BookOpen :size="17" aria-hidden="true" />回看讲解</summary>
+          <LessonReading :lesson="lesson" :course="course" />
+        </details>
       </template>
     </div>
   </main>
 </template>
+
+<style scoped>
+.result-guide {
+  border-top: 1px solid var(--study-line);
+  margin-top: 26px;
+  padding-top: 6px;
+}
+.result-guide summary {
+  cursor: pointer;
+  color: var(--study-accent);
+  font-weight: 650;
+  padding-block: 12px;
+}
+.result-guide summary svg {
+  vertical-align: -0.15em;
+  margin-inline: 4px;
+}
+</style>

@@ -121,26 +121,23 @@
   color: var(--study-muted);
   margin-bottom: 7px;
 }
-.study-intro,
-.study-fine,
 .study-result p {
   line-height: 1.85;
 }
-.study-intro {
-  margin-bottom: 18px;
-  color: var(--study-muted);
-}
-.study-subtle,
-.study-fine,
 .study-bar small {
   color: var(--study-muted);
   font-size: 13px;
 }
-.study-fine {
-  margin: 20px 0 0;
+.study-tools,
+.guide-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
 }
-.study-hint,
-.study-retry {
+.guide-trigger,
+.study-retry,
+.study-help {
   display: inline-flex;
   align-items: center;
   gap: 7px;
@@ -154,20 +151,70 @@
   cursor: pointer;
   padding: 6px 3px;
 }
-.study-hint {
-  margin-top: 12px;
+.study-help,
+.guide-trigger {
+  color: var(--study-muted);
 }
-.study-hint:disabled,
+.guide-trigger:hover,
+.study-help:hover,
+.study-retry:hover {
+  color: var(--study-accent);
+}
+.study-help:disabled,
 .study-retry:disabled {
-  opacity: 0.72;
+  opacity: 0.7;
   cursor: default;
 }
-.hint-box {
-  margin-top: 2px;
-  color: #453967;
-  border-radius: 8px;
-  padding: 9px 13px;
-  background: #f5f2ff;
+.lesson-guide {
+  background: white;
+  color: var(--study-ink);
+  border: 1px solid var(--study-line);
+  border-radius: 16px;
+  width: min(calc(100% - 24px), 680px);
+  padding: 0;
+  max-height: min(85dvh, 760px);
+  overscroll-behavior: contain;
+}
+.lesson-guide::backdrop {
+  background: #19172d70;
+}
+.guide-toolbar {
+  position: sticky;
+  top: 0;
+  padding: 12px 20px;
+  background: white;
+  border-bottom: 1px solid var(--study-line);
+}
+.guide-toolbar h2,
+.guide-reading h3 {
+  font-family: inherit;
+  font-size: 19px;
+  margin: 0;
+}
+.guide-toolbar button {
+  gap: 8px;
+}
+.guide-reading {
+  padding: 20px;
+}
+.guide-reading > h3 {
+  font-size: 23px;
+  margin-bottom: 10px;
+}
+.study-dock.assisted {
+  background: #f4f2ff;
+  border-color: #ddd8f2;
+}
+.study-dock .answer-feedback {
+  max-height: 32dvh;
+  overflow: auto;
+  margin-bottom: 5px;
+}
+.study-dock.positive:not(:has(details[open])) .study-width {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
 }
 .study-issue {
   padding: 10px 14px;
@@ -238,41 +285,6 @@
 .shortcuts kbd:nth-child(n + 2) {
   margin-left: 6px;
 }
-.explanation {
-  max-height: 32dvh;
-  overflow: auto;
-  padding: 1px 3px 8px;
-  margin-bottom: 5px;
-  line-height: 1.65;
-  font-size: 14px;
-}
-.explanation h2 {
-  font-family: inherit;
-  font-size: 19px;
-  line-height: 1.5;
-  color: #17654a;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0 0 7px;
-}
-.correction .explanation h2 {
-  color: #8b4c2e;
-}
-.explanation .answer {
-  margin: 0 0 5px;
-}
-.explanation .answer b,
-.explanation .gloss b {
-  font-size: 12px;
-  color: #55655e;
-  margin-right: 6px;
-}
-.explanation .gloss {
-  font-size: 13px;
-  color: #53596a;
-  margin-top: 4px;
-}
 .study-result {
   min-height: 100dvh;
   padding-block: clamp(30px, 7vw, 80px);
@@ -289,10 +301,6 @@
   background: #e6f5ed;
   color: #167554;
   margin-bottom: 21px;
-}
-.result-icon.replay {
-  background: #eeecfc;
-  color: #5441ae;
 }
 .study-result h1 {
   margin: 4px 0 6px;
@@ -332,46 +340,9 @@
   letter-spacing: -0.02em;
   color: #44388b;
 }
-.result-stats strong {
-  font: inherit;
-}
 .result-stats small {
   font-size: 16px;
   color: #76788c;
-}
-.result-coverage h2 {
-  font-family: inherit;
-  font-size: 17px;
-  margin: 24px 0 7px;
-}
-.result-coverage ul {
-  padding: 0;
-  margin: 0;
-  list-style: none;
-}
-.result-coverage li {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  justify-content: space-between;
-  min-height: 44px;
-  border-bottom: 1px solid #eeeef5;
-}
-.result-coverage li > span {
-  flex: 1;
-  font-size: 14px;
-}
-.result-coverage li > b {
-  font-size: 13px;
-  min-width: 36px;
-  font-variant-numeric: tabular-nums;
-  color: var(--study-muted);
-}
-.result-coverage li .skill-mark {
-  color: #298565;
-}
-.result-coverage li .skill-missed {
-  color: #ad6841;
 }
 .result-actions {
   display: flex;
@@ -405,7 +376,7 @@
     padding-top: 10px;
     padding-bottom: max(12px, env(safe-area-inset-bottom));
   }
-  .explanation {
+  .study-dock .answer-feedback {
     max-height: 30dvh;
   }
   .result-actions .primary {
@@ -416,7 +387,7 @@
   .study-dock {
     position: static;
   }
-  .explanation {
+  .study-dock .answer-feedback {
     max-height: none;
   }
 }

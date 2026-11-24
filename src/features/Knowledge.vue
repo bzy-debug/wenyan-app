@@ -121,9 +121,11 @@ const statusLabel: Record<Skill["status"], string> = {
         </p>
         <div class="sources">
           <span>{{ statusLabel[skill.status] }}</span>
-          <RouterLink v-if="lessons.length" to="/path"
-            ><BookOpen :size="14" />课程路径 ·
-            {{ lessons[0].title }}</RouterLink
+          <RouterLink
+            v-for="lesson in lessons"
+            :key="lesson.id"
+            :to="'/learn/' + lesson.id"
+            ><BookOpen :size="14" />阅读课程 · {{ lesson.title }}</RouterLink
           >
         </div>
       </div>

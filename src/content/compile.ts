@@ -11,7 +11,7 @@ import {
 } from "./markdown-entities";
 export { documentHeader } from "./markdown";
 
-const types = ["等级", "正文", "知识点", "原文", "单选", "选段", "排序"];
+const types = ["等级", "正文", "知识点", "原文", ...Object.keys(modes)];
 const split = (text = "") => (text.trim() ? text.trim().split(/\s+/) : []);
 
 function stage(b: Block, f: Record<string, string>): Lesson["stage"] {
@@ -58,20 +58,14 @@ function compileTarget(
   const tf = fields(b, [
     ...(lesson ? ["简介"] : []),
     "进度",
-    "通过题数",
     ...editorialKeys,
   ]);
   const questions = target.sections
     .filter((s) => Object.hasOwn(modes, s.kind))
     .map((s) => readQuestion(s, passages, course.spans));
   course.questions.push(...questions);
-  const passCount =
-    tf.通过题数 === undefined
-      ? Math.max(1, Math.ceil(questions.length * (lesson ? 3 / 4 : 2 / 3)))
-      : Number(tf.通过题数);
   const common = {
     id: b.id,
-    passCount,
     ...editorial(b, tf),
     stage: stage(b, tf),
     questionIds: questions.map((q) => q.id),
