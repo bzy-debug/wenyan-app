@@ -1,27 +1,40 @@
 <script setup lang="ts">
-import { computed } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import { BookOpen, ListChecks } from "@lucide/vue";
+import { computed, onMounted, watch } from "vue";
+import { useRoute } from "vue-router";
+import { ArrowRight, BookOpen, ListChecks } from "@lucide/vue";
 import { course } from "../content";
 import { progress } from "../storage/progress";
-import { currentTarget, isDraftCourse, levelOfTarget } from "./learningPath";
+import { currentTarget, inProgress, isDraftCourse } from "./learningPath";
+import CourseLevels from "./CourseLevels.vue";
 import UnitPath from "./UnitPath.vue";
 
-const current = computed(currentTarget);
 const route = useRoute();
-const router = useRouter();
-const levels = course.levels.filter((level) =>
-  course.units.some((unit) => unit.level === level.id),
+const levels = course.levels.map((level) => ({
+  ...level,
+  units: course.units.filter((unit) => unit.level === level.id),
+}));
+const jumpLevel = computed(
+  () => levels.find((level) => level.id === route.query.level)?.id,
 );
-const selectedLevel = computed(
-  () =>
-    levels.find((level) => level.id === route.query.level) ??
-    levels.find((level) => level.id === levelOfTarget(current.value)) ??
-    levels[0],
-);
-const units = computed(() =>
-  course.units.filter((unit) => unit.level === selectedLevel.value.id),
-);
+function jumpToSection() {
+  if (!jumpLevel.value) return;
+  const section = document.getElementById("level-" + jumpLevel.value);
+  section?.focus({ preventScroll: true });
+  section?.scrollIntoView?.({ block: "start" });
+}
+onMounted(jumpToSection);
+watch(jumpLevel, jumpToSection, { flush: "post" });
+
+const current = computed(currentTarget);
+const recommendation = computed(() => {
+  const id = current.value;
+  if (!id) return;
+  const lesson = course.lessons.find((item) => item.id === id);
+  const target = lesson ?? course.assessments.find((item) => item.id === id);
+  if (!target) return;
+  const action = inProgress(id) ? "继续学习" : lesson ? "开始学习" : "开始检查";
+  return { id, label: action + " · " + target.title };
+});
 const completedLessons = computed(
   () =>
     course.lessons.filter((lesson) =>
@@ -40,50 +53,65 @@ const completedChecks = computed(
   <main class="shell path">
     <header class="path-title">
       <h1>课程路径</h1>
-      <p>可任选一课或单元检查开始。切换练习时会保留已做的进度。</p>
-    </header>
-    <div class="overview">
-      <ListChecks :size="17" aria-hidden="true" />
-      <span
-        >已完成
-        <b>{{ completedLessons }} / {{ course.lessons.length }}</b> 课</span
-      >
-      <i aria-hidden="true" />
-      <span
-        ><b>{{ completedChecks }} / {{ course.assessments.length }}</b>
-        项单元检查</span
-      >
-    </div>
-    <div class="level-bar">
-      <label
-        >学习等级
-        <select
-          :value="selectedLevel.id"
-          @change="
-            router.push({
-              path: '/path',
-              query: { level: ($event.target as HTMLSelectElement).value },
-            })
-          "
+      <div class="overview">
+        <ListChecks :size="17" aria-hidden="true" />
+        <span>
+          已完成 <b>{{ completedLessons }} / {{ course.lessons.length }}</b> 课
+        </span>
+        <i aria-hidden="true" />
+        <span>
+          <b>{{ completedChecks }} / {{ course.assessments.length }}</b>
+          项单元检查
+        </span>
+      </div>
+      <div class="path-actions">
+        <RouterLink
+          v-if="recommendation"
+          class="primary"
+          :to="'/learn/' + recommendation.id"
         >
-          <option v-for="level in levels" :key="level.id" :value="level.id">
-            {{ level.id }} · {{ level.title }}
-          </option>
-        </select>
-      </label>
-      <RouterLink class="text-link" to="/read"
-        ><BookOpen :size="17" aria-hidden="true" />整篇自读</RouterLink
-      >
-    </div>
-    <p class="level-goal">{{ selectedLevel.goal }}</p>
-    <div class="path-grid">
-      <UnitPath
-        v-for="unit in units"
-        :key="unit.id"
-        :unit="unit"
-        :current-id="current"
-      />
-    </div>
+          {{ recommendation.label }}<ArrowRight :size="17" aria-hidden="true" />
+        </RouterLink>
+        <template v-else>
+          <span
+            v-if="
+              completedLessons === course.lessons.length &&
+              completedChecks === course.assessments.length
+            "
+          >
+            已完成全部课程与检查
+          </span>
+          <RouterLink class="primary" to="/review">前往复习</RouterLink>
+        </template>
+        <RouterLink class="text-link" to="/read">
+          <BookOpen :size="17" aria-hidden="true" />整篇自读
+        </RouterLink>
+      </div>
+    </header>
+    <CourseLevels :selected="jumpLevel" />
+    <section
+      v-for="level in levels"
+      :id="'level-' + level.id"
+      :key="level.id"
+      class="map-level"
+      tabindex="-1"
+      :aria-labelledby="'title-' + level.id"
+    >
+      <header class="level-head">
+        <h2 :id="'title-' + level.id">
+          <span>{{ level.id }}</span> {{ level.title }}
+        </h2>
+        <p>{{ level.goal }}</p>
+      </header>
+      <div class="path-units">
+        <UnitPath
+          v-for="unit in level.units"
+          :key="unit.id"
+          :unit="unit"
+          :current-id="current"
+        />
+      </div>
+    </section>
     <small v-if="isDraftCourse" class="content-state"
       >课程内容 · 草稿试用</small
     >
@@ -91,27 +119,23 @@ const completedChecks = computed(
 </template>
 
 <style scoped>
+.path {
+  max-width: 54rem;
+}
 .path-title h1 {
-  margin: 0;
   font-family: inherit;
-  font-size: clamp(28px, 3.3vw, 38px);
-  letter-spacing: -0.04em;
-  line-height: 1.25;
 }
-.path-title p {
-  color: #647087;
-  margin: 9px 0 0;
-  font-size: 14px;
-  line-height: 1.7;
-}
-.overview {
+.overview,
+.path-actions {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 9px;
-  color: #657088;
+}
+.overview {
+  gap: 8px;
+  color: var(--muted);
   font-size: 13px;
-  margin: 20px 0;
+  margin: 10px 0 18px;
 }
 .overview svg,
 .overview b {
@@ -119,53 +143,76 @@ const completedChecks = computed(
 }
 .overview i {
   height: 13px;
-  border-left: 1px solid #d7dce7;
+  border-left: 1px solid var(--line);
 }
-.level-bar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  align-items: center;
-  justify-content: space-between;
+.path-actions {
+  gap: 10px 22px;
+  margin-bottom: 22px;
 }
-.level-bar label {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 14px;
-  color: var(--muted);
-}
-.level-bar select {
-  max-width: 100%;
+.path-actions .text-link {
   min-height: 44px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 0 10px;
-  color: var(--ink);
-  background: var(--surface);
-  font: inherit;
-  font-weight: 650;
-}
-.level-goal {
   font-size: 14px;
-  color: var(--muted);
-  margin: 9px 0 18px;
 }
-.path-grid {
+.map-level {
+  scroll-margin-top: 16px;
+  margin-top: 36px;
+}
+.map-level:focus {
+  outline: none;
+}
+.map-level:focus-visible > .level-head h2 {
+  width: fit-content;
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+.level-head {
+  margin-bottom: 14px;
+}
+.level-head h2 {
+  font-size: clamp(21px, 2.2vw, 28px);
+}
+.level-head h2 span {
+  margin-right: 4px;
+  color: var(--accent-strong);
+}
+.level-head p {
+  color: var(--muted);
+  font-size: 14px;
+  margin-top: 5px;
+}
+.path-units {
+  --connector-x: 30px;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 23px;
-  align-items: start;
+  gap: 16px;
+}
+.path-units :deep(.track) {
+  position: relative;
+}
+.path-units :deep(.track)::before,
+.path-units :deep(.unit-track:not(:last-child) .track li:last-child)::after {
+  position: absolute;
+  left: var(--connector-x);
+  width: 3px;
+  content: "";
+  background: var(--track-line);
+}
+.path-units :deep(.track)::before {
+  top: 0;
+  height: 50px;
+}
+.path-units :deep(.unit-track:not(:last-child) .track li:last-child)::after {
+  top: 36px;
+  bottom: -16px;
 }
 .content-state {
   display: block;
-  margin: 20px 0 0;
-  color: #667187;
+  margin-top: 20px;
+  color: var(--muted);
   font-size: 12px;
 }
-@media (max-width: 1060px) and (min-width: 840px), (max-width: 690px) {
-  .path-grid {
-    grid-template-columns: 1fr;
+@media (max-width: 560px) {
+  .path-units {
+    --connector-x: 22px;
   }
 }
 </style>

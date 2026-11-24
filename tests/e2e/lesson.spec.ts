@@ -6,25 +6,37 @@ const first = course.questions.find((q) => q.id === "q.1")!;
 const firstWrong = first.options.find((o) => o.label === "缓步前行")!;
 const firstAnswer = first.options.find((o) => o.id === first.answer[0])!;
 
-test("从首页直接作答，讲解可选，分层反馈并完成练习", async ({ page }, info) => {
+test("首页默认显示完整路线，能从今日学习返回并直接开始首课", async ({
+  page,
+}, info) => {
   await page.goto("./");
   const save = (name: string) =>
     page.screenshot({
       path: info.outputPath(name + ".png"),
-      fullPage: name !== "home" || info.project.name !== "mobile",
+      fullPage: name !== "home",
     });
-  await expect(page.getByRole("heading", { name: "今日学习" })).toBeVisible();
+  await expect(page).toHaveURL(/#\/path$/);
+  await expect(
+    page.getByRole("heading", { name: "课程路径", exact: true }),
+  ).toBeVisible();
+  const start = page.getByRole("link", { name: /^开始学习 · / });
+  await expect(start).toHaveAttribute("href", /#\/learn\/l1\.1$/);
   await page.evaluate(() => document.fonts.ready);
   await save("home");
+  await page.getByRole("link", { name: "今日学习", exact: true }).click();
+  await expect(page).toHaveURL(/#\/today$/);
+  await expect(page.getByRole("heading", { name: "今日学习" })).toBeVisible();
   const current = page.locator('.track [aria-current="step"]');
   await expect(current.getByRole("link", { name: /开始学习/ })).toHaveAttribute(
     "href",
     /#\/learn\/l1\.1$/,
   );
   await page.getByRole("link", { name: "完整路径" }).click();
-  await expect(page.locator(".path-grid section")).toHaveCount(4);
-  await expect(page.locator(".lesson-row")).toHaveCount(12);
-  await page.locator('a[href$="#/learn/l1.1"]').click();
+  await expect(page.locator("section.unit-track")).toHaveCount(
+    course.units.length,
+  );
+  await expect(page.locator(".lesson-row")).toHaveCount(course.lessons.length);
+  await start.click();
   const guide = page.getByRole("button", { name: "本课讲解" });
   await expect(
     page.getByRole("heading", { name: first.prompt, exact: true }),
@@ -102,5 +114,7 @@ test("从首页直接作答，讲解可选，分层反馈并完成练习", async
     ),
   ).toBe(true);
   await page.getByRole("link", { name: "查看课程路径" }).click();
-  await expect(page.locator('a[href$="#/learn/l1.1"]')).toContainText("已完成");
+  await expect(page.locator('#level-L1 a[href$="#/learn/l1.1"]')).toContainText(
+    "已完成",
+  );
 });

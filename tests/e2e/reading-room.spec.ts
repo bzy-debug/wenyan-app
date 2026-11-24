@@ -1,10 +1,72 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
+import { readCourse } from "../../src/content/node";
 
-test("可自选 L5 或整篇自读，查词与自校按需打开", async ({ page }) => {
+const course = readCourse();
+
+async function startFirstLesson(page: Page, level: string) {
+  const lessonId = course.units.find((unit) => unit.level === level)!
+    .lessonIds[0];
+  const lesson = course.lessons.find((item) => item.id === lessonId)!;
+  const question = course.questions.find(
+    (item) => item.id === lesson.questionIds[0],
+  )!;
+  await page
+    .locator("#level-" + level)
+    .locator('a[href$="#/learn/' + lessonId + '"]')
+    .click();
+  await expect(
+    page.getByRole("heading", { name: question.prompt, exact: true }),
+  ).toBeVisible();
+}
+
+test("首页的等级路标只定位，后退能回到原等级，也能直接学高阶课程", async ({
+  page,
+}) => {
+  await page.goto("./");
+  await expect(page).toHaveURL(/#\/path$/);
+  const directory = page.getByRole("navigation", { name: "跳到学习等级" });
+  await expect(directory.getByRole("link")).toHaveCount(5);
+  const groups = page.locator("section[id^=level-]");
+  await expect(groups).toHaveCount(5);
+  expect(
+    await groups.evaluateAll((sections) => sections.map((s) => s.id)),
+  ).toEqual(["level-L1", "level-L2", "level-L3", "level-L4", "level-L5"]);
+  for (const id of ["L2", "L5"]) {
+    await directory.getByRole("link", { name: new RegExp("^" + id) }).click();
+    await expect(page).toHaveURL(new RegExp("level=" + id + "$"));
+    await expect(page.locator("#title-" + id)).toBeInViewport();
+    await expect(groups.locator(".lesson-row")).toHaveCount(
+      course.lessons.length,
+    );
+    await expect(groups.locator(".assessment-row")).toHaveCount(
+      course.assessments.length,
+    );
+  }
+  await page.goBack();
+  await expect(page).toHaveURL(/level=L2$/);
+  await expect(page.locator("#title-L2")).toBeInViewport();
+  await startFirstLesson(page, "L2");
+});
+
+test("无效等级的深链仍能查看完整路线，从首课开始", async ({ page }) => {
+  await page.goto("./#/path?level=unknown");
+  const first = course.lessons[0];
+  const question = course.questions.find((q) => q.id === first.questionIds[0])!;
+  await expect(page.locator("section[id^=level-]")).toHaveCount(5);
+  await page.getByRole("link", { name: "开始学习 · " + first.title }).click();
+  await expect(
+    page.getByRole("heading", { name: question.prompt, exact: true }),
+  ).toBeVisible();
+});
+
+test("L5 深链定位后可直接学该级课程，整篇自读可查词、自校", async ({
+  page,
+}) => {
   await page.goto("./#/path?level=L5");
-  const level = page.getByRole("combobox", { name: "学习等级" });
-  await expect(level).toHaveValue("L5");
-  await expect(page.locator(".lesson-row")).toHaveCount(12);
+  await expect(page.locator("#title-L5")).toBeInViewport();
+  await startFirstLesson(page, "L5");
+  await page.goBack();
+  await expect(page).toHaveURL(/level=L5$/);
   await page.getByRole("link", { name: "整篇自读" }).click();
   await page.getByRole("link", { name: /亲历西陵峡/ }).click();
   await expect(page.getByRole("heading", { name: "亲历西陵峡" })).toBeVisible();

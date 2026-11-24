@@ -1,4 +1,3 @@
-import userEvent from "@testing-library/user-event";
 import { cleanup, render, screen, within } from "@testing-library/vue";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { createMemoryHistory, createRouter } from "vue-router";
@@ -26,7 +25,9 @@ async function show(page: typeof Home | typeof Path | typeof Result) {
     history: createMemoryHistory(),
     routes: [{ path: "/:rest(.*)*", component: page }],
   });
-  await router.push("/");
+  await router.push(
+    page === Path ? "/path" : page === Home ? "/today" : "/result",
+  );
   render(page, { global: { plugins: [router] } });
 }
 
@@ -35,7 +36,7 @@ beforeEach(() => {
 });
 afterEach(cleanup);
 
-it("首页推荐一项练习，本单元其余课与检查可直接进入", async () => {
+it("今日学习推荐一项练习，本单元其余课与检查可直接进入", async () => {
   await show(Home);
   const track = screen.getByRole("list", { name: "古今词义学习顺序" });
   expect(within(track).getAllByRole("listitem")).toHaveLength(4);
@@ -51,7 +52,26 @@ it("首页推荐一项练习，本单元其余课与检查可直接进入", asyn
   ).toBe("/path");
 });
 
-it("课程路径随时可任选已开放的课与检查，并显示暂停中的课程", async () => {
+it("课程路径默认从 L1 开始，推荐入口可直接作答，五个路标均可定位", async () => {
+  await show(Path);
+  const levels = within(
+    screen.getByRole("navigation", { name: "跳到学习等级" }),
+  );
+  const ids = ["L1", "L2", "L3", "L4", "L5"];
+  expect(levels.getAllByRole("link")).toHaveLength(ids.length);
+  for (const id of ids) {
+    const link = levels.getByRole("link", { name: new RegExp("^" + id) });
+    expect(link.getAttribute("href")).toBe("/path?level=" + id);
+  }
+  const first = course.lessons[0];
+  expect(
+    screen
+      .getByRole("link", { name: "开始学习 · " + first.title })
+      .getAttribute("href"),
+  ).toBe("/learn/" + first.id);
+});
+
+it("五级同页列出，未完成首课也能访问最后一课和每项检查", async () => {
   const first = course.lessons[0];
   const last = course.lessons.at(-1)!;
   const round: Round = {
@@ -77,31 +97,26 @@ it("课程路径随时可任选已开放的课与检查，并显示暂停中的�
     },
   };
   await show(Path);
-  const selector = screen.getByRole("combobox", {
-    name: "学习等级",
-  }) as HTMLSelectElement;
-  const availableLevels = course.levels.filter((level) =>
-    course.units.some((unit) => unit.level === level.id),
+  const sections = screen.getAllByRole("region", { name: /^L[1-5]/ });
+  expect(sections.map((section) => section.id)).toEqual(
+    course.levels.map((level) => "level-" + level.id),
   );
-  expect(Array.from(selector.options, (option) => option.value)).toEqual(
-    availableLevels.map((l) => l.id),
-  );
-  const lastUnit = course.units.find((u) => u.lessonIds.includes(last.id))!;
-  expect(selector.value).toBe(lastUnit.level);
-  for (const level of availableLevels) {
-    await userEvent.selectOptions(selector, level.id);
+  for (const [i, level] of course.levels.entries()) {
     const ids = course.units
       .filter((unit) => unit.level === level.id)
       .flatMap((unit) => [...unit.lessonIds, unit.assessmentId]);
-    const lessonLinks = screen
-      .getAllByRole("link")
-      .filter((link) => link.getAttribute("href")?.includes("/learn/"));
-    expect(lessonLinks.map((link) => link.getAttribute("href"))).toEqual(
+    const links = within(sections[i]).getAllByRole("link");
+    expect(links.map((link) => link.getAttribute("href"))).toEqual(
       ids.map((id) => "/learn/" + id),
     );
     if (ids.includes(first.id))
-      expect(lessonLinks[0].textContent).toContain("继续学习");
+      expect(links[0].textContent).toContain("继续学习");
   }
+  expect(
+    screen
+      .getByRole("link", { name: "继续学习 · " + last.title })
+      .getAttribute("href"),
+  ).toBe("/learn/" + last.id);
   cleanup();
   progress.value = { ...progress.value, active: null };
   await show(Home);
@@ -110,7 +125,7 @@ it("课程路径随时可任选已开放的课与检查，并显示暂停中的�
   ).toBe("/learn/" + first.id);
 });
 
-it("复习中途回首页能接着本轮学习，课程全部完成后推荐复习", async () => {
+it("复习中途回今日学习能接着本轮学习，课程全部完成后推荐复习", async () => {
   const allIds = course.units.flatMap((unit) => [
     ...unit.lessonIds,
     unit.assessmentId,

@@ -12,8 +12,8 @@ import { initProgress } from "../storage/progress";
 
 const mark = import.meta.env.BASE_URL + "mark.svg";
 const destinations = [
-  { to: "/", label: "今日学习", icon: House },
   { to: "/path", label: "课程路径", icon: Milestone },
+  { to: "/today", label: "今日学习", icon: House },
   { to: "/review", label: "复习", icon: RotateCcw },
   { to: "/knowledge", label: "知识库", icon: BookOpenText },
   { to: "/settings", label: "设置", icon: Settings2 },

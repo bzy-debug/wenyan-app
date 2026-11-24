@@ -41,9 +41,8 @@ test("自由选择等级与课程，完成五级全部练习、求助和独立�
 }) => {
   test.setTimeout(900_000);
   await page.goto("./#/path");
-  await expect(
-    page.getByRole("combobox", { name: "学习等级" }).locator("option"),
-  ).toHaveCount(5);
+  const levels = page.getByRole("navigation", { name: "跳到学习等级" });
+  await expect(levels.getByRole("link")).toHaveCount(5);
   const ids = course.units.flatMap((unit) => [
     ...unit.lessonIds,
     unit.assessmentId,
@@ -57,9 +56,9 @@ test("自由选择等级与课程，完成五级全部练习、求助和独立�
       (u) => u.assessmentId === targetId || u.lessonIds.includes(targetId),
     )!;
     await page
-      .getByRole("combobox", { name: "学习等级" })
-      .selectOption(unit.level);
-    await page.locator('main a[href$="#/learn/' + targetId + '"]').click();
+      .locator("#level-" + unit.level)
+      .locator('a[href$="#/learn/' + targetId + '"]')
+      .click();
     for (const [index, id] of target.questionIds.entries()) {
       const question = byId(course.questions, id);
       if (targetId === course.lessons[0].id) {

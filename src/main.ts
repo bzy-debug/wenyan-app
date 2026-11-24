@@ -1,14 +1,16 @@
 import { createApp } from "vue";
 import { createRouter, createWebHashHistory } from "vue-router";
 import App from "./app/App.vue";
+import { course } from "./content";
 import "./app/styles.css";
 
 const learn = () => import("./features/Learn.vue");
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [
+    { path: "/", redirect: "/path" },
     {
-      path: "/",
+      path: "/today",
       component: () => import("./features/Home.vue"),
       meta: { title: "今日学习" },
     },
@@ -64,7 +66,18 @@ const router = createRouter({
     },
     { path: "/:pathMatch(.*)*", redirect: "/" },
   ],
-  scrollBehavior(_to, _from, position) {
+  scrollBehavior(to, from, position) {
+    const level = to.query.level;
+    if (
+      to.path === "/path" &&
+      course.levels.some((item) => item.id === level)
+    ) {
+      const section = document.getElementById("level-" + level);
+      // Path handles deep links after the learning record and the sections load.
+      if (to.fullPath === from.fullPath && section)
+        return { el: section, top: 16 };
+      return false;
+    }
     return position ?? { top: 0 };
   },
 });
