@@ -1,0 +1,641 @@
+{
+  "version": 1,
+  "skills": [
+    {
+      "id": "skill.run",
+      "word": "走",
+      "meaning": "跑",
+      "short": "动作的速度",
+      "detail": "“走”可指跑。读到逃避、追赶等情境，先看动作的目的。",
+      "area": "实词",
+      "status": "draft"
+    },
+    {
+      "id": "skill.leave",
+      "word": "去",
+      "meaning": "离开",
+      "short": "动作的方向",
+      "detail": "“去”可指离开。找出人物原先所在之处，辨清动作的起点。",
+      "area": "实词",
+      "status": "draft"
+    },
+    {
+      "id": "skill.hear",
+      "word": "闻",
+      "meaning": "听见",
+      "short": "感知的方式",
+      "detail": "“闻”可指听见。留意钟、鼓、人声等可听到的事物。",
+      "area": "实词",
+      "status": "draft"
+    }
+  ],
+  "passages": [
+    {
+      "id": "p.dog",
+      "text": "见犬而走。",
+      "gloss": "看见狗就跑开了。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.guest",
+      "text": "客辞主人而去。",
+      "gloss": "客人向主人告辞后离开了。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.door",
+      "text": "闻门外有声，遂起。",
+      "gloss": "听见门外有声音，于是起身。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.fire",
+      "text": "火起，众争走以避之。",
+      "gloss": "起火了，众人争相奔跑以躲避火。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.boat",
+      "text": "舟将发，客去岸登舟。",
+      "gloss": "船将出发，旅客离开岸边登船。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.bell",
+      "text": "童子闻钟声，乃入堂。",
+      "gloss": "孩子听见钟声，才走入厅堂。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.rain",
+      "text": "雨骤至，行人疾走入亭。",
+      "gloss": "骤雨来临，行人快跑进亭子。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.village",
+      "text": "日暮，客辞其友，去村而归。",
+      "gloss": "天色已晚，客人向朋友告别，离开村子回家。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.drum",
+      "text": "卒闻鼓声，乃执戈出营。",
+      "gloss": "士卒听见鼓声，才拿起戈走出军营。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.thief",
+      "text": "盗惧追者，弃囊而走。",
+      "gloss": "盗贼害怕追赶的人，丢下袋子跑了。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.school",
+      "text": "师既去，弟子犹坐堂中。",
+      "gloss": "老师已经离开，学生仍坐在堂中。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    }
+  ],
+  "spans": [
+    {
+      "id": "s.q3.1",
+      "passageId": "p.bell",
+      "start": 0,
+      "end": 2,
+      "text": "童子"
+    },
+    {
+      "id": "s.q3.2",
+      "passageId": "p.bell",
+      "start": 3,
+      "end": 5,
+      "text": "钟声"
+    },
+    {
+      "id": "s.q3.3",
+      "passageId": "p.bell",
+      "start": 7,
+      "end": 9,
+      "text": "入堂"
+    },
+    {
+      "id": "s.q5.1",
+      "passageId": "p.village",
+      "start": 0,
+      "end": 2,
+      "text": "日暮"
+    },
+    {
+      "id": "s.q5.2",
+      "passageId": "p.village",
+      "start": 5,
+      "end": 7,
+      "text": "其友"
+    },
+    {
+      "id": "s.q5.3",
+      "passageId": "p.village",
+      "start": 9,
+      "end": 10,
+      "text": "村"
+    },
+    {
+      "id": "s.q7.1",
+      "passageId": "p.thief",
+      "start": 1,
+      "end": 2,
+      "text": "惧"
+    },
+    {
+      "id": "s.q7.2",
+      "passageId": "p.thief",
+      "start": 5,
+      "end": 6,
+      "text": "弃"
+    },
+    {
+      "id": "s.q7.3",
+      "passageId": "p.thief",
+      "start": 8,
+      "end": 9,
+      "text": "走"
+    }
+  ],
+  "cards": [
+    {
+      "id": "card.skill.run",
+      "skillId": "skill.run",
+      "questionIds": [
+        "q.1",
+        "q.4",
+        "q.7"
+      ]
+    },
+    {
+      "id": "card.skill.leave",
+      "skillId": "skill.leave",
+      "questionIds": [
+        "q.2",
+        "q.5",
+        "q.8"
+      ]
+    },
+    {
+      "id": "card.skill.hear",
+      "skillId": "skill.hear",
+      "questionIds": [
+        "q.3",
+        "q.6"
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "q.1",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.run",
+      "passageId": "p.fire",
+      "prompt": "这里的“走”最接近哪一种动作？",
+      "options": [
+        {
+          "id": "q1.1",
+          "label": "缓步前行",
+          "reason": "“争”与“避”写出事态紧急，缓行不合情境。"
+        },
+        {
+          "id": "q1.2",
+          "label": "奔跑",
+          "reason": "“争走”写众人争相奔逃。"
+        },
+        {
+          "id": "q1.3",
+          "label": "出游",
+          "reason": "人们是在避火，句中没有游览之意。"
+        }
+      ],
+      "answer": [
+        "q1.2"
+      ],
+      "analysis": "“以避之”点明行动目的。为躲开火势，众人争相奔跑。",
+      "hint": "看“以避之”：人们遇到了什么危险？"
+    },
+    {
+      "id": "q.2",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.leave",
+      "passageId": "p.boat",
+      "prompt": "“去岸”写的是哪一种移动？",
+      "options": [
+        {
+          "id": "q2.1",
+          "label": "前往岸边",
+          "reason": "下一步是登船，岸是起点。"
+        },
+        {
+          "id": "q2.2",
+          "label": "沿岸行走",
+          "reason": "“岸”是客人离开的地方，未写沿岸路线。"
+        },
+        {
+          "id": "q2.3",
+          "label": "离开岸边",
+          "reason": "登船与离岸的方向一致。"
+        }
+      ],
+      "answer": [
+        "q2.3"
+      ],
+      "analysis": "“舟将发”交代背景。“去岸”与“登舟”相接，动作从岸上开始。",
+      "hint": "抓住后面的动作“登舟”。"
+    },
+    {
+      "id": "q.3",
+      "status": "draft",
+      "mode": "span",
+      "skillId": "skill.hear",
+      "passageId": "p.bell",
+      "prompt": "点选原文中说明童子听到什么的词。",
+      "options": [
+        {
+          "id": "q3.1",
+          "spanId": "s.q3.1",
+          "reason": "这是听声的人。"
+        },
+        {
+          "id": "q3.2",
+          "spanId": "s.q3.2",
+          "reason": "这是被听见的声音。"
+        },
+        {
+          "id": "q3.3",
+          "spanId": "s.q3.3",
+          "reason": "这是听到钟声之后的行动。"
+        }
+      ],
+      "answer": [
+        "q3.2"
+      ],
+      "analysis": "“钟声”是“闻”的对象，说明此处写的是听觉。",
+      "hint": "找表示声音来源的词。"
+    },
+    {
+      "id": "q.4",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.run",
+      "passageId": "p.rain",
+      "prompt": "行人怎样进入亭中？",
+      "options": [
+        {
+          "id": "q4.1",
+          "label": "快跑进去",
+          "reason": "“疾走”说明奔跑得很快。"
+        },
+        {
+          "id": "q4.2",
+          "label": "快步走过去散心",
+          "reason": "“雨骤至”交代避雨的情境。"
+        },
+        {
+          "id": "q4.3",
+          "label": "停下来观雨",
+          "reason": "“入亭”写出了位置变化。"
+        }
+      ],
+      "answer": [
+        "q4.1"
+      ],
+      "analysis": "“疾”修饰“走”，结合骤雨可读出跑入亭中避雨的动作。",
+      "hint": "将“雨骤至”和“疾”联系起来。"
+    },
+    {
+      "id": "q.5",
+      "status": "draft",
+      "mode": "span",
+      "skillId": "skill.leave",
+      "passageId": "p.village",
+      "prompt": "点选客人离开的地点。",
+      "options": [
+        {
+          "id": "q5.1",
+          "spanId": "s.q5.1",
+          "reason": "“日暮”交代时间。"
+        },
+        {
+          "id": "q5.2",
+          "spanId": "s.q5.2",
+          "reason": "朋友是告别的对象。"
+        },
+        {
+          "id": "q5.3",
+          "spanId": "s.q5.3",
+          "reason": "“去村”的“村”指离开的地点。"
+        }
+      ],
+      "answer": [
+        "q5.3"
+      ],
+      "analysis": "“去村而归”写客人离开村子回家，“村”是“去”的对象。",
+      "hint": "从“去”后面寻找地点。"
+    },
+    {
+      "id": "q.6",
+      "status": "draft",
+      "mode": "order",
+      "skillId": "skill.hear",
+      "passageId": "p.drum",
+      "prompt": "按原文先后，点选三个动作。",
+      "options": [
+        {
+          "id": "q6.1",
+          "label": "走出军营",
+          "reason": ""
+        },
+        {
+          "id": "q6.2",
+          "label": "听见鼓声",
+          "reason": ""
+        },
+        {
+          "id": "q6.3",
+          "label": "拿起兵器",
+          "reason": ""
+        }
+      ],
+      "answer": [
+        "q6.2",
+        "q6.3",
+        "q6.1"
+      ],
+      "analysis": "“闻鼓声”先写触发行动的声音；“乃”引出随后执戈、出营两个动作。",
+      "hint": "“乃”后面的动作发生得更晚。"
+    },
+    {
+      "id": "q.7",
+      "status": "draft",
+      "mode": "span",
+      "skillId": "skill.run",
+      "passageId": "p.thief",
+      "prompt": "点选表示盗贼奔逃的字。",
+      "options": [
+        {
+          "id": "q7.1",
+          "spanId": "s.q7.1",
+          "reason": "“惧”是害怕，写心理。"
+        },
+        {
+          "id": "q7.2",
+          "spanId": "s.q7.2",
+          "reason": "“弃”是丢下，写处置袋子的动作。"
+        },
+        {
+          "id": "q7.3",
+          "spanId": "s.q7.3",
+          "reason": "“走”写出奔逃的动作。"
+        }
+      ],
+      "answer": [
+        "q7.3"
+      ],
+      "analysis": "“惧追者”给出原因。盗贼丢下袋子，是为了赶紧跑开。",
+      "hint": "区分丢下物品和改变位置的动作。"
+    },
+    {
+      "id": "q.8",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.leave",
+      "passageId": "p.school",
+      "prompt": "这句话中，老师与学生分别在哪里？",
+      "options": [
+        {
+          "id": "q8.1",
+          "label": "老师仍在堂中，学生已走",
+          "reason": "把两个主语与动作对调了。"
+        },
+        {
+          "id": "q8.2",
+          "label": "老师已离开，学生仍在堂中",
+          "reason": "“既去”和“犹坐”正好形成对照。"
+        },
+        {
+          "id": "q8.3",
+          "label": "师生一同前往学堂",
+          "reason": "“犹”说明学生还留在原处。"
+        }
+      ],
+      "answer": [
+        "q8.2"
+      ],
+      "analysis": "“既”表示已经，“犹”表示仍然。“去”与“坐堂中”对照，可知老师离开了。",
+      "hint": "对照“既”和“犹”所修饰的动作。"
+    }
+  ],
+  "lessons": [
+    {
+      "id": "l1.1",
+      "title": "常见动词：走、去、闻",
+      "status": "draft",
+      "stage": "available",
+      "intro": "从三个熟悉的字开始，借语境辨清古人的动作。",
+      "mainSkills": [
+        "skill.run",
+        "skill.leave",
+        "skill.hear"
+      ],
+      "exampleIds": [
+        "p.dog",
+        "p.guest",
+        "p.door"
+      ],
+      "questionIds": [
+        "q.1",
+        "q.2",
+        "q.3",
+        "q.4",
+        "q.5",
+        "q.6",
+        "q.7",
+        "q.8"
+      ]
+    },
+    {
+      "id": "l1.2",
+      "title": "一词多义与古今义对照",
+      "status": "draft",
+      "stage": "planned"
+    },
+    {
+      "id": "l1.3",
+      "title": "根据上下文判断词义",
+      "status": "draft",
+      "stage": "planned"
+    },
+    {
+      "id": "l1.4",
+      "title": "之的常见用法",
+      "status": "draft",
+      "stage": "planned"
+    },
+    {
+      "id": "l1.5",
+      "title": "其的常见用法",
+      "status": "draft",
+      "stage": "planned"
+    },
+    {
+      "id": "l1.6",
+      "title": "而的常见用法",
+      "status": "draft",
+      "stage": "planned"
+    },
+    {
+      "id": "l1.7",
+      "title": "谓语与动作对象",
+      "status": "draft",
+      "stage": "planned"
+    },
+    {
+      "id": "l1.8",
+      "title": "主语省略与指代恢复",
+      "status": "draft",
+      "stage": "planned"
+    },
+    {
+      "id": "l1.9",
+      "title": "否定与疑问",
+      "status": "draft",
+      "stage": "planned"
+    },
+    {
+      "id": "l1.10",
+      "title": "人物与事件顺序",
+      "status": "draft",
+      "stage": "planned"
+    },
+    {
+      "id": "l1.11",
+      "title": "因果与转折",
+      "status": "draft",
+      "stage": "planned"
+    },
+    {
+      "id": "l1.12",
+      "title": "综合短文阅读",
+      "status": "draft",
+      "stage": "planned"
+    }
+  ],
+  "units": [
+    {
+      "id": "u.1",
+      "level": "L1",
+      "title": "古今词义",
+      "description": "借助语境，辨清熟悉字词的古义。",
+      "lessonIds": [
+        "l1.1",
+        "l1.2",
+        "l1.3"
+      ],
+      "assessmentId": "check.1"
+    },
+    {
+      "id": "u.2",
+      "level": "L1",
+      "title": "虚词入门",
+      "description": "辨认虚词在句中承担的功能。",
+      "lessonIds": [
+        "l1.4",
+        "l1.5",
+        "l1.6"
+      ],
+      "assessmentId": "check.2"
+    },
+    {
+      "id": "u.3",
+      "level": "L1",
+      "title": "句子结构",
+      "description": "找出句子的骨架与省略成分。",
+      "lessonIds": [
+        "l1.7",
+        "l1.8",
+        "l1.9"
+      ],
+      "assessmentId": "check.3"
+    },
+    {
+      "id": "u.4",
+      "level": "L1",
+      "title": "短文阅读",
+      "description": "串联人物和事件，读懂一段叙事。",
+      "lessonIds": [
+        "l1.10",
+        "l1.11",
+        "l1.12"
+      ],
+      "assessmentId": "check.4"
+    }
+  ],
+  "assessments": [
+    {
+      "id": "check.1",
+      "stage": "planned",
+      "status": "draft",
+      "questionIds": []
+    },
+    {
+      "id": "check.2",
+      "stage": "planned",
+      "status": "draft",
+      "questionIds": []
+    },
+    {
+      "id": "check.3",
+      "stage": "planned",
+      "status": "draft",
+      "questionIds": []
+    },
+    {
+      "id": "check.4",
+      "stage": "planned",
+      "status": "draft",
+      "questionIds": []
+    }
+  ]
+}
