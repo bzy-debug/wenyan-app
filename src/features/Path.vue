@@ -32,7 +32,7 @@ const recommendation = computed(() => {
   const lesson = course.lessons.find((item) => item.id === id);
   const target = lesson ?? course.assessments.find((item) => item.id === id);
   if (!target) return;
-  const action = inProgress(id) ? "继续学习" : lesson ? "开始学习" : "开始检查";
+  const action = inProgress(id) ? "继续学习" : lesson ? "开始学习" : "开始自测";
   return { id, label: action + " · " + target.title };
 });
 const completedLessons = computed(
@@ -61,7 +61,7 @@ const completedChecks = computed(
         <i aria-hidden="true" />
         <span>
           <b>{{ completedChecks }} / {{ course.assessments.length }}</b>
-          项单元检查
+          次单元自测
         </span>
       </div>
       <div class="path-actions">
@@ -79,7 +79,7 @@ const completedChecks = computed(
               completedChecks === course.assessments.length
             "
           >
-            已完成全部课程与检查
+            所有课和单元自测都做完了
           </span>
           <RouterLink class="primary" to="/review">前往复习</RouterLink>
         </template>
@@ -113,7 +113,7 @@ const completedChecks = computed(
       </div>
     </section>
     <small v-if="isDraftCourse" class="content-state"
-      >课程内容 · 草稿试用</small
+      >课程试读稿，待审校</small
     >
   </main>
 </template>

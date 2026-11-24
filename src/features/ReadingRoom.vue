@@ -19,7 +19,7 @@ const isIndex = computed(() => !route.params.id);
     <template v-if="isIndex">
       <h1>整篇自读</h1>
       <p class="lead">
-        选一篇原文通读。遇到生词可以查词，读完先用自己的话复述，再对照原文检查。
+        挑一篇感兴趣的读，遇到生词可以翻看词注。读完试着用自己的话讲一遍，再看文末的问题。
       </p>
       <ul class="reading-list">
         <li v-for="item in readings" :key="item.id">
@@ -78,7 +78,7 @@ const isIndex = computed(() => !route.params.id);
         <p>{{ current.edition }} · {{ current.status }}</p>
       </footer>
     </article>
-    <h1 v-else>找不到这篇自读材料</h1>
+    <h1 v-else>找不到这篇文章</h1>
   </main>
 </template>
 

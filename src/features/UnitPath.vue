@@ -52,7 +52,7 @@ const steps = computed(() => {
       id: assessment.id,
       title: assessment.title,
       available: assessment.stage === "available",
-      label: "单元检查",
+      label: "单元自测",
       description: props.unit.description,
       questions: assessment.questionIds.length,
       isCheck: true,
@@ -72,7 +72,7 @@ function status(id: string, available: boolean) {
 }
 function startLabel(id: string, isCheck: boolean) {
   if (inProgress(id)) return "继续学习";
-  return isCheck ? "开始检查" : "开始学习";
+  return isCheck ? "开始自测" : "开始学习";
 }
 </script>
 
@@ -136,7 +136,7 @@ function startLabel(id: string, isCheck: boolean) {
             <span class="step-label"
               >{{ step.label }}
               <span v-if="step.state === 'current'" class="current-label">{{
-                inProgress(step.id) ? "继续练习" : "推荐练习"
+                inProgress(step.id) ? "继续练习" : "下一步"
               }}</span>
             </span>
             <strong>{{ step.title }}</strong>

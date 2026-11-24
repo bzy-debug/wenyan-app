@@ -46,7 +46,7 @@ it("排序可以撤回，不允许重复添加动作", async () => {
   expect(screen.getAllByRole("listitem")[0].textContent).toContain("听见鼓声");
   await user.click(screen.getByRole("button", { name: "撤回上一步" }));
   expect(hear.disabled).toBe(false);
-  expect(screen.getAllByRole("listitem")[0].textContent).toContain("待选择");
+  expect(screen.getAllByRole("listitem")[0].textContent).toContain("待选");
 });
 
 it.each(["choice", "span", "order"] as const)("%s 提交后锁定输入", (mode) => {

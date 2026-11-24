@@ -32,7 +32,7 @@ const cue = computed(() => {
   if (index < 0) return "";
   const id = question.answer[index];
   const reason = byId(question.options, id).reason;
-  return `第 ${index + 1} 步应是“${optionText(question, id, props.course)}”。${reason}`;
+  return `第 ${index + 1} 步是“${optionText(question, id, props.course)}”。${reason}`;
 });
 </script>
 
@@ -47,7 +47,7 @@ const cue = computed(() => {
         :is="correct ? Check : Lightbulb"
         :size="19"
         aria-hidden="true"
-      />{{ correct ? "回答正确" : assisted ? "一起看答案" : "再读一遍原文" }}
+      />{{ correct ? "答对了" : assisted ? "看看这题怎么读" : "再看看原句" }}
     </h2>
     <template v-if="!correct">
       <p class="correct-answer"><b>正确答案</b> {{ answer }}</p>

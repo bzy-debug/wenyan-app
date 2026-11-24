@@ -31,10 +31,10 @@ test("错题订正后可从真实备份恢复，并保留刷新前的首答", as
   await page.getByRole("button", { name: "提交答案" }).click();
   await page.getByRole("button", { name: "完成练习" }).click();
   await expect(
-    page.getByRole("heading", { name: "本次订正完成" }),
+    page.getByRole("heading", { name: "订正完了" }),
   ).toBeVisible();
   await page.goto("./#/review");
-  await expect(page.getByText("目前没有需要订正的题目。")).toBeVisible();
+  await expect(page.getByText("没有待订正的错题。")).toBeVisible();
 
   await page.goto("./#/settings");
   const upload = page.getByLabel("选择备份文件");
@@ -43,10 +43,10 @@ test("错题订正后可从真实备份恢复，并保留刷新前的首答", as
     mimeType: "application/json",
     buffer: Buffer.from("{}"),
   });
-  await expect(page.getByRole("alert")).toContainText("无法读取此备份");
+  await expect(page.getByRole("alert")).toContainText("读不了这个文件");
   await expect(page.getByRole("button", { name: "确认恢复" })).toHaveCount(0);
   await page.goto("./#/review");
-  await expect(page.getByText("目前没有需要订正的题目。")).toBeVisible();
+  await expect(page.getByText("没有待订正的错题。")).toBeVisible();
 
   await page.goto("./#/settings");
   await upload.setInputFiles({
@@ -78,7 +78,7 @@ test("次日到期的知识卡更换语境，独立答对后间隔三天", async
   await page.goto("./#/learn/l1.1");
   await page.getByRole("button", { name: /奔跑/ }).click();
   await page.getByRole("button", { name: "提交答案" }).click();
-  await expect(page.getByRole("heading", { name: "回答正确" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "答对了" })).toBeVisible();
   await page.goto("./#/review");
   await expect(page.getByRole("button", { name: /^复习：/ })).toHaveCount(0);
   await page.clock.setFixedTime(new Date("2026-03-11T12:00:00Z"));
@@ -89,7 +89,7 @@ test("次日到期的知识卡更换语境，独立答对后间隔三天", async
   await page.getByRole("button", { name: "提交答案" }).click();
   await page.getByRole("button", { name: "完成练习" }).click();
   await expect(
-    page.getByRole("heading", { name: "本次复习完成" }),
+    page.getByRole("heading", { name: "复习完了" }),
   ).toBeVisible();
   await page.goto("./#/review");
   await expect(page.getByRole("button", { name: /^复习：/ })).toHaveCount(0);

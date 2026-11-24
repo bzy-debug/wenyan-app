@@ -80,7 +80,7 @@ async function load() {
     records.value = await readPilotRecords();
     ready.value = true;
   } catch {
-    message.value = "无法读取本机试读记录，请检查浏览器存储权限，再刷新重试。";
+    message.value = "试读记录打不开。请允许浏览器保存本地数据，然后刷新。";
   } finally {
     busy.value = false;
   }
@@ -113,11 +113,11 @@ async function submit() {
     records.value = [...records.value, record];
     active.value = undefined;
     consent.value = false;
-    message.value = "本次作答与反馈已保存在此浏览器。";
+    message.value = "你的答案和反馈已保存在这个浏览器里。";
   } catch {
     await load();
     if (active.value && findRecord(active.value)) active.value = undefined;
-    message.value = "未写入新记录。请查看已有记录或检查浏览器存储权限。";
+    message.value = "这次没有保存成功。请看看是否已有记录，或检查浏览器是否允许保存数据。";
   } finally {
     busy.value = false;
   }
@@ -145,7 +145,7 @@ async function download() {
     return;
   }
   if (!records.value.length) {
-    message.value = "本机已没有可导出的试读记录。";
+    message.value = "这个浏览器里还没有可导出的试读记录。";
     return;
   }
   const payload = {
@@ -169,17 +169,17 @@ async function download() {
     <RouterLink to="/settings" class="back"
       ><ArrowLeft :size="16" aria-hidden="true" /> 设置</RouterLink
     >
-    <h1>陌生文本试读</h1>
+    <h1>读一篇没见过的古文</h1>
     <template v-if="!active">
-      <p class="lead">学习前后各读一篇新短文，看看哪些文意可以独立读通。</p>
+      <p class="lead">开始学习前读一篇，过一段时间再读另一篇。看看哪些地方已经能自己读懂。</p>
 
       <div class="pilot-permission">
-        <p>作答与反馈仅保存在此设备。试读结束后，可以自行下载并分享记录。</p>
+        <p>答案和反馈只保存在这个浏览器里。要分享给别人，可以自行下载记录。</p>
         <label v-if="forms.some((item) => !item.record)" class="permission">
           <input
             v-model="consent"
             type="checkbox"
-          />我同意在本机记录试读作答与自愿填写的反馈。
+          />我同意在本机保存试读答案和我愿意留下的反馈。
         </label>
       </div>
       <section
@@ -215,7 +215,7 @@ async function download() {
                 />
               </p>
             </div>
-            <h3>断句与译意自评</h3>
+            <h3>对照看看怎么断句、怎么理解</h3>
             <p>
               你的断句：{{
                 displaySegments(form.extension.text, record.segments)
@@ -229,11 +229,11 @@ async function download() {
             <p v-for="other in form.extension.alternatives ?? []" :key="other">
               另一种读法：{{ other }}
             </p>
-            <p>你的译意或概括：{{ record.interpretation || "未填写" }}</p>
+            <p>你写的大意：{{ record.interpretation || "未填写" }}</p>
             <p>参考大意：{{ form.extension.interpretation }}</p>
             <p v-if="record.feedback">你的反馈：{{ record.feedback }}</p>
           </details>
-          <p v-else>这份记录使用旧版试读材料。可导出原始作答与反馈。</p>
+          <p v-else>这份记录对应旧版材料。仍可导出当时的答案和反馈。</p>
         </template>
         <button
           v-else
@@ -297,9 +297,9 @@ async function download() {
         </label>
       </fieldset>
       <fieldset class="extension">
-        <legend>续读 · 断句与译意（选做，自评）</legend>
+        <legend>再读一句（选做）</legend>
         <p>
-          这段续文省去了标点。你会在哪里停顿？点选停顿前的字，再点一次可取消。
+          读到哪里想停一停？点一下那个字，就会在它后面标出停顿。再点一下可以取消。做完可以和参考读法对照。
         </p>
         <div
           class="segmentation"
@@ -322,7 +322,7 @@ async function download() {
             <span v-else>{{ char }}</span>
           </template>
         </div>
-        <label for="pilot-interpretation">用自己的话译出或概括这句续文</label>
+        <label for="pilot-interpretation">用自己的话说说这句话的意思</label>
         <textarea
           id="pilot-interpretation"
           v-model="interpretation"
@@ -336,7 +336,7 @@ async function download() {
         v-model="feedback"
         maxlength="1000"
         rows="3"
-        placeholder="哪句话让你犹豫？你用到了哪条线索？请勿填写姓名或联系方式。"
+        placeholder="哪一句让你多读了几遍？也可以说说哪个字帮了你。请勿填写姓名或联系方式。"
       />
       <div class="actions">
         <button class="primary" :disabled="busy || !complete">
@@ -352,7 +352,7 @@ async function download() {
         </button>
       </div>
       <div v-if="cancelRequested" class="discard" role="alert">
-        <p>离开后，本次未提交的选择和填写内容会清除。</p>
+        <p>离开后，这次还没保存的答案和文字都会丢失。</p>
         <div class="actions">
           <button type="button" class="secondary" @click="active = undefined">
             确认放弃</button

@@ -6,7 +6,7 @@ defineEmits<{ select: [ids: string[]] }>();
 </script>
 <template>
   <div class="q-order">
-    <ol class="q-slots" aria-label="已排顺序" aria-live="polite">
+    <ol class="q-slots" aria-label="你排的顺序" aria-live="polite">
       <li
         v-for="(opt, i) in question.options"
         :key="opt.id"
@@ -19,11 +19,11 @@ defineEmits<{ select: [ids: string[]] }>();
         <span aria-hidden="true">{{ i + 1 }}</span>{{
           selected[i]
             ? question.options.find((o) => o.id === selected[i])?.label
-            : "待选择"
+            : "待选"
         }}
       </li>
     </ol>
-    <div class="q-pool" role="group" aria-label="按顺序选择动作">
+    <div class="q-pool" role="group" aria-label="按顺序点选">
       <button
         v-for="(o, i) in question.options"
         type="button"

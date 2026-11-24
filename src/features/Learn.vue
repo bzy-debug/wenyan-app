@@ -46,7 +46,7 @@ const question = computed(() => {
 const passage = computed(() =>
   question.value ? byId(course.passages, question.value.passageId) : null,
 );
-const names = { choice: "单项选择", order: "事件排序", span: "原文证据" };
+const names = { choice: "选一项", order: "排出先后", span: "从原文里找" };
 const completeInput = computed(
   () =>
     question.value &&
@@ -84,7 +84,7 @@ onMounted(async () => {
       await openTarget();
   } catch (e) {
     error.value =
-      e instanceof Error ? e.message : "无法开启本关，请返回课程路径重试。";
+      e instanceof Error ? e.message : "这节练习没能打开。回到课程路径，再试一次。";
   } finally {
     loading.value = false;
   }
@@ -236,13 +236,13 @@ function onStudyKey(event: KeyboardEvent) {
       <p v-if="error" role="alert" class="study-issue">{{ error }}</p>
       <p v-if="loading" role="status">正在读取学习进度…</p>
       <section v-else-if="unavailable">
-        <h1>这节课尚未开放</h1>
+        <h1>这节练习暂时打不开</h1>
         <RouterLink class="primary" to="/path">查看课程路径</RouterLink>
       </section>
       <section v-else-if="!round && !finishedRound">
-        <h1>暂无进行中的练习</h1>
+        <h1>还没有要继续的练习</h1>
         <RouterLink class="primary" :to="reviewMode ? '/review' : '/path'">{{
-          reviewMode ? "查看复习任务" : "查看课程路径"
+          reviewMode ? "去复习" : "查看课程路径"
         }}</RouterLink>
       </section>
       <template v-else-if="round && question && passage">
@@ -305,7 +305,7 @@ function onStudyKey(event: KeyboardEvent) {
             :disabled="saving"
             @click="questionAction(retryAnswer)"
           >
-            <RotateCcw :size="16" aria-hidden="true" />重试本题
+            <RotateCcw :size="16" aria-hidden="true" />再试一次
           </button>
           <button
             v-else-if="round.feedback === null && round.kind !== 'assessment'"

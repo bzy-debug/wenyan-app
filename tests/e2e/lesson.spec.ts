@@ -43,7 +43,7 @@ test("首页默认显示完整路线，能从今日学习返回并直接开始�
   ).toBeVisible();
   await expect(page.getByRole("button", { name: /关键提示/ })).toHaveCount(0);
   await guide.click();
-  await expect(page.getByText(/看见狗就跑开了/)).toBeVisible();
+  await expect(page.getByRole("dialog").getByText("见犬而走。", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "回到练习" }).click();
   const submit = page.getByRole("button", { name: "提交答案" });
   await expect(submit).toBeDisabled();
@@ -59,7 +59,7 @@ test("首页默认显示完整路线，能从今日学习返回并直接开始�
   await expect(
     page.getByText(firstWrong.reason, { exact: true }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "重试本题" }).click();
+  await page.getByRole("button", { name: "再试一次" }).click();
   await page.getByRole("button", { name: /奔跑/ }).click();
   await submit.click();
   const details = page
@@ -74,7 +74,7 @@ test("首页默认显示完整路线，能从今日学习返回并直接开始�
   await expect(details.getByText("句意", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "下一题" }).click();
   await page.getByRole("button", { name: "不知道", exact: true }).click();
-  await expect(page.getByRole("heading", { name: "一起看答案" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "看看这题怎么读" })).toBeVisible();
   await page.getByRole("button", { name: "下一题" }).click();
   const answers = [
     [/^钟声$/],
@@ -98,14 +98,14 @@ test("首页默认显示完整路线，能从今日学习返回并直接开始�
     }
     for (const name of items) await page.getByRole("button", { name }).click();
     await submit.click();
-    await expect(page.getByRole("heading", { name: "回答正确" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "答对了" })).toBeVisible();
     await page
       .getByRole("button", {
         name: i === answers.length - 1 ? "完成练习" : "下一题",
       })
       .click();
   }
-  await expect(page.getByRole("heading", { name: "本课已完成" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "这节课学完了" })).toBeVisible();
   await expect(page.getByText("+20 XP", { exact: true })).toBeVisible();
   await save("result");
   expect(

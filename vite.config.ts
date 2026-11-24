@@ -24,7 +24,7 @@ export default defineConfig(({ command, isPreview }) => ({
         lang: "zh-CN",
         name: "文言拾阶 · 古文阅读练习",
         short_name: "文言拾阶",
-        description: "分级学习文言文，离线练习与复习。",
+        description: "从一句古文读到整篇。课程和复习都可以离线使用。",
         theme_color: "#5951d9",
         background_color: "#f8f9fc",
         display: "standalone",
