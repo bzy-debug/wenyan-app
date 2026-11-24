@@ -73,11 +73,11 @@ const percent = computed(() =>
               {{
                 practicing
                   ? active?.kind === "review"
-                    ? "知识卡复习进行中"
-                    : "错题订正进行中"
+                    ? "上次的复习还没做完"
+                    : "上次的错题还没改完"
                   : firstUnfinishedUnit
-                    ? "后续课程准备中"
-                    : "已完成课程路径"
+                    ? "后面的课还在准备"
+                    : "这门课学完了"
               }}
             </h2>
             <RouterLink
@@ -137,14 +137,14 @@ const percent = computed(() =>
             </div>
           </dl>
           <RouterLink class="review-link" to="/review"
-            ><Layers aria-hidden="true" :size="17" /><span>到期复习</span
+            ><Layers aria-hidden="true" :size="17" /><span>今天要复习</span
             ><b>{{ dueCards().length }} 张</b><ChevronRight :size="14"
           /></RouterLink>
         </div>
       </aside>
     </div>
     <small v-if="isDraftCourse" class="content-state"
-      >课程内容 · 草稿试用</small
+      >课程试读稿，待审校</small
     >
   </main>
 </template>

@@ -1,5 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
-import { readCourse } from "../../src/content/node";
+import { readCourse, readSources } from "../../src/content/node";
+import { compileReadings } from "../../src/content/compileReadings";
 
 const course = readCourse();
 
@@ -68,15 +69,19 @@ test("L5 深链定位后可直接学该级课程，整篇自读可查词、自�
   await page.goBack();
   await expect(page).toHaveURL(/level=L5$/);
   await page.getByRole("link", { name: "整篇自读" }).click();
-  await page.getByRole("link", { name: /亲历西陵峡/ }).click();
-  await expect(page.getByRole("heading", { name: "亲历西陵峡" })).toBeVisible();
-  await expect(page.getByText("登临，亲身来到。")).toBeHidden();
+  const gorge = compileReadings(readSources("content/v1/readings")).find(
+    (reading) => reading.id === "gorge",
+  )!;
+  const gloss = gorge.glosses.find((entry) => entry.term === "践跻")!.meaning;
+  await page.locator('a[href$="#/read/gorge"]').click();
+  await expect(page.getByRole("heading", { name: gorge.title })).toBeVisible();
+  await expect(page.getByText(gloss, { exact: true })).toBeHidden();
   await page.getByText("查词", { exact: true }).click();
-  await expect(page.getByText("登临，亲身来到。")).toBeVisible();
+  await expect(page.getByText(gloss, { exact: true })).toBeVisible();
   const prompt = page.locator(".retell details").nth(1);
   await expect(prompt.locator("blockquote")).toBeHidden();
   await prompt.locator("summary").click();
-  await expect(prompt.locator("blockquote")).toContainText("山松言");
+  await expect(prompt.locator("blockquote")).toHaveText(gorge.prompts[1].evidence);
   await expect(page.getByRole("link", { name: "核对底本" })).toHaveAttribute(
     "href",
     /KR2k0058/,

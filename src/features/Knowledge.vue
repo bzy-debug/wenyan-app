@@ -62,7 +62,7 @@ const statusLabel: Record<Skill["status"], string> = {
 <template>
   <main class="shell knowledge">
     <h1>知识库</h1>
-    <p class="lead">查找具体的字义、句法和阅读方法，回看例句与复习进度。</p>
+    <p class="lead">想不起一个字怎么用？搜一搜，点开就能看例句。</p>
     <div class="filters">
       <label class="search">
         <Search :size="18" aria-hidden="true" />
@@ -85,7 +85,7 @@ const statusLabel: Record<Skill["status"], string> = {
     </div>
     <p class="count" role="status">共 {{ visible.length }} 个知识点</p>
     <div v-if="!visible.length" class="empty">
-      <p>没有找到匹配的知识点。</p>
+      <p>没有查到，试试换个字或清除筛选。</p>
       <button
         class="secondary"
         @click="
@@ -110,7 +110,7 @@ const statusLabel: Record<Skill["status"], string> = {
           <h2>{{ skill.word }} · {{ skill.meaning }}</h2>
         </div>
         <span class="mastery" :class="{ learned: schedule }">{{
-          schedule ? intervals[schedule.level] + " 天间隔" : "未学"
+          schedule ? intervals[schedule.level] + " 天复习一次" : "还没学"
         }}</span>
         <ChevronDown :size="17" class="chevron" aria-hidden="true" />
       </summary>
@@ -132,7 +132,7 @@ const statusLabel: Record<Skill["status"], string> = {
             v-for="lesson in lessons"
             :key="lesson.id"
             :to="'/learn/' + lesson.id"
-            ><BookOpen :size="14" />阅读课程 · {{ lesson.title }}</RouterLink
+            ><BookOpen :size="14" />练一练 · {{ lesson.title }}</RouterLink
           >
         </div>
       </div>

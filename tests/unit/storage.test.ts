@@ -43,7 +43,7 @@ it("自由选择任意课程、检查，切课后保留选择、提示与首答"
   await revealAnswer(original.id, q.id);
   const check = await begin("assessment", course.assessments.at(-1)!.id);
   await expect(revealAnswer(check.id, check.questionIds[0])).rejects.toThrow(
-    "检查",
+    "单元自测需要你自己作答",
   );
   const checkQ = byId(course.questions, check.questionIds[0]);
   await selectAnswer(check.id, checkQ.id, checkQ.answer);
@@ -134,7 +134,7 @@ it("六题单元检查全答错仍完成并领全额经验", async () => {
   expect(progress.value.lastResult).toMatchObject({ total: 6, xp: 30 });
 });
 it.each([true, false])(
-  "到期复习换语境；是否查看答案 %s 不影响 XP",
+  "今天要复习换语境；是否查看答案 %s 不影响 XP",
   async (helped) => {
     const p = emptyProgress(),
       prior = card.questionIds[0];

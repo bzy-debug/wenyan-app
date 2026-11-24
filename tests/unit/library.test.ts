@@ -184,15 +184,15 @@ it("直接完成最后一课时，结算展示参与记录并建议未做的课�
     },
   };
   await show(Result);
-  expect(screen.getByRole("heading", { name: "本课已完成" })).toBeTruthy();
+  expect(screen.getByRole("heading", { name: "这节课学完了" })).toBeTruthy();
   expect(screen.getByText("已练习").nextElementSibling?.textContent).toMatch(
     /8\s*题/,
   );
-  expect(screen.getByText("本轮经验").nextElementSibling?.textContent).toMatch(
+  expect(screen.getByText("获得经验").nextElementSibling?.textContent).toMatch(
     /\+20\s*XP/,
   );
   expect(
-    screen.getByRole("link", { name: /推荐练习/ }).getAttribute("href"),
+    screen.getByRole("link", { name: /接着学/ }).getAttribute("href"),
   ).toBe("/learn/" + course.lessons[0].id);
   screen.getByText("回看讲解").click();
   expect(progress.value.active).toBeNull();

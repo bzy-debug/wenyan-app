@@ -131,7 +131,7 @@ it("知识库可按进度及搜索词筛选，展开后可读取释义", async (
     true,
   );
   await userEvent.type(screen.getByRole("searchbox"), "完全无法匹配的词");
-  expect(screen.getByText("没有找到匹配的知识点。")).toBeTruthy();
+  expect(screen.getByText("没有查到，试试换个字或清除筛选。")).toBeTruthy();
 });
 
 it("导入备份先校验有效性，通过确认后才覆盖进度", async () => {

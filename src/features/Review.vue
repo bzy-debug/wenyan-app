@@ -68,14 +68,14 @@ async function begin(request: Practice) {
     <header class="review-head">
       <div>
         <h1>复习</h1>
-        <p class="lead">在新的语境里，检验学过的知识点。</p>
+        <p class="lead">换一句古文，看看上次学过的用法还认不认得。</p>
       </div>
       <RouterLink class="text-link" to="/knowledge"
         ><BookOpen :size="16" aria-hidden="true" />查看知识库</RouterLink
       >
     </header>
     <div v-for="(round, index) in resumable" :key="round.id" class="resume">
-      <span>已保存 · {{ roundTitle(round.kind, round.targetId) }}</span>
+      <span>上次学到 · {{ roundTitle(round.kind, round.targetId) }}</span>
       <button
         v-if="
           round.id !== progress.active?.id &&
@@ -98,7 +98,7 @@ async function begin(request: Practice) {
       <section class="schedule">
         <div class="schedule-heading">
           <CalendarDays :size="21" />
-          <h2>到期知识卡</h2>
+          <h2>今天要复习</h2>
           <span class="quantity">{{ due.length }} 张</span>
         </div>
         <div v-if="due.length" class="due-list">
@@ -118,13 +118,13 @@ async function begin(request: Practice) {
           </div>
         </div>
         <div v-else class="quiet">
-          <h3>{{ nextDue ? "今日暂无到期卡片" : "还没有到期的知识卡" }}</h3>
+          <h3>{{ nextDue ? "今天没有要复习的卡片" : "这里还没有复习卡" }}</h3>
           <p v-if="nextDue">
             下次复习 <time :datetime="nextDue">{{ nextDue }}</time>
           </p>
-          <p v-else>学习新义项后，次日可以在这里复习。</p>
+          <p v-else>今天学过的字句，明天可以来这里再练。</p>
           <RouterLink class="text-link" to="/path"
-            >前往课程路径 <ArrowRight :size="15"
+            >去选一课 <ArrowRight :size="15"
           /></RouterLink>
         </div>
       </section>
@@ -133,7 +133,7 @@ async function begin(request: Practice) {
           <h2 class="section-title"><PencilLine />错题订正</h2>
           <small>{{ mistakes.length }} 道待订正</small>
         </div>
-        <p v-if="!mistakes.length" class="empty">目前没有需要订正的题目。</p>
+        <p v-if="!mistakes.length" class="empty">没有待订正的错题。</p>
         <div
           v-for="{ question: q, skill, passage } in mistakes"
           :key="q.id"

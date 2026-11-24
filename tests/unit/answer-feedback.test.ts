@@ -14,7 +14,7 @@ function show(correct: boolean, selected: string[]) {
 }
 it("正确后先给确认，主动查看时再呈现完整解析及译文", async () => {
   const { container } = show(true, choice.answer);
-  expect(screen.getByRole("heading", { name: "回答正确" })).toBeTruthy();
+  expect(screen.getByRole("heading", { name: "答对了" })).toBeTruthy();
   expect(container.querySelector("details")?.open).toBe(false);
   expect(screen.queryByText("正确答案")).toBeNull();
   await userEvent.click(screen.getByText("看解析"));
@@ -34,7 +34,7 @@ it("选错时保留所选项的错因与正确答案", () => {
 });
 it("求助后提供答案及一条线索", () => {
   show(false, []);
-  expect(screen.getByRole("heading", { name: "一起看答案" })).toBeTruthy();
+  expect(screen.getByRole("heading", { name: "看看这题怎么读" })).toBeTruthy();
   expect(screen.getByText(choice.hint)).toBeTruthy();
 });
 it("排序选错时指出第一个顺序差异", () => {
@@ -48,6 +48,6 @@ it("排序选错时指出第一个顺序差异", () => {
     },
   });
   expect(container.textContent).toContain(
-    "第 1 步应是“" + optionText(q, q.answer[0]) + "”",
+    "第 1 步是“" + optionText(q, q.answer[0]) + "”",
   );
 });

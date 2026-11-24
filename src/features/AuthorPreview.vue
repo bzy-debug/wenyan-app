@@ -107,7 +107,7 @@ async function openFile(input: HTMLInputElement) {
     );
     if (!match)
       throw new Error(
-        "本课程中没有这个课稿 ID。请选择已有课稿，新增关卡请先登记在单元目录中。",
+        "单元目录里找不到这份课稿的 ID。如果是新课，请先把它加到目录里。",
       );
     drafts[match.file] = source;
     selectDocument(match.file);
@@ -131,8 +131,7 @@ function download() {
     >
     <h1>作者预览</h1>
     <p class="lead">
-      修改现有课稿，检查讲解、题目和反馈。编辑只保留在本页，下载 Markdown
-      即可交稿。
+      选一份课稿，改完点「更新预览」，就能试做里面的题。离开前记得下载课稿，保存这次修改。
     </p>
     <div class="tools">
       <label
@@ -162,7 +161,7 @@ function download() {
         <textarea id="source" v-model="editor" spellcheck="false" />
         <div class="actions">
           <button class="primary" @click="preview"><Check />更新预览</button>
-          <span role="status">{{ dirty ? "有改动待预览" : notice }}</span>
+          <span role="status">{{ dirty ? "改动还没显示在预览里" : notice }}</span>
         </div>
         <p v-if="error" role="alert">{{ error }}</p>
       </section>
@@ -176,7 +175,7 @@ function download() {
                 showStep(Number(($event.target as HTMLSelectElement).value))
               "
             >
-              <option v-if="lesson" :value="-1">课前讲解</option>
+              <option v-if="lesson" :value="-1">本课讲解</option>
               <option v-for="(id, i) in questions" :key="id" :value="i">
                 第 {{ i + 1 }} 题
               </option>
@@ -243,7 +242,7 @@ function download() {
                 }}
               </p>
               <template v-if="lesson && question.hint"
-                ><p><b>辅助线索</b></p>
+                ><p><b>提示</b></p>
                 <RichText :source="question.hint"
               /></template>
               <p><b>解析</b></p>
@@ -257,7 +256,7 @@ function download() {
             </details>
           </template>
         </template>
-        <p v-else>请按校验提示修改原稿，然后更新预览。</p>
+        <p v-else>按提示改好课稿，再点「更新预览」。</p>
       </section>
     </div>
   </main>

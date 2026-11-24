@@ -21,7 +21,7 @@ const candidate = ref<{
 } | null>(null);
 function displayError(cause: unknown) {
   error.value =
-    cause instanceof Error ? cause.message : "操作未能完成，请重试。";
+    cause instanceof Error ? cause.message : "这次没能完成，请再试一次。";
 }
 async function download() {
   if (busy.value) return;
@@ -32,7 +32,7 @@ async function download() {
       "文言拾阶-学习备份-" + localDay() + ".json",
       await exportBackup(),
     );
-    notice.value = "已生成备份文件，请妥善保存。";
+    notice.value = "备份文件已生成。";
   } catch (cause) {
     displayError(cause);
   } finally {
@@ -49,7 +49,7 @@ async function choose(event: Event) {
   error.value = notice.value = "";
   try {
     if (file.size > 4_000_000) {
-      error.value = "备份超过 4 MB。请选择有效的学习备份。";
+      error.value = "这个文件超过 4 MB。请选择从文言拾阶导出的备份。";
       return;
     }
     const text = await file.text();
@@ -61,7 +61,7 @@ async function choose(event: Event) {
       xp: backup.xp,
     };
   } catch {
-    error.value = "无法读取此备份。请选择从文言拾阶导出的有效 JSON 学习备份。";
+    error.value = "读不了这个文件。请选择从文言拾阶导出的 JSON 备份。";
   } finally {
     busy.value = false;
   }
@@ -85,14 +85,14 @@ async function restore() {
 <template>
   <main class="reading settings">
     <h1>设置</h1>
-    <p class="lead">管理此设备的学习进度与试读记录。</p>
+    <p class="lead">学习记录存在这个浏览器里。换设备前，可以先下载备份。</p>
     <section aria-labelledby="backup-title">
       <h2 id="backup-title">学习备份</h2>
       <div class="setting-row">
         <div>
           <h3>下载学习记录</h3>
           <p>
-            保存练习进度、复习安排和未完成的练习。换设备后可用此文件继续学习。
+            备份里有你的学习进度、没做完的练习和复习安排。
           </p>
         </div>
         <button class="secondary" :disabled="busy" @click="download">
@@ -102,7 +102,7 @@ async function restore() {
       <div class="setting-row">
         <div>
           <h3>从备份恢复</h3>
-          <p>选择之前导出的 JSON 文件，预览后确认恢复。</p>
+          <p>选好备份文件后，可以先看看里面记了多少次练习。</p>
         </div>
         <label class="secondary file" :class="{ disabled: busy }"
           ><FileUp />选择备份文件<input
@@ -119,7 +119,7 @@ async function restore() {
           {{ candidate.name }} · 已完成 {{ candidate.count }} 项练习 ·
           {{ candidate.xp }} XP
         </p>
-        <p>确认后，备份中的学习记录将覆盖此浏览器的现有进度。</p>
+        <p>恢复后，这个浏览器里现有的学习进度会被备份替换。</p>
         <div class="actions">
           <button class="primary" :disabled="busy" @click="restore">
             确认恢复
@@ -134,9 +134,9 @@ async function restore() {
     </section>
     <section>
       <h2>参与试用</h2>
-      <p>用两篇陌生文本，对照学习前后的独立阅读表现。</p>
+      <p>开始学习前读一篇，学过一段时间再读另一篇，看看自己能读懂多少。</p>
       <RouterLink class="text-link" to="/pilot"
-        ><NotebookPen :size="16" />陌生文本试读与反馈 <ArrowRight :size="16"
+        ><NotebookPen :size="16" />去试读 <ArrowRight :size="16"
       /></RouterLink>
     </section>
   </main>

@@ -69,10 +69,10 @@ watch(
         :key="route.path"
       />
       <main v-else class="reading" role="status">
-        <p v-if="status === 'loading'">正在打开学习记录…</p>
+        <p v-if="status === 'loading'">正在读取学习记录…</p>
         <template v-else>
           <h1>无法读取学习记录</h1>
-          <p class="lead">请检查浏览器是否允许此网站使用本地存储。</p>
+          <p class="lead">请允许浏览器在这台设备上保存学习记录，然后重试。</p>
           <button class="primary" @click="openLibrary">重试</button>
         </template>
       </main>

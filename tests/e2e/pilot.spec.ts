@@ -27,7 +27,7 @@ test("志愿试读先同意，在无标点短文标记停顿，保存、导出�
   await expect(text).not.toContainText(/[。，；！？、]/);
   await text.getByRole("button", { name: /^在第 1 字/ }).click();
   const interpretation = "我试着把句子中人物和动作对应起来。";
-  await page.getByLabel("用自己的话译出或概括这句续文").fill(interpretation);
+  await page.getByLabel("用自己的话说说这句话的意思").fill(interpretation);
   await page.getByLabel("试读反馈（选填）").fill("第二题需要回读前句。");
   await page.getByRole("button", { name: "保存作答与反馈" }).click();
   await expect(page.getByText("试读已保存", { exact: true })).toBeVisible();

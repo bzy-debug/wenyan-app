@@ -167,7 +167,7 @@ export async function selectAnswer(
       new Set(selection).size !== selection.length ||
       !selection.every((id) => q.options.some((o) => o.id === id))
     )
-      throw new Error("无效的选项");
+      throw new Error("这个选项不在题目里");
     r.selected = selection;
   });
 }
@@ -207,7 +207,7 @@ function recordResponse(
 export async function revealAnswer(roundId: string, qid: string) {
   await edit((state) => {
     const r = requireRound(state, roundId, qid);
-    if (r.kind === "assessment") throw new Error("单元检查请先自行作答");
+    if (r.kind === "assessment") throw new Error("单元自测需要你自己作答");
     if (r.feedback !== null) return;
     r.hinted = true;
     r.selected = [];
@@ -232,14 +232,14 @@ export async function submitAnswer(
         expected.length !== r.selected.length ||
         !expected.every((id, i) => id === r.selected[i]))
     )
-      throw new Error("选项已在其他窗口更新，请重新确认");
+      throw new Error("另一个窗口改过这道题的选择。请确认后再提交。");
     const answer = selected ?? r.selected;
     if (
       answer.length !== q.answer.length ||
       new Set(answer).size !== answer.length ||
       !answer.every((id) => q.options.some((o) => o.id === id))
     )
-      throw new Error("请先完成选择");
+      throw new Error("选好答案后再提交");
     r.selected = answer;
     recordResponse(state, r, qid, grade(q, answer));
   });
@@ -256,7 +256,7 @@ export async function advance(roundId: string, qid: string) {
   await edit((state) => {
     if (state.lastResult?.roundId === roundId) return;
     const r = requireRound(state, roundId, qid);
-    if (r.feedback === null) throw new Error("请先提交本题");
+    if (r.feedback === null) throw new Error("请先提交这道题的答案");
     if (r.index + 1 < r.questionIds.length) {
       r.index++;
       r.selected = [];

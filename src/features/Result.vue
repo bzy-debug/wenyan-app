@@ -27,10 +27,10 @@ const lesson = computed(() =>
     : null,
 );
 const headings = {
-  lesson: "本课已完成",
-  assessment: "单元检查已完成",
-  review: "本次复习完成",
-  mistake: "本次订正完成",
+  lesson: "这节课学完了",
+  assessment: "单元自测做完了",
+  review: "复习完了",
+  mistake: "订正完了",
 };
 const recommended = computed(() => {
   if (!courseRound.value) return;
@@ -64,7 +64,7 @@ const recommended = computed(() => {
             <dd>{{ result.total }} <small>题</small></dd>
           </div>
           <div>
-            <dt><Sparkles :size="16" aria-hidden="true" />本轮经验</dt>
+            <dt><Sparkles :size="16" aria-hidden="true" />获得经验</dt>
             <dd>+{{ result.xp }} <small>XP</small></dd>
           </div>
         </dl>
@@ -80,7 +80,7 @@ const recommended = computed(() => {
             progress.mistakes.includes(result.targetId)
           "
         >
-          这道题保存在错题中，可以随时再练。
+          这道题还在错题里，想再试时可以回来做。
         </p>
         <div class="result-actions">
           <RouterLink
@@ -88,7 +88,7 @@ const recommended = computed(() => {
             class="primary"
             :to="'/learn/' + recommended.id"
           >
-            推荐练习 · {{ recommended.title }}<ArrowRight aria-hidden="true" />
+            接着学 · {{ recommended.title }}<ArrowRight aria-hidden="true" />
           </RouterLink>
           <RouterLink
             :class="recommended ? 'secondary' : 'primary'"
