@@ -42,3 +42,12 @@ export const isDraftCourse = [
   ...course.assessments,
   ...course.questions,
 ].some((entry) => entry.status === "draft");
+
+export function levelOfTarget(id: string | undefined) {
+  return (
+    id &&
+    course.units.find(
+      (unit) => unit.assessmentId === id || unit.lessonIds.includes(id),
+    )?.level
+  );
+}

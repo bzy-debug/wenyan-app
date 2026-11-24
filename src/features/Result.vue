@@ -12,11 +12,12 @@ import {
 import { course } from "../content";
 import LessonReading from "../components/LessonReading.vue";
 import { progress } from "../storage/progress";
-import { currentTarget } from "./learningPath";
+import { currentTarget, levelOfTarget } from "./learningPath";
 import { roundTitle } from "./roundLabels";
 import "./study.css";
 
 const result = computed(() => progress.value.lastResult);
+const levelId = computed(() => levelOfTarget(result.value?.targetId));
 const courseRound = computed(
   () => result.value?.kind === "lesson" || result.value?.kind === "assessment",
 );
@@ -91,7 +92,11 @@ const recommended = computed(() => {
           </RouterLink>
           <RouterLink
             :class="recommended ? 'secondary' : 'primary'"
-            :to="courseRound ? '/path' : '/review'"
+            :to="
+              courseRound
+                ? { path: '/path', query: { level: levelId } }
+                : '/review'
+            "
           >
             {{ courseRound ? "查看课程路径" : "返回复习"
             }}<ArrowRight :size="16" aria-hidden="true" />

@@ -1,12 +1,27 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { ListChecks } from "@lucide/vue";
+import { useRoute, useRouter } from "vue-router";
+import { BookOpen, ListChecks } from "@lucide/vue";
 import { course } from "../content";
 import { progress } from "../storage/progress";
-import { currentTarget, isDraftCourse } from "./learningPath";
+import { currentTarget, isDraftCourse, levelOfTarget } from "./learningPath";
 import UnitPath from "./UnitPath.vue";
 
 const current = computed(currentTarget);
+const route = useRoute();
+const router = useRouter();
+const levels = course.levels.filter((level) =>
+  course.units.some((unit) => unit.level === level.id),
+);
+const selectedLevel = computed(
+  () =>
+    levels.find((level) => level.id === route.query.level) ??
+    levels.find((level) => level.id === levelOfTarget(current.value)) ??
+    levels[0],
+);
+const units = computed(() =>
+  course.units.filter((unit) => unit.level === selectedLevel.value.id),
+);
 const completedLessons = computed(
   () =>
     course.lessons.filter((lesson) =>
@@ -39,9 +54,31 @@ const completedChecks = computed(
         项单元检查</span
       >
     </div>
+    <div class="level-bar">
+      <label
+        >学习等级
+        <select
+          :value="selectedLevel.id"
+          @change="
+            router.push({
+              path: '/path',
+              query: { level: ($event.target as HTMLSelectElement).value },
+            })
+          "
+        >
+          <option v-for="level in levels" :key="level.id" :value="level.id">
+            {{ level.id }} · {{ level.title }}
+          </option>
+        </select>
+      </label>
+      <RouterLink class="text-link" to="/read"
+        ><BookOpen :size="17" aria-hidden="true" />整篇自读</RouterLink
+      >
+    </div>
+    <p class="level-goal">{{ selectedLevel.goal }}</p>
     <div class="path-grid">
       <UnitPath
-        v-for="unit in course.units"
+        v-for="unit in units"
         :key="unit.id"
         :unit="unit"
         :current-id="current"
@@ -83,6 +120,36 @@ const completedChecks = computed(
 .overview i {
   height: 13px;
   border-left: 1px solid #d7dce7;
+}
+.level-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+.level-bar label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--muted);
+}
+.level-bar select {
+  max-width: 100%;
+  min-height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0 10px;
+  color: var(--ink);
+  background: var(--surface);
+  font: inherit;
+  font-weight: 650;
+}
+.level-goal {
+  font-size: 14px;
+  color: var(--muted);
+  margin: 9px 0 18px;
 }
 .path-grid {
   display: grid;

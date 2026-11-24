@@ -5,10 +5,45 @@ import {
   validateCompleteness,
   validateCourse,
 } from "../../src/content/validate";
-it("L1 四单元全部可学并有 120 道独立计分题", () => {
+it("五级阅读路径完整，每一级的课次与检查齐全，所有练习归属明确", () => {
   const course = validateCourse(raw);
   expect(() => validateCompleteness(course)).not.toThrow();
-  expect(course.units.filter((u) => u.level === "L1")).toHaveLength(4);
+  const path = [
+    ["L1", [1, 2, 3, 4]],
+    ["L2", [5, 6, 7, 8, 29, 30, 21, 22, 23, 24, 33, 34, 35]],
+    ["L3", [9, 10, 11, 12, 31, 32, 25, 26, 27, 28, 36, 37, 38]],
+    ["L4", [13, 14, 15, 16]],
+    ["L5", [17, 18, 19, 20]],
+  ] as const;
+  const levelIds = path.map(([id]) => id);
+  expect(course.levels.map((l) => l.id)).toEqual(levelIds);
+  expect(course.completeness.map((p) => p.level)).toEqual(levelIds);
+  const steps = path.flatMap(([level, ids]) =>
+    ids.map((n) => [level, "u." + n]),
+  );
+  expect(course.units.map((u) => [u.level, u.id])).toEqual(steps);
+  expect(course.lessons).toHaveLength(114);
+  expect(course.assessments).toHaveLength(38);
+  expect(course.questions).toHaveLength(1140);
+  for (const [id, units] of path) {
+    const members = course.units.filter((u) => u.level === id);
+    const lessonIds = new Set(members.flatMap((u) => u.lessonIds));
+    const checkIds = new Set(members.map((u) => u.assessmentId));
+    const lessons = course.lessons.filter((l) => lessonIds.has(l.id));
+    const checks = course.assessments.filter((c) => checkIds.has(c.id));
+    expect(
+      lessons.every(
+        (l) => l.stage === "available" && l.questionIds.length === 8,
+      ),
+    ).toBe(true);
+    expect(
+      checks.every(
+        (c) => c.stage === "available" && c.questionIds.length === 6,
+      ),
+    ).toBe(true);
+    const questions = [...lessons, ...checks].flatMap((t) => t.questionIds);
+    expect(new Set(questions).size).toBe(units.length * 30);
+  }
 });
 it.each([
   [

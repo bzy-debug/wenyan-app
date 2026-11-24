@@ -12,6 +12,11 @@ import { intervals } from "../domain/review";
 const query = ref("");
 const area = ref("");
 const onlyLearned = ref(false);
+const expanded = ref(new Set<string>());
+function toggleDefinition(id: string, event: Event) {
+  if ((event.currentTarget as HTMLDetailsElement).open) expanded.value.add(id);
+  else expanded.value.delete(id);
+}
 const areas = [...new Set(course.skills.map((skill) => skill.area))];
 const sources = course.skills.map((skill) => {
   const card = course.cards.find((candidate) => candidate.skillId === skill.id);
@@ -96,6 +101,8 @@ const statusLabel: Record<Skill["status"], string> = {
       v-for="{ skill, schedule, examples, lessons } in visible"
       :key="skill.id"
       class="entry"
+      :open="expanded.has(skill.id)"
+      @toggle="toggleDefinition(skill.id, $event)"
     >
       <summary>
         <div>
@@ -107,7 +114,7 @@ const statusLabel: Record<Skill["status"], string> = {
         }}</span>
         <ChevronDown :size="17" class="chevron" aria-hidden="true" />
       </summary>
-      <div class="definition">
+      <div v-if="expanded.has(skill.id)" class="definition">
         <RichText :source="skill.detail" />
         <figure v-for="example in examples" :key="example.id">
           <blockquote>{{ example.text }}</blockquote>

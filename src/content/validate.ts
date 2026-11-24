@@ -137,10 +137,35 @@ export function validateCourse(raw: unknown) {
       owners.length === course.questions.length,
     "每道计分题必须恰好归属一个关卡或单元检查",
   );
+  const usedPassages = new Set([
+    ...course.lessons.flatMap((lesson) => lesson.exampleIds),
+    ...course.questions.map((q) => q.passageId),
+  ]);
+  for (const passage of course.passages) {
+    requireContent(
+      usedPassages.has(passage.id),
+      "原文未被任何例句或练习引用 " + passage.id,
+    );
+  }
   for (const unit of course.units) {
     const check = getAssessment(unit.assessmentId);
     if (check.stage === "planned") continue;
     const lessons = unit.lessonIds.map(getLesson);
+    const practiceTexts = new Set(
+      lessons
+        .flatMap((lesson) => [
+          ...lesson.exampleIds,
+          ...lesson.questionIds.map((id) => getQuestion(id).passageId),
+        ])
+        .map((id) => plainText(getPassage(id).text)),
+    );
+    for (const id of check.questionIds) {
+      const passage = getPassage(getQuestion(id).passageId);
+      requireContent(
+        !practiceTexts.has(plainText(passage.text)),
+        "单元检查须使用新语境 " + check.id + "：" + passage.id,
+      );
+    }
     const taught = new Set(lessons.flatMap((lesson) => lesson.mainSkills));
     const tested = new Set(
       check.questionIds.map((id) => getQuestion(id).skillId),
@@ -159,35 +184,94 @@ export function validateCourse(raw: unknown) {
 
 /** Publishing policy is declared by the course author in the manifest. */
 export function validateCompleteness(course: Course) {
-  const policy = course.completeness;
-  if (!policy) return;
-  const units = course.units.filter((u) => u.level === policy.level);
-  requireContent(
-    units.length === policy.units &&
-      units.every((u) => u.lessonIds.length === policy.lessonsPerUnit),
-    "课程规模与完整性声明不符：" + policy.level,
-  );
-  const lesson = index(course.lessons);
-  const assessment = index(course.assessments);
-  const targets = units.flatMap((u) => [
-    ...u.lessonIds.map(lesson),
-    assessment(u.assessmentId),
-  ]);
-  requireContent(
-    units.every(
-      (u) =>
-        u.lessonIds.every(
-          (id) => lesson(id).questionIds.length === policy.lessonSize,
-        ) && assessment(u.assessmentId).questionIds.length === policy.checkSize,
-    ),
-    "关卡题数与完整性声明不符",
-  );
-  requireContent(
-    targets.every((t) => t.stage === "available"),
-    "完整课程含有未开放的关卡",
-  );
-  requireContent(
-    targets.flatMap((t) => t.questionIds).length === policy.questions,
-    "计分题总数与完整性声明不符：" + policy.questions,
-  );
+  if (!course.completeness.length) return;
+  const lessons = index(course.lessons);
+  const assessments = index(course.assessments);
+  const levels = new Set(course.levels.map((l) => l.id));
+  const checked = new Set<string>();
+  for (const policy of course.completeness) {
+    requireContent(
+      levels.has(policy.level),
+      "完整性声明中的等级不存在：" + policy.level,
+    );
+    requireContent(
+      !checked.has(policy.level),
+      "等级完整性声明重复：" + policy.level,
+    );
+    checked.add(policy.level);
+    const units = course.units.filter((u) => u.level === policy.level);
+    requireContent(
+      units.length === policy.units,
+      policy.level + " 单元数量应为 " + policy.units,
+    );
+    let questionCount = 0;
+    for (const unit of units) {
+      requireContent(
+        unit.lessonIds.length === policy.lessonsPerUnit,
+        "每单元课数与声明不符 " + unit.id,
+      );
+      for (const lesson of unit.lessonIds.map(lessons)) {
+        requireContent(
+          lesson.stage === "available",
+          "完整课程含有未开放的课 " + lesson.id,
+        );
+        requireContent(
+          lesson.questionIds.length === policy.lessonSize,
+          "课题数与完整性声明不符 " + lesson.id,
+        );
+        questionCount += lesson.questionIds.length;
+      }
+      const check = assessments(unit.assessmentId);
+      requireContent(
+        check.stage === "available",
+        "完整课程含有未开放的检查 " + check.id,
+      );
+      requireContent(
+        check.questionIds.length === policy.checkSize,
+        "检查题数与完整性声明不符 " + check.id,
+      );
+      questionCount += check.questionIds.length;
+    }
+    requireContent(
+      questionCount === policy.questions,
+      policy.level +
+        " 练习总数应为 " +
+        policy.questions +
+        "，实际 " +
+        questionCount,
+    );
+  }
+  for (const unit of course.units) {
+    requireContent(
+      checked.has(unit.level),
+      "有学习单元的等级缺少完整性声明：" + unit.level,
+    );
+  }
+}
+
+function plainText(text: string) {
+  return text.normalize("NFKC").replace(/[\p{P}\p{Cf}\s]+/gu, "");
+}
+
+/** Check for a full short text or thirty consecutive shared characters from
+ * a passage. Common expressions can recur naturally across independent works. */
+export function validateUnseenTexts(
+  heldOut: readonly { id: string; text: string }[],
+  taught: readonly { id: string; text: string }[],
+) {
+  const training = taught.map((p) => ({ id: p.id, text: plainText(p.text) }));
+  for (const passage of heldOut) {
+    const text = plainText(passage.text);
+    const chars = Array.from(text);
+    const length = Math.min(30, chars.length);
+    for (let i = 0; i <= chars.length - length; i++) {
+      const excerpt = chars.slice(i, i + length).join("");
+      const found = training.find((p) => p.text.includes(excerpt));
+      if (found)
+        throw new Error(
+          `独立阅读材料 ${passage.id} 已出现在 ${found.id}：「${excerpt}」`,
+        );
+    }
+    training.push({ id: passage.id, text });
+  }
 }

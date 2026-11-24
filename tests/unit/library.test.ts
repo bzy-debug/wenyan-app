@@ -1,3 +1,4 @@
+import userEvent from "@testing-library/user-event";
 import { cleanup, render, screen, within } from "@testing-library/vue";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { createMemoryHistory, createRouter } from "vue-router";
@@ -76,15 +77,31 @@ it("课程路径随时可任选已开放的课与检查，并显示暂停中的�
     },
   };
   await show(Path);
-  const links = screen.getAllByRole("link");
-  const ids = course.units.flatMap((unit) => [
-    ...unit.lessonIds,
-    unit.assessmentId,
-  ]);
-  expect(links.map((link) => link.getAttribute("href"))).toEqual(
-    ids.map((id) => "/learn/" + id),
+  const selector = screen.getByRole("combobox", {
+    name: "学习等级",
+  }) as HTMLSelectElement;
+  const availableLevels = course.levels.filter((level) =>
+    course.units.some((unit) => unit.level === level.id),
   );
-  expect(links[0].textContent).toContain("继续学习");
+  expect(Array.from(selector.options, (option) => option.value)).toEqual(
+    availableLevels.map((l) => l.id),
+  );
+  const lastUnit = course.units.find((u) => u.lessonIds.includes(last.id))!;
+  expect(selector.value).toBe(lastUnit.level);
+  for (const level of availableLevels) {
+    await userEvent.selectOptions(selector, level.id);
+    const ids = course.units
+      .filter((unit) => unit.level === level.id)
+      .flatMap((unit) => [...unit.lessonIds, unit.assessmentId]);
+    const lessonLinks = screen
+      .getAllByRole("link")
+      .filter((link) => link.getAttribute("href")?.includes("/learn/"));
+    expect(lessonLinks.map((link) => link.getAttribute("href"))).toEqual(
+      ids.map((id) => "/learn/" + id),
+    );
+    if (ids.includes(first.id))
+      expect(lessonLinks[0].textContent).toContain("继续学习");
+  }
   cleanup();
   progress.value = { ...progress.value, active: null };
   await show(Home);

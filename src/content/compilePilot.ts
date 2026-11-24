@@ -223,3 +223,10 @@ export function compilePilot(files: Record<string, string>): PilotPacket {
     throw new Error("试读材料或题目 ID 重复");
   return { version: 1, forms };
 }
+
+export function pilotPassages(pilot: PilotPacket) {
+  return pilot.forms.flatMap((form) => [
+    { id: form.id, text: form.passage },
+    { id: form.id + ".extension", text: form.extension.text },
+  ]);
+}

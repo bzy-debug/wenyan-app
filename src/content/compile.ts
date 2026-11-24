@@ -55,11 +55,7 @@ function compileTarget(
       ? ["正文", "知识点", "原文", ...Object.keys(modes)]
       : ["原文", ...Object.keys(modes)],
   );
-  const tf = fields(b, [
-    ...(lesson ? ["简介"] : []),
-    "进度",
-    ...editorialKeys,
-  ]);
+  const tf = fields(b, [...(lesson ? ["简介"] : []), "进度", ...editorialKeys]);
   const questions = target.sections
     .filter((s) => Object.hasOwn(modes, s.kind))
     .map((s) => readQuestion(s, passages, course.spans));
@@ -162,6 +158,30 @@ export function compileCourse(sources: Record<string, string>): Course {
       title: b.title,
       goal: required(b, fields(b, ["目标"]), "目标"),
     })),
+    completeness: (mf.完整性 ?? "")
+      .split("\n")
+      .filter((line) => line.trim())
+      .map((line) => {
+        const [level, ...sizes] = split(line);
+        if (sizes.length !== 5 || sizes.some((t) => !/^[1-9]\d*$/.test(t))) {
+          fail(
+            h,
+            "完整性声明应每个等级一行：等级ID 单元数 每单元课数 每课题数 检查题数 总题数；收到「" +
+              line +
+              "」",
+          );
+        }
+        const [units, lessonsPerUnit, lessonSize, checkSize, questions] =
+          sizes.map(Number);
+        return {
+          level,
+          units,
+          lessonsPerUnit,
+          lessonSize,
+          checkSize,
+          questions,
+        };
+      }),
     units: [],
     lessons: [],
     assessments: [],
@@ -171,19 +191,6 @@ export function compileCourse(sources: Record<string, string>): Course {
     cards: [],
     passages: [...passages.values()],
   };
-  if (mf.完整性) {
-    const parts = split(mf.完整性);
-    if (parts.length !== 6 || parts.slice(1).some((t) => !/^\d+$/.test(t)))
-      fail(h, "完整性格式：等级ID 单元数 每单元课数 每课题数 检查题数 总题数");
-    course.completeness = {
-      level: parts[0],
-      units: Number(parts[1]),
-      lessonsPerUnit: Number(parts[2]),
-      lessonSize: Number(parts[3]),
-      checkSize: Number(parts[4]),
-      questions: Number(parts[5]),
-    };
-  }
   const visited = new Set([h.id]);
   const own = (b: Block) => {
     if (visited.has(b.id)) fail(b, "文档被多个父级引用：" + b.id);

@@ -72,7 +72,8 @@ const lesson = editorial.safeExtend({
   intro: text.optional(),
   body: z.string().default(""),
   mainSkills: ids.default([]),
-  exampleIds: ids.default([]),
+  // Parallel to mainSkills: two distinct readings can cite the same passage.
+  exampleIds: z.array(text).default([]),
   questionIds: ids.default([]),
 });
 const unit = entity.extend({
@@ -94,15 +95,17 @@ export const courseSchema = z.object({
   description: text,
   levels: z.array(entity.extend({ title: text, goal: text })),
   completeness: z
-    .object({
-      level: text,
-      units: z.int().positive(),
-      lessonsPerUnit: z.int().positive(),
-      lessonSize: z.int().positive(),
-      checkSize: z.int().positive(),
-      questions: z.int().positive(),
-    })
-    .optional(),
+    .array(
+      z.object({
+        level: text,
+        units: z.int().positive(),
+        lessonsPerUnit: z.int().positive(),
+        lessonSize: z.int().positive(),
+        checkSize: z.int().positive(),
+        questions: z.int().positive(),
+      }),
+    )
+    .default([]),
   skills: z.array(skill),
   passages: z.array(passage),
   spans: z.array(span),
