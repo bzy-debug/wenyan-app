@@ -1,16 +1,40 @@
 import { course } from "../content";
+import type { Course } from "../content/schema";
 import { progress } from "../storage/progress";
 
-const targets = new Map(
-  [...course.lessons, ...course.assessments].map((target) => [
-    target.id,
-    target,
-  ]),
-);
-const pathIds = course.units.flatMap((unit) => [
-  ...unit.lessonIds,
-  unit.assessmentId,
-]);
+export function buildLearningPath(source: Course) {
+  const lessons = source.lessons.filter(
+    (lesson) => lesson.stage === "available",
+  );
+  const assessments = source.assessments.filter(
+    (check) => check.stage === "available",
+  );
+  const lessonById = new Map(lessons.map((lesson) => [lesson.id, lesson]));
+  const checkById = new Map(assessments.map((check) => [check.id, check]));
+  const units = source.units
+    .map(({ lessonIds, assessmentId, ...unit }) => ({
+      ...unit,
+      lessons: lessonIds.flatMap((id) => lessonById.get(id) ?? []),
+      assessment: checkById.get(assessmentId),
+    }))
+    .filter((unit) => unit.lessons.length || unit.assessment);
+  const levels = source.levels
+    .map((level) => ({
+      ...level,
+      units: units.filter((unit) => unit.level === level.id),
+    }))
+    .filter((level) => level.units.length);
+  return { levels, units, lessons, assessments };
+}
+
+export const learningPath = buildLearningPath(course);
+export type LearningUnit = (typeof learningPath.units)[number];
+
+const unitByTarget = new Map<string, LearningUnit>();
+for (const unit of learningPath.units) {
+  for (const lesson of unit.lessons) unitByTarget.set(lesson.id, unit);
+  if (unit.assessment) unitByTarget.set(unit.assessment.id, unit);
+}
 
 export function currentTarget() {
   const { active, paused, completedIds } = progress.value;
@@ -19,15 +43,18 @@ export function currentTarget() {
     (round) =>
       round &&
       (round.kind === "lesson" || round.kind === "assessment") &&
-      targets.get(round.targetId)?.stage === "available",
+      unitByTarget.has(round.targetId),
   );
   return (
     unfinished?.targetId ??
-    pathIds.find(
-      (id) =>
-        targets.get(id)?.stage === "available" && !completedIds.includes(id),
-    )
+    Array.from(unitByTarget.keys()).find((id) => !completedIds.includes(id))
   );
+}
+
+export function completedCount(targets: { id: string }[]) {
+  return targets.filter((target) =>
+    progress.value.completedIds.includes(target.id),
+  ).length;
 }
 
 export function inProgress(id: string) {
@@ -37,17 +64,10 @@ export function inProgress(id: string) {
   );
 }
 
-export const isDraftCourse = [
-  ...course.lessons,
-  ...course.assessments,
-  ...course.questions,
-].some((entry) => entry.status === "draft");
+export function unitOfTarget(id: string | undefined) {
+  return id ? unitByTarget.get(id) : undefined;
+}
 
 export function levelOfTarget(id: string | undefined) {
-  return (
-    id &&
-    course.units.find(
-      (unit) => unit.assessmentId === id || unit.lessonIds.includes(id),
-    )?.level
-  );
+  return unitOfTarget(id)?.level;
 }

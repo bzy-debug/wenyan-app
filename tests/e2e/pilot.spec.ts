@@ -5,14 +5,30 @@ import { compilePilot } from "../../src/content/compilePilot";
 
 const [before] = compilePilot(readSources("content/v1/pilot")).forms;
 
-test("志愿试读先同意，在无标点短文标记停顿，保存、导出与删除反馈", async ({
+test("从设置进入阅读自测，同意后作答，可保存、导出与删除反馈", async ({
   page,
 }) => {
-  await page.goto("./#/pilot");
-  const start = page.getByRole("button", { name: "开始学习前试读" });
+  await page.goto("./#/settings");
+  await expect(page.getByRole("heading", { name: "阅读自测" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "参与试用" })).toHaveCount(0);
+  await page.getByRole("link", { name: "去做自测" }).click();
+  await expect(page).toHaveURL(/#\/pilot$/);
+  await expect(page).toHaveTitle("阅读自测 · 文言拾阶");
+  await expect(page.getByRole("heading", { level: 1, name: "阅读自测" })).toBeVisible();
+  const start = page.getByRole("button", { name: "开始第一篇" });
+  const origin = page.locator("section").filter({ has: start }).locator("small");
+  await expect(origin).toContainText("自编教学短文");
+  const editorialStatus = /草稿|待审[核校]|已审核|已发布/u;
+  await expect(origin).not.toContainText(editorialStatus);
   await expect(start).toBeDisabled();
-  await page.getByRole("checkbox").check();
+  await expect(page.getByRole("button", { name: "开始第二篇" })).toBeDisabled();
+  await page.getByRole("checkbox", {
+    name: "我同意在本机保存这次自测的答案和自愿填写的反馈。",
+  }).check();
   await start.click();
+  const activeOrigin = page.locator("form small").filter({ hasText: "自编教学短文" });
+  await expect(activeOrigin).toBeVisible();
+  await expect(activeOrigin).not.toContainText(editorialStatus);
   for (const [i, q] of before.questions.entries()) {
     const index = i === 0 ? (q.correct + 1) % q.options.length : q.correct;
     await page
@@ -28,9 +44,9 @@ test("志愿试读先同意，在无标点短文标记停顿，保存、导出�
   await text.getByRole("button", { name: /^在第 1 字/ }).click();
   const interpretation = "我试着把句子中人物和动作对应起来。";
   await page.getByLabel("用自己的话说说这句话的意思").fill(interpretation);
-  await page.getByLabel("试读反馈（选填）").fill("第二题需要回读前句。");
+  await page.getByLabel("阅读反馈（选填）").fill("第二题需要回读前句。");
   await page.getByRole("button", { name: "保存作答与反馈" }).click();
-  await expect(page.getByText("试读已保存", { exact: true })).toBeVisible();
+  await expect(page.getByText("自测记录已保存", { exact: true })).toBeVisible();
   await page.reload();
   await page.getByText("查看作答与解析").click();
   await expect(
@@ -42,7 +58,7 @@ test("志愿试读先同意，在无标点短文标记停顿，保存、导出�
     ),
   ).toBeVisible();
   const download = page.waitForEvent("download");
-  await page.getByRole("button", { name: "导出试读与反馈" }).click();
+  await page.getByRole("button", { name: "导出答案和反馈" }).click();
   const contents = await buffer(await (await download).createReadStream());
   expect(JSON.parse(contents.toString("utf8")).submissions).toMatchObject([
     {
@@ -58,8 +74,8 @@ test("志愿试读先同意，在无标点短文标记停顿，保存、导出�
       feedback: "第二题需要回读前句。",
     },
   ]);
-  await page.getByRole("button", { name: "删除本机试读记录" }).click();
-  await page.getByRole("button", { name: "确认删除全部试读记录" }).click();
-  await expect(page.getByText("本机试读记录已删除。")).toBeVisible();
+  await page.getByRole("button", { name: "删除本机自测记录" }).click();
+  await page.getByRole("button", { name: "确认删除全部自测记录" }).click();
+  await expect(page.getByText("本机自测记录已删除。")).toBeVisible();
   await expect(start).toBeDisabled();
 });

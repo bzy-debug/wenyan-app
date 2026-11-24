@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { RouterLink } from "vue-router";
-import { course } from "../content";
+import { learningPath } from "./learningPath";
 
 defineProps<{ selected?: string }>();
 </script>
 
 <template>
-  <nav class="course-levels" aria-label="跳到学习等级">
+  <nav v-if="learningPath.levels.length" class="course-levels" aria-label="跳到学习等级">
     <span class="jump-label" aria-hidden="true">跳至</span>
     <div class="level-links">
       <RouterLink
-        v-for="level in course.levels"
+        v-for="level in learningPath.levels"
         :key="level.id"
         class="level-link"
         :to="{ path: '/path', query: { level: level.id } }"

@@ -2,17 +2,12 @@
 import { computed, onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
 import { ArrowRight, BookOpen, ListChecks } from "@lucide/vue";
-import { course } from "../content";
-import { progress } from "../storage/progress";
-import { currentTarget, inProgress, isDraftCourse } from "./learningPath";
+import { completedCount, currentTarget, inProgress, learningPath } from "./learningPath";
 import CourseLevels from "./CourseLevels.vue";
 import UnitPath from "./UnitPath.vue";
 
 const route = useRoute();
-const levels = course.levels.map((level) => ({
-  ...level,
-  units: course.units.filter((unit) => unit.level === level.id),
-}));
+const { levels, lessons, assessments } = learningPath;
 const jumpLevel = computed(
   () => levels.find((level) => level.id === route.query.level)?.id,
 );
@@ -29,38 +24,29 @@ const current = computed(currentTarget);
 const recommendation = computed(() => {
   const id = current.value;
   if (!id) return;
-  const lesson = course.lessons.find((item) => item.id === id);
-  const target = lesson ?? course.assessments.find((item) => item.id === id);
+  const lesson = lessons.find((item) => item.id === id);
+  const target = lesson ?? assessments.find((item) => item.id === id);
   if (!target) return;
   const action = inProgress(id) ? "继续学习" : lesson ? "开始学习" : "开始自测";
   return { id, label: action + " · " + target.title };
 });
-const completedLessons = computed(
-  () =>
-    course.lessons.filter((lesson) =>
-      progress.value.completedIds.includes(lesson.id),
-    ).length,
-);
-const completedChecks = computed(
-  () =>
-    course.assessments.filter((check) =>
-      progress.value.completedIds.includes(check.id),
-    ).length,
-);
+const completedLessons = computed(() => completedCount(lessons));
+const completedChecks = computed(() => completedCount(assessments));
 </script>
 
 <template>
   <main class="shell path">
     <header class="path-title">
       <h1>课程路径</h1>
-      <div class="overview">
+      <div v-if="lessons.length || assessments.length" class="overview">
         <ListChecks :size="17" aria-hidden="true" />
-        <span>
-          已完成 <b>{{ completedLessons }} / {{ course.lessons.length }}</b> 课
+        <span>已完成</span>
+        <span v-if="lessons.length">
+          <b>{{ completedLessons }} / {{ lessons.length }}</b> 课
         </span>
-        <i aria-hidden="true" />
-        <span>
-          <b>{{ completedChecks }} / {{ course.assessments.length }}</b>
+        <i v-if="lessons.length && assessments.length" aria-hidden="true" />
+        <span v-if="assessments.length">
+          <b>{{ completedChecks }} / {{ assessments.length }}</b>
           次单元自测
         </span>
       </div>
@@ -75,8 +61,9 @@ const completedChecks = computed(
         <template v-else>
           <span
             v-if="
-              completedLessons === course.lessons.length &&
-              completedChecks === course.assessments.length
+              levels.length &&
+              completedLessons === lessons.length &&
+              completedChecks === assessments.length
             "
           >
             所有课和单元自测都做完了
@@ -112,9 +99,6 @@ const completedChecks = computed(
         />
       </div>
     </section>
-    <small v-if="isDraftCourse" class="content-state"
-      >课程试读稿，待审校</small
-    >
   </main>
 </template>
 
@@ -203,12 +187,6 @@ const completedChecks = computed(
 .path-units :deep(.unit-track:not(:last-child) .track li:last-child)::after {
   top: 36px;
   bottom: -16px;
-}
-.content-state {
-  display: block;
-  margin-top: 20px;
-  color: var(--muted);
-  font-size: 12px;
 }
 @media (max-width: 560px) {
   .path-units {

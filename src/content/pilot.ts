@@ -13,7 +13,7 @@ export function scoreReading(
       submitted < 0 ||
       submitted >= q.options.length
     )
-      throw new Error("请完成每道试读题。");
+      throw new Error("请答完这篇文章的阅读题。");
     return {
       questionId: q.id,
       selected: submitted,

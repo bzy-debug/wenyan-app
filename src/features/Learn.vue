@@ -262,9 +262,7 @@ function onStudyKey(event: KeyboardEvent) {
           <RichText :source="question.prompt" inline />
         </h1>
         <div class="source-caption">
-          <SourceCredit :passage="passage" />{{
-            question.status === "draft" ? " · 草稿" : ""
-          }}
+          <SourceCredit :passage="passage" />
         </div>
         <blockquote v-if="question.mode !== 'span'" class="q-passage">
           {{ passage.text }}

@@ -3,11 +3,11 @@ import { computed, ref } from "vue";
 import { RouterLink } from "vue-router";
 import { BookOpen, ChevronDown, Search } from "@lucide/vue";
 import { byId, course } from "../content";
-import type { Skill } from "../content/schema";
 import SourceCredit from "../components/SourceCredit.vue";
 import RichText from "../components/RichText.vue";
 import { progress } from "../storage/progress";
 import { intervals } from "../domain/review";
+import { learningPath } from "./learningPath";
 
 const query = ref("");
 const area = ref("");
@@ -20,7 +20,7 @@ function toggleDefinition(id: string, event: Event) {
 const areas = [...new Set(course.skills.map((skill) => skill.area))];
 const sources = course.skills.map((skill) => {
   const card = course.cards.find((candidate) => candidate.skillId === skill.id);
-  const lessons = course.lessons.filter((lesson) =>
+  const lessons = learningPath.lessons.filter((lesson) =>
     lesson.mainSkills.includes(skill.id),
   );
   const examples = lessons.flatMap((lesson) => {
@@ -52,11 +52,6 @@ const visible = computed(() => {
 const learned = computed(
   () => entries.value.filter((entry) => entry.schedule).length,
 );
-const statusLabel: Record<Skill["status"], string> = {
-  draft: "待审核",
-  reviewed: "已审核",
-  published: "已发布",
-};
 </script>
 
 <template>
@@ -126,8 +121,7 @@ const statusLabel: Record<Skill["status"], string> = {
         <p v-if="schedule">
           下次复习 <time :datetime="schedule.due">{{ schedule.due }}</time>
         </p>
-        <div class="sources">
-          <span>{{ statusLabel[skill.status] }}</span>
+        <div v-if="lessons.length" class="sources">
           <RouterLink
             v-for="lesson in lessons"
             :key="lesson.id"

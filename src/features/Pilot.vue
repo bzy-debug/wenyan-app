@@ -19,17 +19,8 @@ const selections = ref<Record<string, number>>({});
 const feedback = ref("");
 const cancelRequested = ref(false);
 const taskHeading = ref<HTMLElement>();
-const statusText: Record<PilotForm["status"], string> = {
-  draft: "草稿",
-  reviewed: "已审核",
-  published: "已发布",
-};
 function sourceLabel(form: PilotForm) {
-  return (
-    (form.kind === "teaching" ? "自编教学短文" : form.attribution) +
-    " · " +
-    statusText[form.status]
-  );
+  return form.kind === "teaching" ? "自编教学短文" : form.attribution;
 }
 const segments = ref<number[]>([]);
 const interpretation = ref("");
@@ -80,7 +71,7 @@ async function load() {
     records.value = await readPilotRecords();
     ready.value = true;
   } catch {
-    message.value = "试读记录打不开。请允许浏览器保存本地数据，然后刷新。";
+    message.value = "自测记录打不开。请允许浏览器保存本地数据，然后刷新。";
   } finally {
     busy.value = false;
   }
@@ -130,7 +121,7 @@ async function erase() {
     active.value = undefined;
     consent.value = false;
     confirmingClear.value = false;
-    message.value = "本机试读记录已删除。";
+    message.value = "本机自测记录已删除。";
   } catch {
     message.value = "删除失败，请重试。";
   } finally {
@@ -145,7 +136,7 @@ async function download() {
     return;
   }
   if (!records.value.length) {
-    message.value = "这个浏览器里还没有可导出的试读记录。";
+    message.value = "这个浏览器里还没有可导出的自测记录。";
     return;
   }
   const payload = {
@@ -169,9 +160,9 @@ async function download() {
     <RouterLink to="/settings" class="back"
       ><ArrowLeft :size="16" aria-hidden="true" /> 设置</RouterLink
     >
-    <h1>读一篇没见过的古文</h1>
+    <h1>阅读自测</h1>
     <template v-if="!active">
-      <p class="lead">开始学习前读一篇，过一段时间再读另一篇。看看哪些地方已经能自己读懂。</p>
+      <p class="lead">开始学习前，先自己读一篇古文。学过一段时间，再读第二篇，看看哪些地方已经能自己读懂。</p>
 
       <div class="pilot-permission">
         <p>答案和反馈只保存在这个浏览器里。要分享给别人，可以自行下载记录。</p>
@@ -179,7 +170,7 @@ async function download() {
           <input
             v-model="consent"
             type="checkbox"
-          />我同意在本机保存试读答案和我愿意留下的反馈。
+          />我同意在本机保存这次自测的答案和自愿填写的反馈。
         </label>
       </div>
       <section
@@ -193,7 +184,7 @@ async function download() {
         >
         <h2>{{ form.title }}</h2>
         <template v-if="record">
-          <p>试读已保存</p>
+          <p>自测记录已保存</p>
           <details v-if="hasMaterial">
             <summary>
               查看作答与解析 <ChevronDown :size="16" aria-hidden="true" />
@@ -241,21 +232,21 @@ async function download() {
           :disabled="!consent || !ready || busy"
           @click="start(form)"
         >
-          开始{{ form.stage }}试读
+          {{ form.stage === "学习前" ? "开始第一篇" : "开始第二篇" }}
         </button>
       </section>
       <div v-if="records.length" class="actions">
-        <button class="primary" @click="download">导出试读与反馈</button>
+        <button class="primary" @click="download">导出答案和反馈</button>
         <button
           v-if="!confirmingClear"
           class="secondary"
           @click="confirmingClear = true"
         >
-          删除本机试读记录
+          删除本机自测记录
         </button>
         <template v-else>
           <button class="secondary" :disabled="busy" @click="erase">
-            确认删除全部试读记录
+            确认删除全部自测记录
           </button>
           <button :disabled="busy" @click="confirmingClear = false">
             取消
@@ -330,7 +321,7 @@ async function download() {
           maxlength="1000"
         />
       </fieldset>
-      <label for="pilot-feedback">试读反馈（选填）</label>
+      <label for="pilot-feedback">阅读反馈（选填）</label>
       <textarea
         id="pilot-feedback"
         v-model="feedback"
@@ -348,7 +339,7 @@ async function download() {
           :disabled="busy"
           @click="cancelRequested = true"
         >
-          放弃本次试读
+          放弃本次作答
         </button>
       </div>
       <div v-if="cancelRequested" class="discard" role="alert">

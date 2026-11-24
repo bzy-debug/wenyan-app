@@ -11,44 +11,31 @@ import {
   ListRestart,
   Zap,
 } from "@lucide/vue";
-import { course } from "../content";
 import { dueCards, progress, streak } from "../storage/progress";
-import { currentTarget, isDraftCourse } from "./learningPath";
+import {
+  completedCount,
+  currentTarget,
+  learningPath,
+  unitOfTarget,
+} from "./learningPath";
 import UnitPath from "./UnitPath.vue";
 
 const active = computed(() => progress.value.active);
 const taskId = computed(currentTarget);
-const firstUnfinishedUnit = computed(() =>
-  course.units.find((unit) =>
-    [...unit.lessonIds, unit.assessmentId].some(
-      (id) => !progress.value.completedIds.includes(id),
-    ),
-  ),
-);
 const unit = computed(
-  () =>
-    course.units.find(
-      (unit) =>
-        unit.lessonIds.includes(taskId.value || "") ||
-        unit.assessmentId === taskId.value,
-    ) ??
-    firstUnfinishedUnit.value ??
-    course.units.at(-1)!,
+  () => unitOfTarget(taskId.value) ?? learningPath.units.at(-1),
 );
 const level = computed(() =>
-  course.levels.find((level) => level.id === unit.value.level)!,
+  learningPath.levels.find((level) => level.id === unit.value?.level),
 );
-const completedLessons = computed(
-  () =>
-    course.lessons.filter((lesson) =>
-      progress.value.completedIds.includes(lesson.id),
-    ).length,
-);
+const completedLessons = computed(() => completedCount(learningPath.lessons));
 const practicing = computed(
   () => active.value?.kind === "review" || active.value?.kind === "mistake",
 );
 const percent = computed(() =>
-  Math.round((completedLessons.value / course.lessons.length) * 100),
+  learningPath.lessons.length
+    ? Math.round((completedLessons.value / learningPath.lessons.length) * 100)
+    : 0,
 );
 </script>
 
@@ -56,13 +43,13 @@ const percent = computed(() =>
   <main class="shell dashboard">
     <header class="home-heading">
       <h1>今日学习</h1>
-      <p>
+      <p v-if="level">
         <b>{{ level.id }}</b>{{ level.title }}
       </p>
     </header>
     <div class="dashboard-grid">
       <div class="main-column">
-        <div v-if="practicing || !taskId" class="resume">
+        <div v-if="practicing || (!taskId && unit)" class="resume">
           <component
             :is="practicing ? ListRestart : CheckCheck"
             :size="24"
@@ -75,9 +62,7 @@ const percent = computed(() =>
                   ? active?.kind === "review"
                     ? "上次的复习还没做完"
                     : "上次的错题还没改完"
-                  : firstUnfinishedUnit
-                    ? "后面的课还在准备"
-                    : "这门课学完了"
+                  : "这门课学完了"
               }}
             </h2>
             <RouterLink
@@ -89,18 +74,23 @@ const percent = computed(() =>
             </RouterLink>
           </div>
         </div>
-        <div class="track-heading">
+        <div v-if="unit" class="track-heading">
           <h2>当前单元</h2>
           <RouterLink to="/path"
             >完整路径<ArrowUpRight :size="15" aria-hidden="true"
           /></RouterLink>
         </div>
-        <UnitPath :unit="unit" :current-id="taskId" :home="!practicing" />
+        <UnitPath
+          v-if="unit"
+          :unit="unit"
+          :current-id="taskId"
+          :home="!practicing"
+        />
       </div>
       <aside class="record" aria-labelledby="record-title">
         <h2 id="record-title">学习概览</h2>
         <div class="record-panel">
-          <div class="completion">
+          <div v-if="learningPath.lessons.length" class="completion">
             <svg viewBox="0 0 64 64" class="completion-ring" aria-hidden="true">
               <circle class="ring-track" cx="32" cy="32" r="27" />
               <circle
@@ -120,7 +110,7 @@ const percent = computed(() =>
               <b>课程进度</b>
               <span
                 >已完成 {{ completedLessons }} /
-                {{ course.lessons.length }} 课</span
+                {{ learningPath.lessons.length }} 课</span
               >
             </div>
           </div>
@@ -143,9 +133,6 @@ const percent = computed(() =>
         </div>
       </aside>
     </div>
-    <small v-if="isDraftCourse" class="content-state"
-      >课程试读稿，待审校</small
-    >
   </main>
 </template>
 
@@ -325,12 +312,6 @@ const percent = computed(() =>
   border-radius: 7px;
   background: var(--accent-strong);
   color: #fff;
-}
-.content-state {
-  display: block;
-  margin: 22px 0 3px;
-  color: #667187;
-  font-size: 12px;
 }
 @media (max-width: 1040px) and (min-width: 840px), (max-width: 680px) {
   .dashboard-grid {
