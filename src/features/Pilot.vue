@@ -1,6 +1,9 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, nextTick, onMounted, ref, shallowRef } from "vue";
+import { ArrowLeft, ChevronDown } from "@lucide/vue";
 import { RouterLink } from "vue-router";
+import { downloadText } from "../services/download";
+import RichText from "../components/RichText.vue";
 import { pilot, type PilotForm } from "../content/pilot";
 import {
   readPilotRecords,
@@ -11,9 +14,23 @@ import {
 
 const consent = ref(false);
 const records = ref<PilotRecord[]>([]);
-const active = ref<PilotForm>();
+const active = shallowRef<PilotForm>();
 const selections = ref<Record<string, number>>({});
 const feedback = ref("");
+const cancelRequested = ref(false);
+const taskHeading = ref<HTMLElement>();
+const statusText: Record<PilotForm["status"], string> = {
+  draft: "草稿",
+  reviewed: "已审核",
+  published: "已发布",
+};
+function sourceLabel(form: PilotForm) {
+  return (
+    (form.kind === "teaching" ? "自编教学短文" : form.attribution) +
+    " · " +
+    statusText[form.status]
+  );
+}
 const segments = ref<number[]>([]);
 const interpretation = ref("");
 function toggleBreak(after: number) {
@@ -30,16 +47,24 @@ const confirmingClear = ref(false);
 const busy = ref(true);
 const ready = ref(false);
 const message = ref("");
+const answered = computed(
+  () =>
+    active.value?.questions.filter((q) =>
+      Number.isInteger(selections.value[q.id]),
+    ).length ?? 0,
+);
 const complete = computed(() =>
-  active.value?.questions.every((q) =>
-    Number.isInteger(selections.value[q.id]),
-  ),
+  Boolean(active.value && answered.value === active.value.questions.length),
 );
 const findRecord = (form: PilotForm) =>
   records.value.find((r) => r.formId === form.id);
 const forms = computed(() =>
-  pilot.forms.map((form) => {
-    const record = findRecord(form);
+  pilot.forms.map((current) => {
+    const record = findRecord(current);
+    // Legacy records only contain option indexes. Resolve them against their original revision.
+    const form = record?.material ?? current;
+    const hasMaterial =
+      !record || Boolean(record.material) || record.version === current.version;
     const explanations = form.questions.map((question) => {
       const answer = record?.answers.find((a) => a.questionId === question.id);
       return {
@@ -48,7 +73,7 @@ const forms = computed(() =>
       };
     });
     const score = record?.answers.filter((answer) => answer.correct).length;
-    return { form, record, score, explanations };
+    return { form, record, score, explanations, hasMaterial };
   }),
 );
 async function load() {
@@ -63,14 +88,17 @@ async function load() {
 }
 onMounted(load);
 
-function start(form: PilotForm) {
+async function start(form: PilotForm) {
   if (!consent.value || !ready.value || findRecord(form)) return;
   selections.value = {};
   feedback.value = "";
   segments.value = [];
   interpretation.value = "";
   message.value = "";
+  cancelRequested.value = false;
   active.value = form;
+  await nextTick();
+  taskHeading.value?.focus();
 }
 async function submit() {
   if (!active.value || !complete.value || !consent.value || busy.value) return;
@@ -126,54 +154,67 @@ async function download() {
     version: pilot.version,
     submissions: records.value,
   };
-  const blob = new Blob([JSON.stringify(payload, null, 2)], {
-    type: "application/json",
-  });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = "wenyan-pilot-v1.json";
-  link.click();
-  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+  try {
+    downloadText(
+      "wenyan-pilot-v" + pilot.version + ".json",
+      JSON.stringify(payload, null, 2),
+    );
+  } catch {
+    message.value = "导出失败，请重新下载。";
+  }
 }
 </script>
 
 <template>
   <main class="reading pilot">
-    <RouterLink to="/settings" class="back">← 设置</RouterLink>
+    <RouterLink to="/settings" class="back"
+      ><ArrowLeft :size="16" aria-hidden="true" /> 设置</RouterLink
+    >
     <h1>陌生文本试读</h1>
     <template v-if="!active">
       <p class="lead">学习前后各读一篇新短文，看看哪些文意可以独立读通。</p>
-      <p>
-        每篇 3 题，约 3
-        分钟。请独立作答。成绩与反馈仅保存于此浏览器，只有你主动导出并分享时，试用组织者才能看到。
-      </p>
-      <label v-if="records.length < pilot.forms.length" class="permission">
-        <input
-          v-model="consent"
-          type="checkbox"
-        />我同意在本机记录试读首答与自愿填写的反馈。
-      </label>
+
+      <div class="pilot-permission">
+        <p>首答与反馈仅保存在此设备。试读结束后，可以自行下载并分享记录。</p>
+        <label v-if="forms.some((item) => !item.record)" class="permission">
+          <input
+            v-model="consent"
+            type="checkbox"
+          />我同意在本机记录试读首答与自愿填写的反馈。
+        </label>
+      </div>
       <section
-        v-for="({ form, record, score, explanations }, i) in forms"
+        v-for="{ form, record, score, explanations, hasMaterial } in forms"
         :key="form.id"
         class="pilot-section"
       >
-        <small>{{ i === 0 ? "学习前" : "学习后" }} · 自编教学短文 · 草稿</small>
+        <small
+          >{{ form.stage }} · {{ sourceLabel(form) }} ·
+          {{ form.questions.length }} 道阅读题</small
+        >
         <h2>{{ form.title }}</h2>
         <template v-if="record">
-          <p>独立首答 {{ score }} / {{ form.questions.length }}</p>
-          <details>
-            <summary>查看首答与解析</summary>
+          <p>独立首答 {{ score }} / {{ record.answers.length }}</p>
+          <details v-if="hasMaterial">
+            <summary>
+              查看首答与解析 <ChevronDown :size="16" aria-hidden="true" />
+            </summary>
             <blockquote>{{ form.passage }}</blockquote>
             <div
               v-for="{ question: q, selection } in explanations"
               :key="q.id"
               class="finding"
             >
-              <strong>{{ q.target }} · {{ q.prompt }}</strong>
+              <strong
+                >{{ q.target }} · <RichText :source="q.prompt" inline
+              /></strong>
               <p>你的选择：{{ selection }}</p>
-              <p>参考答案：{{ q.options[q.correct] }}。{{ q.explanation }}</p>
+              <p>
+                参考答案：{{ q.options[q.correct] }}。<RichText
+                  :source="q.explanation"
+                  inline
+                />
+              </p>
             </div>
             <h3>断句与译意自评</h3>
             <p>
@@ -190,6 +231,7 @@ async function download() {
             <p>参考大意：{{ form.extension.interpretation }}</p>
             <p v-if="record.feedback">你的反馈：{{ record.feedback }}</p>
           </details>
+          <p v-else>这份记录使用旧版试读材料。可导出原始首答与反馈。</p>
         </template>
         <button
           v-else
@@ -197,7 +239,7 @@ async function download() {
           :disabled="!consent || !ready || busy"
           @click="start(form)"
         >
-          开始{{ i === 0 ? "学习前" : "学习后" }}试读
+          开始{{ form.stage }}试读
         </button>
       </section>
       <div v-if="records.length" class="actions">
@@ -220,24 +262,39 @@ async function download() {
       </div>
     </template>
     <form v-else class="pilot-form" @submit.prevent="submit">
-      <h2>{{ active.title }}</h2>
+      <h2 ref="taskHeading" tabindex="-1">{{ active.title }}</h2>
       <blockquote class="passage">{{ active.passage }}</blockquote>
       <p>
-        <small>自编教学短文 · 草稿。{{ active.glossary }}</small>
+        <small
+          >{{ sourceLabel(active) }} ·
+          <RichText :source="active.glossary" inline
+        /></small>
       </p>
-      <fieldset v-for="(q, i) in active.questions" :key="q.id">
-        <legend>{{ i + 1 }}. {{ q.prompt }}</legend>
-        <label v-for="(option, index) in q.options" :key="option">
+      <div class="answered" aria-live="polite">
+        已答 {{ answered }} / {{ active.questions.length }} 题
+        <progress
+          :value="answered"
+          :max="active.questions.length"
+          aria-label="已答题数"
+        />
+      </div>
+      <fieldset class="question" v-for="(q, i) in active.questions" :key="q.id">
+        <legend>{{ i + 1 }}. <RichText :source="q.prompt" inline /></legend>
+        <label
+          v-for="(option, index) in q.options"
+          :key="option"
+          :class="{ selected: selections[q.id] === index }"
+        >
           <input
             v-model="selections[q.id]"
             type="radio"
             :name="q.id"
             :value="index"
             required
-          />{{ option }}
+          /><RichText :source="option" inline />
         </label>
       </fieldset>
-      <fieldset>
+      <fieldset class="extension">
         <legend>续读 · 断句与译意（选做，自评）</legend>
         <p>点选一个字，在该字后加停顿；再次点选即可取消。</p>
         <div class="segmentation" aria-label="给短句断句">
@@ -281,13 +338,27 @@ async function download() {
           type="button"
           class="secondary"
           :disabled="busy"
-          @click="active = undefined"
+          @click="cancelRequested = true"
         >
           放弃本次试读
         </button>
       </div>
+      <div v-if="cancelRequested" class="discard" role="alert">
+        <p>离开后，本次未提交的选择和填写内容会清除。</p>
+        <div class="actions">
+          <button type="button" class="secondary" @click="active = undefined">
+            确认放弃</button
+          ><button
+            type="button"
+            class="primary"
+            @click="cancelRequested = false"
+          >
+            继续作答
+          </button>
+        </div>
+      </div>
     </form>
-    <p role="status">{{ message }}</p>
+    <p v-if="message" role="status">{{ message }}</p>
   </main>
 </template>
 
@@ -304,30 +375,21 @@ async function download() {
   min-height: 44px;
 }
 .pilot input {
-  accent-color: var(--green);
+  accent-color: var(--accent);
   flex: none;
 }
 .pilot-section {
   border-top: 1px solid var(--line);
-  padding: 1rem 0;
+  padding: 22px 0;
 }
 .pilot-section h2,
 .pilot-form h2 {
   margin: 0.4rem 0 0.8rem;
 }
-.pilot button:disabled {
-  opacity: 0.55;
-}
-.pilot summary {
-  cursor: pointer;
-  padding: 0.4rem 0;
-}
 .pilot details blockquote {
-  font: 1.3rem/1.8 var(--serif);
+  font-size: 1.3rem;
+  line-height: 1.8;
   margin: 0.5rem 0;
-}
-.finding {
-  margin: 0.8rem 0;
 }
 .pilot-form fieldset {
   border: 0;
@@ -352,21 +414,104 @@ async function download() {
   display: grid;
   place-content: center;
   grid-auto-flow: column;
-  font: 1.3rem var(--serif);
+  font-size: 1.3rem;
 }
 .segmentation button {
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 5px;
 }
 .segmentation button[aria-pressed="true"] {
-  color: var(--green);
-  background: #e4ecdd;
+  color: var(--accent);
+  background: var(--accent-tint);
 }
 .pilot-form textarea {
+  resize: vertical;
+  color: var(--ink);
+  background: var(--surface);
   width: 100%;
   font: inherit;
   padding: 0.6rem;
   border: 1px solid var(--line);
   border-radius: 6px;
+}
+.pilot .back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  color: var(--accent);
+}
+.pilot-permission,
+.discard {
+  background: #f1f2f9;
+  border-radius: 10px;
+  padding: 12px 17px;
+  margin: 18px 0;
+}
+.pilot-permission p {
+  color: var(--muted);
+  margin: 0;
+  font-size: 14px;
+}
+.pilot-section small {
+  color: var(--accent);
+  font-weight: 600;
+}
+.pilot-section summary {
+  cursor: pointer;
+  padding: 0.4rem 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  color: var(--accent);
+}
+.pilot-section summary::-webkit-details-marker {
+  display: none;
+}
+.finding {
+  margin: 0.8rem 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+.pilot-form .passage {
+  margin: 16px 0 8px;
+  padding: 17px 20px;
+  background: #f0f4f8;
+  border-left: 3px solid #8193aa;
+  font-size: 22px;
+  line-height: 1.9;
+}
+.answered {
+  color: var(--muted);
+  margin: 20px 0;
+  font-size: 14px;
+}
+.answered progress {
+  display: block;
+  width: 100%;
+  height: 6px;
+  margin-top: 6px;
+}
+.pilot-form .question label {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 9px;
+  padding: 9px 12px;
+  margin: 6px 0;
+  cursor: pointer;
+}
+.pilot-form .question label.selected {
+  border-color: var(--accent);
+  background: var(--accent-tint);
+}
+.pilot-form input[type="radio"],
+.permission input {
+  width: 17px;
+  height: 17px;
+}
+.pilot .extension {
+  margin: 18px 0;
 }
 </style>

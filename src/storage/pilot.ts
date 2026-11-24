@@ -1,9 +1,10 @@
 import Dexie, { type Table } from "dexie";
-import { pilot, scoreReading, type PilotForm } from "../content/pilot";
+import { scoreReading, type PilotForm } from "../content/pilot";
 
 export interface PilotRecord {
   formId: string;
   version: number;
+  material?: PilotForm;
   consentVersion: 1;
   completedAt: string;
   answers: ReturnType<typeof scoreReading>;
@@ -36,7 +37,8 @@ export async function savePilot(
 ) {
   const record: PilotRecord = {
     formId: form.id,
-    version: pilot.version,
+    version: form.version,
+    material: form,
     consentVersion: 1,
     completedAt: new Date().toISOString(),
     segments: [...segments].sort((a, b) => a - b),

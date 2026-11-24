@@ -15,10 +15,10 @@ function show(mode: Question["mode"], locked = false) {
       components: { QuestionInput },
       setup() {
         const selected = ref<string[]>([]);
-        return { question, selected, locked };
+        return { course, question, selected, locked };
       },
       template:
-        '<QuestionInput :question="question" :selected="selected" :locked="locked" @select="selected = $event" />',
+        '<QuestionInput :course="course" :question="question" :selected="selected" :locked="locked" @select="selected = $event" />',
     }),
   );
 }
@@ -53,4 +53,22 @@ it.each(["choice", "span", "order"] as const)("%s 提交后锁定输入", (mode)
   show(mode, true);
   for (const button of screen.getAllByRole<HTMLButtonElement>("button"))
     expect(button.disabled).toBe(true);
+});
+
+it("从当前预览文档读取选段与原文", () => {
+  const preview = structuredClone(course);
+  const question = preview.questions.find((q) => q.mode === "span")!;
+  const passage = preview.passages.find((p) => p.id === question.passageId)!;
+  const option = question.options[0];
+  const span = preview.spans.find((s) => s.id === option.spanId)!;
+  const replacement = "客".repeat(span.text.length);
+  passage.text =
+    passage.text.slice(0, span.start) +
+    replacement +
+    passage.text.slice(span.end);
+  span.text = replacement;
+  render(QuestionInput, {
+    props: { course: preview, question, selected: [], locked: false },
+  });
+  expect(screen.getByRole("button", { name: replacement })).toBeTruthy();
 });

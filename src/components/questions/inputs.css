@@ -1,0 +1,162 @@
+.q-choices {
+  display: grid;
+  gap: 10px;
+}
+.q-choices button,
+.q-pool button,
+.q-spans button {
+  color: #292c42;
+  font: inherit;
+  background: #fff;
+  border: 1.5px solid #d8daea;
+  border-radius: 12px;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    background-color 0.15s;
+}
+.q-choices button {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-align: left;
+  min-height: 56px;
+  padding: 11px 16px;
+  line-height: 1.6;
+}
+.q-choices button:not(:disabled):hover,
+.q-pool button:not(:disabled):hover,
+.q-spans button:not(:disabled):hover {
+  border-color: #8a80d5;
+}
+.q-choices .q-key {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  background: #f0f1f7;
+  color: #666a80;
+  font:
+    600 13px/1 ui-monospace,
+    monospace;
+}
+.q-choices .option-icon {
+  margin-left: auto;
+  color: #b2b4c4;
+  flex-shrink: 0;
+}
+.q-choices .selected,
+.q-spans button[aria-pressed="true"] {
+  border-color: #6656d8;
+  background: #f2f0ff;
+  color: #4434a5;
+}
+.q-choices .selected .q-key {
+  background: #5b4ac5;
+  color: white;
+}
+.q-choices .selected .option-icon {
+  color: #5b4ac5;
+}
+.q-choices button.correct,
+.q-spans button.correct,
+.q-slots li.correct {
+  border-color: #63a693;
+  color: #175b4a;
+  background: #eaf7f2;
+}
+.q-choices .correct .option-icon {
+  color: #29785e;
+}
+.q-choices button.missed,
+.q-spans button.missed,
+.q-slots li.missed {
+  border-color: #cc8d71;
+  color: #83482d;
+  background: #fff4ed;
+}
+.q-choices .missed .option-icon {
+  color: #aa6545;
+}
+.q-choices button:disabled,
+.q-spans button:disabled {
+  cursor: default;
+}
+.q-passage {
+  margin: 0 0 20px;
+  padding: 18px 20px;
+  background: #f4f4fb;
+  border-left: 3px solid #8a7de0;
+  border-radius: 0 10px 10px 0;
+  color: #24253d;
+  font-size: clamp(18px, 2.6vw, 23px);
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+.q-spans button {
+  padding: 1px 7px;
+  min-height: 44px;
+  margin: 2px 3px;
+  border-radius: 7px;
+  font-weight: 550;
+  border-bottom-width: 2px;
+}
+.q-slots {
+  margin: 0 0 14px;
+  padding: 0;
+  display: grid;
+  gap: 7px;
+  list-style: none;
+}
+.q-slots li {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 43px;
+  border: 1px dashed #c3c6d7;
+  border-radius: 10px;
+  padding: 8px 12px;
+  color: #676c83;
+}
+.q-slots li span {
+  font:
+    600 13px/1 ui-monospace,
+    monospace;
+}
+.q-slots li.filled {
+  background: #f3f2fd;
+  border-style: solid;
+  border-color: #c0b9ea;
+  color: #433a83;
+}
+.q-pool {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.q-pool button {
+  min-height: 44px;
+  padding: 7px 12px;
+}
+.q-pool button:disabled {
+  color: #73768b;
+  background: #f1f1f6;
+  cursor: default;
+}
+.q-pool .undo {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border-color: transparent;
+  background: transparent;
+  color: #5443b6;
+}
+@media (prefers-reduced-motion: reduce) {
+  .q-choices button,
+  .q-pool button,
+  .q-spans button {
+    transition: none;
+  }
+}

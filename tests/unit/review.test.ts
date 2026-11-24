@@ -68,11 +68,12 @@ describe("单元关卡", () => {
     ).toBe(true);
   });
   it("六题单元检查以四题独立首答为界", () => {
-    const ids = course.lessons[0].questionIds.slice(0, 6);
+    const assessment = course.assessments[0];
+    const ids = assessment.questionIds;
     const round: Round = {
       id: "sample",
       kind: "assessment",
-      targetId: "assessment.1",
+      targetId: assessment.id,
       questionIds: ids,
       index: 5,
       selected: [],

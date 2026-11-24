@@ -29,7 +29,7 @@ interface Row {
 const db = new Dexie("wenyan-learning");
 db.version(1).stores({ progress: "key" });
 const records: Table<Row, string> = db.table("progress");
-const key = "learner";
+const key = `${course.id}:v${course.version}`;
 export const progress = shallowRef<Progress>(emptyProgress());
 const today = shallowRef(localDay());
 let revision = -1;

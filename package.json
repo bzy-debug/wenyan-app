@@ -19,6 +19,7 @@
   "dependencies": {
     "@lucide/vue": "^1.79.0",
     "dexie": "^4.4.7",
+    "markdown-it": "^14.3.3",
     "vue": "^3.5.46",
     "vue-router": "^4.6.5",
     "zod": "^4.6.7"
@@ -27,6 +28,7 @@
     "@playwright/test": "^1.65.1",
     "@testing-library/user-event": "^14.6.13",
     "@testing-library/vue": "^8.1.0",
+    "@types/markdown-it": "^14.2.0",
     "@types/node": "^24.19.2",
     "@vitejs/plugin-vue": "^6.0.11",
     "@vue/test-utils": "^2.6.0",

@@ -1,28 +1,62 @@
 import { createApp } from "vue";
 import { createRouter, createWebHashHistory } from "vue-router";
 import App from "./app/App.vue";
-import Home from "./features/Home.vue";
-import Path from "./features/Path.vue";
-import Learn from "./features/Learn.vue";
-import Result from "./features/Result.vue";
-import Review from "./features/Review.vue";
-import Knowledge from "./features/Knowledge.vue";
-import Settings from "./features/Settings.vue";
-import Pilot from "./features/Pilot.vue";
 import "./app/styles.css";
 
+const learn = () => import("./features/Learn.vue");
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [
-    { path: "/", component: Home, meta: { title: "今日学习" } },
-    { path: "/path", component: Path, meta: { title: "课程路径" } },
-    { path: "/learn/:id", component: Learn, meta: { title: "阅读练习" } },
-    { path: "/practice", component: Learn, meta: { title: "巩固练习" } },
-    { path: "/result", component: Result, meta: { title: "本轮结算" } },
-    { path: "/review", component: Review, meta: { title: "复习" } },
-    { path: "/knowledge", component: Knowledge, meta: { title: "知识库" } },
-    { path: "/settings", component: Settings, meta: { title: "设置" } },
-    { path: "/pilot", component: Pilot, meta: { title: "阅读试用" } },
+    {
+      path: "/",
+      component: () => import("./features/Home.vue"),
+      meta: { title: "今日学习" },
+    },
+    {
+      path: "/path",
+      component: () => import("./features/Path.vue"),
+      meta: { title: "课程路径" },
+    },
+    {
+      path: "/learn/:id",
+      component: learn,
+      meta: { title: "阅读练习", focused: true },
+    },
+    {
+      path: "/practice",
+      component: learn,
+      meta: { title: "巩固练习", focused: true },
+    },
+    {
+      path: "/result",
+      component: () => import("./features/Result.vue"),
+      meta: { title: "本轮结算", focused: true },
+    },
+    {
+      path: "/review",
+      component: () => import("./features/Review.vue"),
+      meta: { title: "复习" },
+    },
+    {
+      path: "/knowledge",
+      component: () => import("./features/Knowledge.vue"),
+      meta: { title: "知识库" },
+    },
+    {
+      path: "/settings",
+      component: () => import("./features/Settings.vue"),
+      meta: { title: "设置" },
+    },
+    {
+      path: "/pilot",
+      component: () => import("./features/Pilot.vue"),
+      meta: { title: "阅读试用" },
+    },
+    {
+      path: "/author",
+      component: () => import("./features/AuthorPreview.vue"),
+      meta: { title: "作者预览", focused: true, standalone: true },
+    },
     { path: "/:pathMatch(.*)*", redirect: "/" },
   ],
   scrollBehavior(_to, _from, position) {
@@ -32,4 +66,5 @@ const router = createRouter({
 router.afterEach((to) => {
   document.title = to.meta.title + " · 文言拾阶";
 });
-createApp(App).use(router).mount("#app");
+const app = createApp(App).use(router);
+void router.isReady().then(() => app.mount("#app"));

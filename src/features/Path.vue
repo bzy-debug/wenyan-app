@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { Flag } from "@lucide/vue";
+import { ListChecks } from "@lucide/vue";
 import { course } from "../content";
 import { progress } from "../storage/progress";
+import { currentTarget, isDraftCourse } from "./learningPath";
 import UnitPath from "./UnitPath.vue";
 
+const current = computed(currentTarget);
 const passed = computed(
   () =>
     course.lessons.filter((lesson) =>
@@ -13,70 +15,89 @@ const passed = computed(
 );
 const passedChecks = computed(
   () =>
-    course.assessments.filter((assessment) =>
-      progress.value.passedIds.includes(assessment.id),
+    course.assessments.filter((check) =>
+      progress.value.passedIds.includes(check.id),
     ).length,
 );
 </script>
 
 <template>
   <main class="shell path">
-    <div class="eyebrow"><span class="dash" /> L1 · 读懂单句</div>
-    <h1>课程路径</h1>
-    <p class="lead">
-      从辨认一个词，到读懂一段古文。循序完成各课，通过单元检查后进入下一单元。
-    </p>
+    <header class="path-title">
+      <h1>课程路径</h1>
+      <p>{{ course.description }}</p>
+    </header>
     <div class="overview">
-      <Flag :size="17" aria-hidden="true" />
+      <ListChecks :size="17" aria-hidden="true" />
       <span
         >已通过 <b>{{ passed }} / {{ course.lessons.length }}</b> 课</span
       >
-      <span class="overview-separator" aria-hidden="true"></span>
+      <i aria-hidden="true" />
       <span
         ><b>{{ passedChecks }} / {{ course.assessments.length }}</b>
         项单元检查</span
       >
-      <small>教学内容 · 草稿试用</small>
     </div>
     <div class="path-grid">
-      <UnitPath v-for="unit in course.units" :key="unit.id" :unit="unit" />
+      <UnitPath
+        v-for="unit in course.units"
+        :key="unit.id"
+        :unit="unit"
+        :current-id="current"
+      />
     </div>
+    <small v-if="isDraftCourse" class="content-state"
+      >课程内容 · 草稿试用</small
+    >
   </main>
 </template>
 
 <style scoped>
-.path {
-  padding-bottom: 48px;
+.path-title h1 {
+  margin: 0;
+  font-family: inherit;
+  font-size: clamp(28px, 3.3vw, 38px);
+  letter-spacing: -0.04em;
+  line-height: 1.25;
+}
+.path-title p {
+  color: #647087;
+  margin: 9px 0 0;
+  font-size: 14px;
+  line-height: 1.7;
 }
 .overview {
-  color: var(--muted);
   display: flex;
+  align-items: center;
   flex-wrap: wrap;
   gap: 9px;
-  align-items: center;
-  border-top: 1px solid var(--line);
-  padding-block: 15px;
+  color: #657088;
   font-size: 13px;
+  margin: 20px 0;
 }
-.overview b,
-.overview svg {
-  color: var(--green);
+.overview svg,
+.overview b {
+  color: var(--accent-strong);
 }
-.overview small {
-  margin-left: auto;
+.overview i {
+  height: 13px;
+  border-left: 1px solid #d7dce7;
+}
+.path-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 23px;
+  align-items: start;
+}
+.content-state {
+  display: block;
+  margin: 20px 0 0;
+  color: #667187;
   font-size: 12px;
 }
-.overview-separator {
-  height: 13px;
-  border-left: 1px solid var(--line);
-}
-@media (max-width: 450px) {
-  .overview {
-    gap: 6px;
-  }
-  .overview small {
-    width: 100%;
-    margin-left: 23px;
+@media (max-width: 1060px) and (min-width: 840px), (max-width: 690px) {
+  .path-grid {
+    grid-template-columns: 1fr;
   }
 }
 </style>

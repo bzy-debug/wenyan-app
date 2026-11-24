@@ -2,6 +2,12 @@
 
 面向中文母语成人的文言文阅读练习。L1 草稿试用版包含 4 个单元、12 节课、4 次单元检查，共 120 道计分题。每节课先读讲解，再借上下文辨义、定位证据和梳理事件。课程、练习、复习和学习记录都在浏览器内运行。
 
+## 编写与预览课程
+
+在[作者预览](https://bzy-debug.github.io/wenyan-app/#/author)选择任意课稿，可修改 Markdown、查看讲解、直接试做该课任意一题并下载修改稿。已有稿件也可以从本机打开。预览在浏览器内运行，独立于学习进度。
+
+课稿位于 [content/v1/course](content/v1/course)。目录声明课程顺序，每课一份 Markdown，其中包含讲解、例句、题目和反馈。试读另放在 [content/v1/pilot](content/v1/pilot)。上稿格式见[作者手册](docs/AUTHORING.md)，书目与修订依据见[教学参考](docs/TEACHING_REFERENCES.md)。
+
 ## 开发和验证
 
 使用 .nvmrc 指定的 Node.js 24 LTS 版本，依赖由 npm lockfile 固定。
@@ -34,14 +40,14 @@ npm run test:e2e
 
 | 路径 | 职责 |
 | --- | --- |
-| content/v1、src/content、scripts | 版本化题库、Zod 契约、引用及覆盖校验 |
+| content/v1、src/content、scripts | Markdown 课稿、构建期编译、数据契约与校验 |
 | src/domain、src/storage | 判题、复习阶梯、进度规则、IndexedDB 与备份 |
 | src/components/questions、src/features | Vue 答题组件、学习、路径、复习、知识库、设置与试用页面 |
 | src/app、src/main.ts | 应用外壳、响应式布局、Vue Router |
 | tests、.github/workflows | 单元、交互与端到端验证；Pages 部署 |
 | docs | 产品规格、内容生产规范、试用流程、浏览器截图 |
 
-阅读 [产品规格](docs/SPEC.md)、[内容指南](docs/CONTENT_GUIDE.md) 和 [试用说明](docs/PILOT.md)。示例均为草稿，采用自撰教学语境；发布为正式教材前须经人工审核。首页山水为项目生成的装饰插画。
+阅读 [产品规格](docs/SPEC.md)、[内容指南](docs/CONTENT_GUIDE.md) 和 [试用说明](docs/PILOT.md)。当前课程为待审核草稿。古籍引文注明所据文本，现代译注与练习为自撰。
 
 ## 界面实测
 

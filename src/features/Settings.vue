@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { RouterLink } from "vue-router";
-import { ArrowRight, Download, FileUp } from "@lucide/vue";
+import { ArrowRight, Download, FileUp, NotebookPen } from "@lucide/vue";
 import {
   exportBackup,
   importBackup,
   validateBackup,
 } from "../storage/progress";
+import { downloadText } from "../services/download";
 import { localDay } from "../domain/review";
 
 const busy = ref(false);
@@ -27,15 +28,10 @@ async function download() {
   busy.value = true;
   error.value = notice.value = "";
   try {
-    const blob = new Blob([await exportBackup()], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "文言拾阶-学习备份-" + localDay() + ".json";
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    downloadText(
+      "文言拾阶-学习备份-" + localDay() + ".json",
+      await exportBackup(),
+    );
     notice.value = "已生成备份文件，请妥善保存。";
   } catch (cause) {
     displayError(cause);
@@ -89,15 +85,25 @@ async function restore() {
 <template>
   <main class="reading settings">
     <h1>设置</h1>
-    <section>
-      <h2>学习备份</h2>
-      <p>
-        学习记录保存在此浏览器中。换设备或清理浏览器前，可导出进度，再在另一台设备上恢复。
-      </p>
-      <div class="actions">
-        <button class="primary" :disabled="busy" @click="download">
+    <p class="lead">管理此设备的学习进度与试读记录。</p>
+    <section aria-labelledby="backup-title">
+      <h2 id="backup-title">学习备份</h2>
+      <div class="setting-row">
+        <div>
+          <h3>下载学习记录</h3>
+          <p>
+            保存关卡进度、复习安排和未完成的练习。换设备后可用此文件继续学习。
+          </p>
+        </div>
+        <button class="secondary" :disabled="busy" @click="download">
           <Download />导出备份
         </button>
+      </div>
+      <div class="setting-row">
+        <div>
+          <h3>从备份恢复</h3>
+          <p>选择之前导出的 JSON 文件，预览后确认恢复。</p>
+        </div>
         <label class="secondary file" :class="{ disabled: busy }"
           ><FileUp />选择备份文件<input
             type="file"
@@ -128,8 +134,9 @@ async function restore() {
     </section>
     <section>
       <h2>参与试用</h2>
+      <p>用两篇陌生文本，对照学习前后的独立阅读表现。</p>
       <RouterLink class="text-link" to="/pilot"
-        >陌生文本试读与反馈 <ArrowRight :size="16"
+        ><NotebookPen :size="16" />陌生文本试读与反馈 <ArrowRight :size="16"
       /></RouterLink>
     </section>
   </main>
@@ -154,7 +161,7 @@ async function restore() {
   cursor: pointer;
 }
 .file:focus-within {
-  outline: 3px solid #a55a28;
+  outline: 3px solid var(--accent);
   outline-offset: 3px;
 }
 .file input {
@@ -168,8 +175,8 @@ async function restore() {
   opacity: 0.6;
 }
 .preview {
-  background: #edf2e7;
-  border: 1px solid #ccd7c5;
+  background: var(--accent-tint);
+  border: 1px solid #d6d8ee;
   padding: 16px;
   border-radius: 9px;
   margin-top: 16px;
@@ -182,6 +189,33 @@ async function restore() {
   min-height: 44px;
 }
 .settings [role="alert"] {
-  color: #914a22;
+  color: var(--danger);
+}
+.settings h3 {
+  font-size: 16px;
+}
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 20px 0;
+}
+.setting-row + .setting-row {
+  border-top: 1px solid var(--line);
+}
+.setting-row p {
+  font-size: 14px;
+  margin-top: 4px;
+}
+.setting-row .secondary {
+  flex-shrink: 0;
+}
+@media (max-width: 520px) {
+  .setting-row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
 }
 </style>

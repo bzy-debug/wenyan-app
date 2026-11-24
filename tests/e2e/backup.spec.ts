@@ -50,7 +50,13 @@ test("错题订正后可从真实备份恢复，并保留刷新前的首答", as
   await page.getByRole("button", { name: "确认恢复" }).click();
   await expect(page.getByText("学习进度已恢复。")).toBeVisible();
   await page.reload();
-  await page.goto("./#/review");
+  await expect(
+    page.getByRole("heading", { name: "设置", exact: true }),
+  ).toBeVisible();
+  await page
+    .getByRole("navigation")
+    .getByRole("link", { name: "复习", exact: true })
+    .click();
   await expect(
     page.getByRole("button", { name: "订正", exact: true }),
   ).toBeVisible();

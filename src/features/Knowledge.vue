@@ -4,6 +4,8 @@ import { RouterLink } from "vue-router";
 import { BookOpen, ChevronDown, Search } from "@lucide/vue";
 import { byId, course } from "../content";
 import type { Skill } from "../content/schema";
+import SourceCredit from "../components/SourceCredit.vue";
+import RichText from "../components/RichText.vue";
 import { progress } from "../storage/progress";
 import { intervals } from "../domain/review";
 
@@ -11,22 +13,23 @@ const query = ref("");
 const area = ref("");
 const onlyLearned = ref(false);
 const areas = [...new Set(course.skills.map((skill) => skill.area))];
+const sources = course.skills.map((skill) => {
+  const card = course.cards.find((candidate) => candidate.skillId === skill.id);
+  const lessons = course.lessons.filter((lesson) =>
+    lesson.mainSkills.includes(skill.id),
+  );
+  const examples = lessons.flatMap((lesson) => {
+    const index = lesson.mainSkills.indexOf(skill.id);
+    const passageId = lesson.exampleIds[index];
+    return passageId ? [byId(course.passages, passageId)] : [];
+  });
+  return { skill, card, examples, lessons };
+});
 const entries = computed(() =>
-  course.skills.map((skill) => {
-    const card = course.cards.find(
-      (candidate) => candidate.skillId === skill.id,
-    );
-    const schedule = card && progress.value.cards[card.id];
-    const lessons = course.lessons.filter((lesson) =>
-      lesson.mainSkills.includes(skill.id),
-    );
-    const examples = lessons.flatMap((lesson) => {
-      const index = lesson.mainSkills.indexOf(skill.id);
-      const passageId = lesson.exampleIds[index];
-      return passageId ? [byId(course.passages, passageId)] : [];
-    });
-    return { skill, schedule, examples, lessons };
-  }),
+  sources.map((entry) => ({
+    ...entry,
+    schedule: entry.card && progress.value.cards[entry.card.id],
+  })),
 );
 const visible = computed(() => {
   const keyword = query.value.trim().toLowerCase();
@@ -76,7 +79,19 @@ const statusLabel: Record<Skill["status"], string> = {
       >
     </div>
     <p class="count" role="status">共 {{ visible.length }} 个知识点</p>
-    <p v-if="!visible.length" class="empty">没有找到匹配的知识点。</p>
+    <div v-if="!visible.length" class="empty">
+      <p>没有找到匹配的知识点。</p>
+      <button
+        class="secondary"
+        @click="
+          query = '';
+          area = '';
+          onlyLearned = false;
+        "
+      >
+        清除筛选
+      </button>
+    </div>
     <details
       v-for="{ skill, schedule, examples, lessons } in visible"
       :key="skill.id"
@@ -87,20 +102,18 @@ const statusLabel: Record<Skill["status"], string> = {
           <small>{{ skill.area }}</small>
           <h2>{{ skill.word }} · {{ skill.meaning }}</h2>
         </div>
-        <span class="mastery">{{
+        <span class="mastery" :class="{ learned: schedule }">{{
           schedule ? intervals[schedule.level] + " 天间隔" : "未学"
         }}</span>
         <ChevronDown :size="17" class="chevron" aria-hidden="true" />
       </summary>
       <div class="definition">
-        <p>{{ skill.detail }}</p>
+        <RichText :source="skill.detail" />
         <figure v-for="example in examples" :key="example.id">
           <blockquote>{{ example.text }}</blockquote>
           <figcaption>
-            {{
-              example.kind === "teaching" ? "教学例句" : example.source?.work
-            }}
-            · {{ example.gloss }}
+            <SourceCredit :passage="example" />
+            · <RichText :source="example.gloss" inline />
           </figcaption>
         </figure>
         <p v-if="schedule">
@@ -109,7 +122,8 @@ const statusLabel: Record<Skill["status"], string> = {
         <div class="sources">
           <span>{{ statusLabel[skill.status] }}</span>
           <RouterLink v-if="lessons.length" to="/path"
-            ><BookOpen :size="14" />{{ lessons[0].title }}</RouterLink
+            ><BookOpen :size="14" />课程路径 ·
+            {{ lessons[0].title }}</RouterLink
           >
         </div>
       </div>
@@ -136,7 +150,7 @@ const statusLabel: Record<Skill["status"], string> = {
 }
 .search,
 select {
-  background: #fffefa;
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 7px;
   min-height: 44px;
@@ -165,7 +179,7 @@ select {
   min-height: 44px;
 }
 .toggle input {
-  accent-color: var(--green);
+  accent-color: var(--accent);
   width: 17px;
   height: 17px;
 }
@@ -199,7 +213,7 @@ summary small,
 }
 .mastery {
   margin-left: auto;
-  color: var(--green);
+  color: var(--muted);
   font-size: 13px;
   white-space: nowrap;
 }
@@ -213,11 +227,13 @@ summary small,
 figure {
   margin: 14px 0;
   padding: 10px 16px;
-  border-left: 3px solid #809775;
-  background: #eeefe5;
+  border-left: 3px solid #9187d9;
+  background: #f4f4fb;
 }
 blockquote {
-  font: 500 21px/1.7 var(--serif);
+  font-size: 21px;
+  line-height: 1.7;
+  font-weight: 550;
 }
 figcaption,
 .empty,
@@ -229,6 +245,42 @@ figcaption,
   flex-wrap: wrap;
 }
 .sources a {
-  color: var(--green);
+  color: var(--accent);
+}
+.filters {
+  padding: 14px 16px;
+  background: #f1f2f9;
+  border-radius: 11px;
+}
+.search:focus-within {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+input[type="search"]:focus {
+  outline: 0;
+}
+.mastery.learned {
+  color: var(--success);
+  background: var(--success-tint);
+  border-radius: 5px;
+  padding: 3px 7px;
+}
+.empty button {
+  margin-top: 12px;
+}
+summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+@media (max-width: 540px) {
+  .search {
+    flex-basis: 100%;
+  }
+  summary h2 {
+    font-size: 17px;
+  }
+  .mastery {
+    font-size: 12px;
+  }
 }
 </style>

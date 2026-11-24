@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import "./inputs.css";
 import Choice from "./Choice.vue";
 import SelectSpan from "./SelectSpan.vue";
 import Order from "./Order.vue";

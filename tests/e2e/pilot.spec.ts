@@ -1,5 +1,9 @@
 import { test, expect } from "@playwright/test";
-import { readFile } from "node:fs/promises";
+import { buffer } from "node:stream/consumers";
+import { readSources } from "../../src/content/node";
+import { compilePilot } from "../../src/content/compilePilot";
+
+const [before] = compilePilot(readSources("content/v1/pilot")).forms;
 
 test("志愿试读先同意，记录独立首答、译意与反馈，可导出及删除", async ({
   page,
@@ -9,33 +13,49 @@ test("志愿试读先同意，记录独立首答、译意与反馈，可导出�
   await expect(start).toBeDisabled();
   await page.getByRole("checkbox").check();
   await start.click();
-  await page.getByRole("radio", { name: "听见湍急的水声" }).check();
-  await page.getByRole("radio", { name: "船夫", exact: true }).check();
-  await page.getByRole("radio", { name: "水流渐缓，船夫示意可渡" }).check();
-  await page.getByRole("button", { name: "在第 3 字「暮」后断句" }).click();
-  await page
-    .getByLabel("用自己的话译出或概括这句续文")
-    .fill("天晚了，船夫送完人，系好船回家。");
+  for (const [i, q] of before.questions.entries()) {
+    const index = i === 0 ? (q.correct + 1) % q.options.length : q.correct;
+    await page
+      .locator("fieldset.question")
+      .nth(i)
+      .getByRole("radio")
+      .nth(index)
+      .check();
+  }
+  await page.getByRole("button", { name: /^在第 1 字/ }).click();
+  const interpretation = "我试着把句子中人物和动作对应起来。";
+  await page.getByLabel("用自己的话译出或概括这句续文").fill(interpretation);
   await page.getByLabel("试读反馈（选填）").fill("第二题需要回读前句。");
   await page.getByRole("button", { name: "保存首答与反馈" }).click();
-  await expect(page.getByText("独立首答 2 / 3")).toBeVisible();
+  await expect(
+    page.getByText(
+      `独立首答 ${before.questions.length - 1} / ${before.questions.length}`,
+    ),
+  ).toBeVisible();
   await page.reload();
   await page.getByText("查看首答与解析").click();
   await expect(
-    page.getByText("你的断句：日已暮／众人渡毕舟子系舟而归"),
+    page.getByText(
+      "你的断句：" +
+        [...before.extension.text][0] +
+        "／" +
+        [...before.extension.text].slice(1).join(""),
+    ),
   ).toBeVisible();
   const download = page.waitForEvent("download");
   await page.getByRole("button", { name: "导出试读与反馈" }).click();
-  const filename = await (await download).path();
-  expect(
-    JSON.parse(await readFile(filename!, "utf8")).submissions,
-  ).toMatchObject([
+  const contents = await buffer(await (await download).createReadStream());
+  expect(JSON.parse(contents.toString("utf8")).submissions).toMatchObject([
     {
-      formId: "pilot.ferry",
+      formId: before.id,
+      material: { id: before.id, version: before.version },
       consentVersion: 1,
-      segments: [3],
-      answers: [{ correct: true }, { correct: false }, { correct: true }],
-      interpretation: "天晚了，船夫送完人，系好船回家。",
+      segments: [1],
+      answers: before.questions.map((q, i) => ({
+        questionId: q.id,
+        correct: i > 0,
+      })),
+      interpretation,
       feedback: "第二题需要回读前句。",
     },
   ]);

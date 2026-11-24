@@ -1,10 +1,12 @@
 import { defineConfig } from "vitest/config";
+import { courseMarkdown } from "./src/content/vite-plugin";
 import vue from "@vitejs/plugin-vue";
 import { VitePWA } from "vite-plugin-pwa";
 
 export default defineConfig(({ command, isPreview }) => ({
   base: command === "build" || isPreview ? "/wenyan-app/" : "/",
   plugins: [
+    courseMarkdown(),
     vue(),
     VitePWA({
       registerType: "autoUpdate",
@@ -13,8 +15,8 @@ export default defineConfig(({ command, isPreview }) => ({
         name: "文言拾阶 · 古文阅读练习",
         short_name: "文言拾阶",
         description: "分级学习文言文，离线练习与复习。",
-        theme_color: "#225b46",
-        background_color: "#faf9f5",
+        theme_color: "#5951d9",
+        background_color: "#f8f9fc",
         display: "standalone",
         start_url: "./",
         scope: "./",

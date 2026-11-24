@@ -1,10 +1,13 @@
 import { expect, it } from "vitest";
-import raw from "../../content/v1/course.json";
+import { course as raw } from "../../src/content";
 import type { Course } from "../../src/content/schema";
-import { validateCompleteL1, validateCourse } from "../../src/content/validate";
+import {
+  validateCompleteness,
+  validateCourse,
+} from "../../src/content/validate";
 it("L1 四单元全部可学并有 120 道独立计分题", () => {
   const course = validateCourse(raw);
-  expect(() => validateCompleteL1(course)).not.toThrow();
+  expect(() => validateCompleteness(course)).not.toThrow();
   expect(course.units.filter((u) => u.level === "L1")).toHaveLength(4);
 });
 it.each([

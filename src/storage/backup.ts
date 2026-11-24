@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { byId, course } from "../content";
-import { unlocked } from "../domain/progression";
+import { passingScore, unlocked } from "../domain/progression";
 import { grade } from "../domain/session";
 import { intervals, shiftDay } from "../domain/review";
 import type { Progress } from "./model";
@@ -59,15 +59,17 @@ const model = z.strictObject({
 });
 const backup = z.strictObject({
   format: z.literal("wenyan-progress"),
-  version: z.literal(1),
-  courseVersion: z.literal(1),
+  version: z.literal(2),
+  courseId: z.literal(course.id),
+  courseVersion: z.literal(course.version),
   progress: model,
 });
 export function backupText(progress: Progress): string {
   return JSON.stringify(
     {
       format: "wenyan-progress",
-      version: 1,
+      version: 2,
+      courseId: course.id,
       courseVersion: course.version,
       progress,
     },
@@ -171,7 +173,7 @@ export function validateBackup(text: string): Progress {
                 .length,
         ),
     );
-    const threshold = r.kind === "lesson" ? 6 : r.kind === "assessment" ? 4 : 1;
+    const threshold = passingScore(course, r.kind, r.targetId);
     check(
       r.passed ===
         (r.earned >= threshold && r.coverage.every((c) => c.earned > 0)),

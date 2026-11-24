@@ -19,7 +19,7 @@ const skill = editorial.safeExtend({
   meaning: text,
   short: text,
   detail: text,
-  area: z.enum(["实词", "虚词", "句法", "篇章", "阅读技能", "文化背景"]),
+  area: text,
 });
 const passage = editorial
   .safeExtend({
@@ -29,7 +29,12 @@ const passage = editorial
     textRights: text,
     glossRights: text,
     source: z
-      .object({ work: text, edition: text, attribution: text })
+      .object({
+        work: text,
+        edition: text,
+        attribution: text,
+        url: z.url({ protocol: /^https$/ }).optional(),
+      })
       .optional(),
   })
   .refine(
@@ -64,24 +69,42 @@ const question = editorial.safeExtend({
 const lesson = editorial.safeExtend({
   title: text,
   stage: z.enum(["planned", "available"]),
+  passCount: z.int().positive(),
   intro: text.optional(),
+  body: z.string().default(""),
   mainSkills: ids.default([]),
   exampleIds: ids.default([]),
   questionIds: ids.default([]),
 });
 const unit = entity.extend({
-  level: z.enum(["L1", "L2", "L3", "L4", "L5"]),
+  level: text,
   title: text,
   description: text,
   lessonIds: ids,
   assessmentId: text,
 });
 const assessment = editorial.safeExtend({
+  title: text,
   stage: z.enum(["planned", "available"]),
+  passCount: z.int().positive(),
   questionIds: ids,
 });
 export const courseSchema = z.object({
   version: z.literal(1),
+  id: text,
+  title: text,
+  description: text,
+  levels: z.array(entity.extend({ title: text, goal: text })),
+  completeness: z
+    .object({
+      level: text,
+      units: z.int().positive(),
+      lessonsPerUnit: z.int().positive(),
+      lessonSize: z.int().positive(),
+      checkSize: z.int().positive(),
+      questions: z.int().positive(),
+    })
+    .optional(),
   skills: z.array(skill),
   passages: z.array(passage),
   spans: z.array(span),
