@@ -9,12 +9,11 @@ function withEdit(before: string, after: string) {
   expect(example[file]).toContain(before);
   return { ...example, [file]: example[file].replace(before, after) };
 }
-it("用气象课文独立编译新领域、自由课序、自定义门槛与隐式知识卡", () => {
+it("用气象课文独立编译新领域、自由课序与隐式知识卡", () => {
   const c = compileCourse(example);
   expect(c.levels[0]).toMatchObject({ id: "beginner", title: "气象入门" });
   expect(c.units[0].lessonIds).toEqual(["rise"]);
   expect(c.lessons[0]).toMatchObject({
-    passCount: 1,
     questionIds: ["warmer", "later"],
   });
   expect(c.cards).toEqual([
@@ -25,7 +24,7 @@ it("用气象课文独立编译新领域、自由课序、自定义门槛与隐�
     },
   ]);
   expect(c.questions[0].answer).toEqual(["warmer.o1"]);
-  expect(c.assessments[0].passCount).toBe(1);
+  expect(c.assessments[0].questionIds).toEqual(["sequence"]);
   expect(c.questions[2].answer).toEqual(["sequence.o2", "sequence.o1"]);
 });
 it("正文保留 Markdown、代码块内相同标题和字面符号", () => {
@@ -42,7 +41,7 @@ it("正文保留 Markdown、代码块内相同标题和字面符号", () => {
   });
 });
 it.each([
-  ["通过题数：1", "通过题数：3", /lesson\.md:\d+.*关卡/],
+  ["简介：", "通过题数：1\n简介：", /lesson\.md:\d+.*未知字段/],
   ["考点：increase", "考点：missing", /lesson\.md:\d+.*missing/],
   ["- [x] 升高", "- [ ] 升高", /lesson\.md:\d+.*正确选项/],
   ["- [x] 升高", "- [a] 升高", /lesson\.md:\d+.*选项格式/],
@@ -52,6 +51,22 @@ it.each([
 ])("编辑错误能定位文件、行与原因：%s", (before, after, error) => {
   expect(() => compileCourse(withEdit(before, after))).toThrow(error);
 });
+it("证据候选词即使来自不同位置，也须有可区分的选项文字", () => {
+  const source = withEdit("正午 12 ℃，午后 15 ℃。", "正午 15 ℃，午后 15 ℃。");
+  source[file] = source[file]
+    .replace("- [ ] 12 ℃", "- [ ] 15 ℃\n  第几处：1")
+    .replace("- [x] 15 ℃", "- [x] 15 ℃\n  第几处：2");
+  expect(() => compileCourse(source)).toThrow(/重复选项/);
+});
+
+it("拒绝同一选项在位置标记前后分别填写两条错因", () => {
+  const source = withEdit(
+    "理由：这是正午的数据。",
+    "理由：这是正午的数据。\n  第几处：1\n  理由：看测量时间。",
+  );
+  expect(() => compileCourse(source)).toThrow(/选项理由重复/);
+});
+
 it("重复片段显式选择出现次数，UTF-16 偏移与原文一致", () => {
   const source = withEdit("15 ℃。", "15 ℃，🌡复测 15 ℃。");
   source[file] = source[file].replace("- [x] 15 ℃", "- [x] 15 ℃\n  第几处：2");

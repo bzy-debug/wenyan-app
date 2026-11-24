@@ -7,16 +7,16 @@ import { currentTarget, isDraftCourse } from "./learningPath";
 import UnitPath from "./UnitPath.vue";
 
 const current = computed(currentTarget);
-const passed = computed(
+const completedLessons = computed(
   () =>
     course.lessons.filter((lesson) =>
-      progress.value.passedIds.includes(lesson.id),
+      progress.value.completedIds.includes(lesson.id),
     ).length,
 );
-const passedChecks = computed(
+const completedChecks = computed(
   () =>
     course.assessments.filter((check) =>
-      progress.value.passedIds.includes(check.id),
+      progress.value.completedIds.includes(check.id),
     ).length,
 );
 </script>
@@ -25,16 +25,17 @@ const passedChecks = computed(
   <main class="shell path">
     <header class="path-title">
       <h1>课程路径</h1>
-      <p>{{ course.description }}</p>
+      <p>可任选一课或单元检查开始。切换练习时会保留已做的进度。</p>
     </header>
     <div class="overview">
       <ListChecks :size="17" aria-hidden="true" />
       <span
-        >已通过 <b>{{ passed }} / {{ course.lessons.length }}</b> 课</span
+        >已完成
+        <b>{{ completedLessons }} / {{ course.lessons.length }}</b> 课</span
       >
       <i aria-hidden="true" />
       <span
-        ><b>{{ passedChecks }} / {{ course.assessments.length }}</b>
+        ><b>{{ completedChecks }} / {{ course.assessments.length }}</b>
         项单元检查</span
       >
     </div>

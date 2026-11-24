@@ -18,6 +18,65 @@ const question = z
     "试读选项无效",
   );
 
+// A reading passage may use punctuation throughout. Only the text whose
+// boundaries the learner must supply needs a clean, unsegmented input.
+const pauseMarks = /[\p{P}\p{Cf}\s|∣]+/u;
+const extension = z
+  .object({
+    text: text.refine(
+      (value) => !pauseMarks.test(value),
+      "待断句原文不能带标点、分隔符或字间空白",
+    ),
+    segmented: text,
+    alternatives: z.array(text),
+    interpretation: text,
+    explanation: text,
+  })
+  .refine((value) => {
+    const readings = [value.segmented, ...value.alternatives];
+    return (
+      new Set(readings).size === readings.length &&
+      readings.every((reading) => {
+        const pieces = reading.split("／");
+        return (
+          pieces.length > 1 &&
+          pieces.every(Boolean) &&
+          pieces.join("") === value.text
+        );
+      })
+    );
+  }, "每种断句示例须保留原文、含实际断点且不重复");
+
+function exposesReading(
+  passage: string,
+  exercise: z.infer<typeof extension>,
+): boolean {
+  if (!exercise.text) return false;
+  const chunks = passage.split(pauseMarks).filter(Boolean);
+  let offset = 0;
+  const printedPauses = new Set(
+    chunks.slice(0, -1).map((chunk) => (offset += chunk.length)),
+  );
+  const plain = chunks.join("");
+  const breaks = [exercise.segmented, ...exercise.alternatives].flatMap(
+    (reading) => {
+      let end = 0;
+      return reading
+        .split("／")
+        .slice(0, -1)
+        .map((clause) => (end += clause.length));
+    },
+  );
+  for (
+    let start = plain.indexOf(exercise.text);
+    start >= 0;
+    start = plain.indexOf(exercise.text, start + 1)
+  ) {
+    if (breaks.some((end) => printedPauses.has(start + end))) return true;
+  }
+  return false;
+}
+
 const form = z
   .object({
     id: text,
@@ -33,20 +92,12 @@ const form = z
     passage: text,
     glossary: text,
     questions: z.array(question).min(1),
-    extension: z
-      .object({
-        text,
-        segmented: text,
-        interpretation: text,
-        explanation: text,
-      })
-      .refine(
-        (s) =>
-          s.segmented.split("／").every(Boolean) &&
-          s.segmented.replaceAll("／", "") === s.text,
-        "断句示例须保留原文",
-      ),
+    extension,
   })
+  .refine(
+    (f) => !exposesReading(f.passage, f.extension),
+    "正文已标出续读片段的断点，请换用未展示的片段",
+  )
   .refine(
     (f) => f.status === "draft" || Boolean(f.reviewer),
     "审核内容须记录审核人",
@@ -92,10 +143,18 @@ function compileForm(file: string, source: string): PilotForm {
   for (const part of parts) {
     if (part.kind === "续读") {
       if (extension) throw new Error("续读段落重复");
-      const prose = fields(part, ["原文", "断句", "参考大意", "说明"]);
+      const prose = fields(part, [
+        "原文",
+        "断句",
+        "其他读法",
+        "参考大意",
+        "说明",
+      ]);
       extension = {
         text: prose["原文"],
         segmented: prose["断句"],
+        alternatives:
+          prose["其他读法"]?.split("\n").map((line) => line.trim()) ?? [],
         interpretation: prose["参考大意"],
         explanation: prose["说明"],
       };

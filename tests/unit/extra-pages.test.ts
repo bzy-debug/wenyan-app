@@ -66,7 +66,7 @@ it("只显示已到期知识卡，订正入口按题定位", async () => {
   expect(router.currentRoute.value.path).toBe("/practice");
 });
 
-it("新练习不能静默替换未完成练习", async () => {
+it("从未完成课程进入订正时直接切换，由存储层暂存课程", async () => {
   const q = course.questions[0],
     lesson = course.lessons[0];
   progress.value = {
@@ -87,12 +87,33 @@ it("新练习不能静默替换未完成练习", async () => {
   };
   await show(Review);
   await userEvent.click(screen.getByRole("button", { name: "订正" }));
-  expect(startRound).not.toHaveBeenCalled();
-  await userEvent.click(screen.getByRole("button", { name: "保留原练习" }));
-  expect(screen.queryByRole("alert")).toBeNull();
-  await userEvent.click(screen.getByRole("button", { name: "订正" }));
-  await userEvent.click(screen.getByRole("button", { name: "替换并开始" }));
   expect(startRound).toHaveBeenCalledWith("mistake", q.id);
+});
+
+it("到期卡提交后切换页面，仍可从暂存入口恢复原语境", async () => {
+  const card = course.cards[0],
+    q = course.questions.find((q) => q.id === card.questionIds[0])!;
+  progress.value = {
+    ...emptyProgress(),
+    paused: [
+      {
+        id: "pending-review",
+        kind: "review",
+        targetId: card.id,
+        questionIds: [q.id],
+        index: 0,
+        selected: q.answer,
+        hinted: false,
+        feedback: true,
+        attempts: { [q.id]: { correct: true, hinted: false } },
+        xp: 0,
+      },
+    ],
+  };
+  const router = await show(Review);
+  await userEvent.click(screen.getByRole("button", { name: "继续上次练习" }));
+  expect(startRound).toHaveBeenCalledWith("review", card.id);
+  expect(router.currentRoute.value.path).toBe("/practice");
 });
 
 it("知识库可按进度及搜索词筛选，展开后可读取释义", async () => {

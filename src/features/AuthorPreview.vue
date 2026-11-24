@@ -5,6 +5,7 @@ import { compileCourse, documentHeader } from "../content/compile";
 import { downloadText } from "../services/download";
 import { byId, course, optionText } from "../content";
 import { grade } from "../domain/session";
+import AnswerFeedback from "../components/questions/AnswerFeedback.vue";
 import QuestionInput from "../components/questions/QuestionInput.vue";
 import LessonReading from "../components/LessonReading.vue";
 import SourceCredit from "../components/SourceCredit.vue";
@@ -200,25 +201,39 @@ function download() {
               :feedback="feedback"
               @select="selection = $event"
             />
-            <button
-              v-if="feedback === null"
-              class="primary"
-              :disabled="selection.length !== question.answer.length"
-              @click="feedback = grade(question, selection)"
-            >
-              试答
-            </button>
-            <div v-else aria-live="polite">
-              <h3>{{ feedback ? "回答正确" : "答案解析" }}</h3>
-              <RichText :source="question.analysis" /><button
+            <div v-if="feedback === null" class="preview-actions">
+              <button
+                v-if="lesson"
                 class="secondary"
-                @click="showStep(step)"
+                @click="
+                  selection = [];
+                  feedback = false;
+                "
               >
-                重新试答
+                不知道
+              </button>
+              <button
+                class="primary"
+                :disabled="selection.length !== question.answer.length"
+                @click="feedback = grade(question, selection)"
+              >
+                试答
               </button>
             </div>
+            <template v-else>
+              <AnswerFeedback
+                :key="question.id"
+                :course="compiled"
+                :question="question"
+                :selected="selection"
+                :correct="feedback"
+              />
+              <button class="secondary" @click="showStep(step)">
+                重新试答
+              </button>
+            </template>
             <details class="answer-key">
-              <summary>校对答案与提示</summary>
+              <summary>校对题目</summary>
               <p>
                 <b>正确答案</b> ·
                 {{
@@ -227,8 +242,10 @@ function download() {
                     .join(" → ")
                 }}
               </p>
-              <p><b>关键提示</b></p>
-              <RichText :source="question.hint" />
+              <template v-if="lesson && question.hint"
+                ><p><b>辅助线索</b></p>
+                <RichText :source="question.hint"
+              /></template>
               <p><b>解析</b></p>
               <RichText :source="question.analysis" />
               <template v-for="option in question.options" :key="option.id">
@@ -324,6 +341,12 @@ textarea {
 .reader blockquote,
 .reader button.primary {
   margin: 16px 0 10px;
+}
+.preview-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-top: 10px;
 }
 .answer-key {
   margin-top: 20px;

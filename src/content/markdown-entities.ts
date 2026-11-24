@@ -1,6 +1,11 @@
 import { fields, fail, required, type Block } from "./markdown";
 import type { Course, Passage, Question, Skill } from "./schema";
-export const modes = { 单选: "choice", 选段: "span", 排序: "order" } as const;
+export const modes = {
+  单选: "choice",
+  找原文证据: "span",
+  选段: "span", // 已下载的早期课稿仍可在作者工作台打开。
+  排序: "order",
+} as const;
 export const editorialKeys = ["状态", "审核人"];
 export function editorial(
   b: Block,
@@ -141,6 +146,7 @@ export function readQuestion(
     if (answer.length !== 1) fail(b, "须有且仅有一个正确选项 [x]");
   }
   const analysis = required(b, f, "解析");
+  const hint = required(b, f, "提示");
   return {
     id: b.id,
     mode,
@@ -148,7 +154,7 @@ export function readQuestion(
     passageId,
     prompt: b.title,
     analysis,
-    hint: required(b, f, "提示"),
+    hint,
     ...editorial(b, f),
     answer,
     options: options.map((o) => {
@@ -157,7 +163,7 @@ export function readQuestion(
         fail(at, "干扰选项缺少理由");
       const base = {
         id: o.id,
-        reason: o.reason ?? (mode === "order" ? "" : analysis),
+        reason: o.reason ?? (mode === "order" ? hint : analysis),
       };
       if (mode !== "span") {
         if (o.occurrence) fail(at, "仅选段支持「第几处」");

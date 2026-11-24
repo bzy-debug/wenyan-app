@@ -69,7 +69,6 @@ const question = editorial.safeExtend({
 const lesson = editorial.safeExtend({
   title: text,
   stage: z.enum(["planned", "available"]),
-  passCount: z.int().positive(),
   intro: text.optional(),
   body: z.string().default(""),
   mainSkills: ids.default([]),
@@ -86,7 +85,6 @@ const unit = entity.extend({
 const assessment = editorial.safeExtend({
   title: text,
   stage: z.enum(["planned", "available"]),
-  passCount: z.int().positive(),
   questionIds: ids,
 });
 export const courseSchema = z.object({

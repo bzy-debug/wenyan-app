@@ -1,12 +1,18 @@
 import { buffer } from "node:stream/consumers";
 import { expect, test } from "@playwright/test";
 
+import { readCourse } from "../../src/content/node";
+
+const first = readCourse().questions.find((q) => q.id === "q.1")!;
+const mistakenOption = first.options.find((o) => o.label === "缓步前行")!;
+
 test("错题订正后可从真实备份恢复，并保留刷新前的首答", async ({ page }) => {
   await page.goto("./#/learn/l1.1");
-  await page.getByRole("button", { name: "开始练习" }).click();
   await page.getByRole("button", { name: /缓步前行/ }).click();
   await page.getByRole("button", { name: "提交答案" }).click();
-  await expect(page.getByText(/缓行不合情境/)).toBeVisible();
+  await expect(
+    page.getByText(mistakenOption.reason, { exact: true }),
+  ).toBeVisible();
 
   await page.goto("./#/settings");
   const downloaded = page.waitForEvent("download");
@@ -21,11 +27,12 @@ test("错题订正后可从真实备份恢复，并保留刷新前的首答", as
 
   await page.goto("./#/review");
   await page.getByRole("button", { name: "订正", exact: true }).click();
-  await page.getByRole("button", { name: "替换并开始" }).click();
   await page.getByRole("button", { name: /奔跑/ }).click();
   await page.getByRole("button", { name: "提交答案" }).click();
-  await page.getByRole("button", { name: "查看结算" }).click();
-  await expect(page.getByRole("heading", { name: "本题已订正" })).toBeVisible();
+  await page.getByRole("button", { name: "完成练习" }).click();
+  await expect(
+    page.getByRole("heading", { name: "本次订正完成" }),
+  ).toBeVisible();
   await page.goto("./#/review");
   await expect(page.getByText("目前没有需要订正的题目。")).toBeVisible();
 
@@ -61,13 +68,14 @@ test("错题订正后可从真实备份恢复，并保留刷新前的首答", as
     page.getByRole("button", { name: "订正", exact: true }),
   ).toBeVisible();
   await page.getByRole("link", { name: "继续上次练习" }).click();
-  await expect(page.getByText(/缓行不合情境/)).toBeVisible();
+  await expect(
+    page.getByText(mistakenOption.reason, { exact: true }),
+  ).toBeVisible();
 });
 
 test("次日到期的知识卡更换语境，独立答对后间隔三天", async ({ page }) => {
   await page.clock.setFixedTime(new Date("2026-03-10T12:00:00Z"));
   await page.goto("./#/learn/l1.1");
-  await page.getByRole("button", { name: "开始练习" }).click();
   await page.getByRole("button", { name: /奔跑/ }).click();
   await page.getByRole("button", { name: "提交答案" }).click();
   await expect(page.getByRole("heading", { name: "回答正确" })).toBeVisible();
@@ -76,11 +84,10 @@ test("次日到期的知识卡更换语境，独立答对后间隔三天", async
   await page.clock.setFixedTime(new Date("2026-03-11T12:00:00Z"));
   await page.reload();
   await page.getByRole("button", { name: "复习：走 · 跑" }).click();
-  await page.getByRole("button", { name: "替换并开始" }).click();
   await expect(page.getByText("雨骤至，行人疾走入亭。")).toBeVisible();
   await page.getByRole("button", { name: /快跑进去/ }).click();
   await page.getByRole("button", { name: "提交答案" }).click();
-  await page.getByRole("button", { name: "查看结算" }).click();
+  await page.getByRole("button", { name: "完成练习" }).click();
   await expect(
     page.getByRole("heading", { name: "本次复习完成" }),
   ).toBeVisible();

@@ -8,12 +8,13 @@ import {
   ChevronRight,
   CirclePlay,
   Flag,
-  LockKeyhole,
   Play,
 } from "@lucide/vue";
 import { byId, course } from "../content";
 import type { Unit } from "../content/schema";
-import { isUnlocked, progress } from "../storage/progress";
+import { progress } from "../storage/progress";
+
+import { inProgress } from "./learningPath";
 
 const props = defineProps<{ unit: Unit; currentId?: string; home?: boolean }>();
 const position = computed(
@@ -21,8 +22,9 @@ const position = computed(
 );
 const completed = computed(
   () =>
-    props.unit.lessonIds.filter((id) => progress.value.passedIds.includes(id))
-      .length,
+    props.unit.lessonIds.filter((id) =>
+      progress.value.completedIds.includes(id),
+    ).length,
 );
 const steps = computed(() => {
   const lessons = props.unit.lessonIds.map((id) => {
@@ -30,6 +32,7 @@ const steps = computed(() => {
     return {
       id,
       title: lesson.title,
+      available: lesson.stage === "available",
       label: "第 " + (course.lessons.indexOf(lesson) + 1) + " 课",
       description: lesson.intro,
       questions: lesson.questionIds.length,
@@ -42,15 +45,14 @@ const steps = computed(() => {
     {
       id: assessment.id,
       title: assessment.title,
+      available: assessment.stage === "available",
       label: "单元检查",
-      description:
-        "至少 " + assessment.passCount + " 题无提示首答正确即可通过。",
+      description: props.unit.description,
       questions: assessment.questionIds.length,
       isCheck: true,
     },
   ].map((step) => {
-    const available = isUnlocked(step.id);
-    return { ...step, available, state: status(step.id, available) };
+    return { ...step, state: status(step.id, step.available) };
   });
 });
 const activeUnit = computed(() =>
@@ -59,11 +61,11 @@ const activeUnit = computed(() =>
 
 function status(id: string, available: boolean) {
   if (props.currentId === id) return "current";
-  if (progress.value.passedIds.includes(id)) return "passed";
-  return available ? "open" : "locked";
+  if (progress.value.completedIds.includes(id)) return "completed";
+  return available ? "open" : "planned";
 }
 function startLabel(id: string, isCheck: boolean) {
-  if (progress.value.active?.targetId === id) return "继续学习";
+  if (inProgress(id)) return "继续学习";
   return isCheck ? "开始检查" : "开始学习";
 }
 </script>
@@ -86,7 +88,7 @@ function startLabel(id: string, isCheck: boolean) {
       <div
         class="unit-progress"
         :aria-label="
-          '已通过 ' + completed + ' 课，共 ' + unit.lessonIds.length + ' 课'
+          '已完成 ' + completed + ' 课，共 ' + unit.lessonIds.length + ' 课'
         "
       >
         <span>{{ completed }} / {{ unit.lessonIds.length }} 课</span>
@@ -94,7 +96,7 @@ function startLabel(id: string, isCheck: boolean) {
           <i
             v-for="id in unit.lessonIds"
             :key="id"
-            :class="{ filled: progress.passedIds.includes(id) }"
+            :class="{ filled: progress.completedIds.includes(id) }"
           />
         </span>
       </div>
@@ -112,9 +114,8 @@ function startLabel(id: string, isCheck: boolean) {
             :size="19"
             fill="currentColor"
           />
-          <Check v-else-if="step.state === 'passed'" :size="19" />
+          <Check v-else-if="step.state === 'completed'" :size="19" />
           <Flag v-else-if="step.isCheck" :size="17" />
-          <LockKeyhole v-else-if="step.state === 'locked'" :size="15" />
           <CirclePlay v-else :size="17" />
         </span>
         <component
@@ -129,7 +130,7 @@ function startLabel(id: string, isCheck: boolean) {
             <span class="step-label"
               >{{ step.label }}
               <span v-if="step.state === 'current'" class="current-label">{{
-                progress.active?.targetId === step.id ? "学习中" : "当前关卡"
+                inProgress(step.id) ? "继续练习" : "推荐练习"
               }}</span>
             </span>
             <strong>{{ step.title }}</strong>
@@ -137,14 +138,15 @@ function startLabel(id: string, isCheck: boolean) {
               step.description
             }}</span>
             <span class="step-detail">
-              <template v-if="step.state === 'passed'"
-                >已通过 · 可重练</template
+              <template v-if="step.state === 'completed'"
+                >已完成 · 再练</template
               >
-              <template v-else-if="step.isCheck && !step.available"
-                >通过本单元课程后解锁</template
+              <template v-else-if="!step.available">编写中</template>
+              <template
+                v-else-if="step.state !== 'current' && inProgress(step.id)"
+                >继续学习 · {{ step.questions }} 道练习</template
               >
               <template v-else>
-                <template v-if="!step.available">待解锁 · </template>
                 {{ step.questions }} 道练习<template
                   v-if="step.state === 'current' && !step.isCheck"
                 >
@@ -279,7 +281,7 @@ function startLabel(id: string, isCheck: boolean) {
   bottom: -35px;
   background: var(--track-line);
 }
-.track li.passed:not(:last-child)::after {
+.track li.completed:not(:last-child)::after {
   background: #a7dcc9;
 }
 .node {
@@ -307,7 +309,7 @@ function startLabel(id: string, isCheck: boolean) {
 .current .node svg {
   margin-left: 2px;
 }
-.passed .node {
+.completed .node {
   color: #137357;
   background: #d5f3e8;
 }
@@ -370,7 +372,7 @@ a.step-content:hover {
 .current .step-info strong {
   color: #272044;
 }
-.locked .step-info strong {
+.planned .step-info strong {
   color: #525c70;
 }
 .step-intro,
@@ -385,7 +387,7 @@ a.step-content:hover {
 .step-detail {
   font-size: 12px;
 }
-.passed .step-detail {
+.completed .step-detail {
   color: #227761;
 }
 .node-action {

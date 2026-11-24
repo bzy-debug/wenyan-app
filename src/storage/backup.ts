@@ -1,9 +1,9 @@
 import { z } from "zod";
 import { byId, course } from "../content";
-import { passingScore, unlocked } from "../domain/progression";
 import { grade } from "../domain/session";
 import { intervals, shiftDay } from "../domain/review";
 import type { Progress } from "./model";
+import type { Round } from "../domain/progression";
 
 const id = z
   .string()
@@ -15,11 +15,31 @@ const count = z.int().nonnegative();
 const day = z.iso.date();
 const kind = z.enum(["lesson", "assessment", "review", "mistake"]);
 const record = <T extends z.ZodType>(value: T) => z.record(id, value);
-const model = z.strictObject({
-  passedIds: ids,
+const round = z.strictObject({
+  id,
+  kind,
+  targetId: id,
+  questionIds: ids,
+  index: z.int().min(0),
+  selected: ids,
+  hinted: z.boolean(),
+  feedback: z.boolean().nullable(),
+  xp: count,
+  attempts: record(
+    z.strictObject({ correct: z.boolean(), hinted: z.boolean() }),
+  ),
+});
+const result = z.strictObject({
+  roundId: id,
+  kind,
+  targetId: id,
+  total: count,
+  xp: count,
+});
+const common = {
   mistakes: ids,
   xp: count,
-  days: z.array(day).refine((xs) => new Set(xs).size === xs.length),
+  days: z.array(day).refine((xs) => xs.length === new Set(xs).size),
   cards: record(
     z.strictObject({
       level: count.max(intervals.length - 1),
@@ -28,47 +48,40 @@ const model = z.strictObject({
       lastQuestionId: id,
     }),
   ),
-  active: z
-    .strictObject({
-      id,
-      kind,
-      targetId: id,
-      questionIds: ids,
-      index: z.int().min(-1),
-      selected: ids,
-      hinted: z.boolean(),
-      feedback: z.boolean().nullable(),
-      xp: count,
-      attempts: record(
-        z.strictObject({ correct: z.boolean(), hinted: z.boolean() }),
-      ),
-    })
-    .nullable(),
-  lastResult: z
-    .strictObject({
-      roundId: id,
-      kind,
-      targetId: id,
+};
+const model = z.strictObject({
+  ...common,
+  completedIds: ids,
+  active: round.nullable(),
+  paused: z.array(round),
+  lastResult: result.nullable(),
+});
+const previous = z.strictObject({
+  ...common,
+  passedIds: ids,
+  active: round.extend({ index: z.int().min(-1) }).nullable(),
+  lastResult: result
+    .extend({
       passed: z.boolean(),
-      total: count,
       earned: count,
-      xp: count,
       coverage: z.array(z.strictObject({ id, earned: count, total: count })),
     })
     .nullable(),
 });
-const backup = z.strictObject({
+const envelope = {
   format: z.literal("wenyan-progress"),
-  version: z.literal(2),
   courseId: z.literal(course.id),
   courseVersion: z.literal(course.version),
-  progress: model,
-});
+};
+const backup = z.discriminatedUnion("version", [
+  z.strictObject({ ...envelope, version: z.literal(2), progress: previous }),
+  z.strictObject({ ...envelope, version: z.literal(3), progress: model }),
+]);
 export function backupText(progress: Progress): string {
   return JSON.stringify(
     {
       format: "wenyan-progress",
-      version: 2,
+      version: 3,
       courseId: course.id,
       courseVersion: course.version,
       progress,
@@ -87,6 +100,115 @@ function targetQuestions(kind: string, target: string): string[] {
   if (kind === "review") return byId(course.cards, target).questionIds;
   return [byId(course.questions, target).id];
 }
+function checkRound(r: Round, p: Progress) {
+  const expected = targetQuestions(r.kind, r.targetId);
+  if (r.kind === "lesson" || r.kind === "assessment") {
+    check(
+      r.questionIds.length === expected.length &&
+        expected.every((id, i) => id === r.questionIds[i]),
+    );
+  } else {
+    check(
+      r.questionIds.length === 1 &&
+        expected.includes(r.questionIds[0]) &&
+        r.index === 0,
+    );
+    if (r.kind === "review") check(p.cards[r.targetId]);
+  }
+  check(r.index < r.questionIds.length);
+  check(
+    Object.keys(r.attempts).every((id) =>
+      r.questionIds.slice(0, r.index + 1).includes(id),
+    ),
+  );
+  check(
+    r.questionIds
+      .slice(0, r.index)
+      .every((id) => Object.hasOwn(r.attempts, id)),
+  );
+  const q = byId(course.questions, r.questionIds[r.index]);
+  check(
+    r.selected.every((id) => q.options.some((o) => o.id === id)) &&
+      r.selected.length <= q.answer.length,
+  );
+  // The only pre-awarded XP is from a v2 in-progress review.
+  check(
+    r.xp === 0 ||
+      (r.kind === "review" &&
+        r.xp === 5 &&
+        p.xp >= 5 &&
+        r.attempts[q.id]?.correct &&
+        !r.attempts[q.id].hinted),
+  );
+  if (r.feedback !== null) {
+    check(r.attempts[q.id]);
+    if (r.selected.length === 0) check(r.feedback === false && r.hinted);
+    else
+      check(
+        r.selected.length === q.answer.length &&
+          grade(q, r.selected) === r.feedback,
+      );
+  }
+}
+function checkProgress(p: Progress): Progress {
+  const ids = new Set(
+    [...course.lessons, ...course.assessments].map((t) => t.id),
+  );
+  for (const target of p.completedIds) check(ids.has(target));
+  for (const q of p.mistakes) byId(course.questions, q);
+  for (const [id, state] of Object.entries(p.cards)) {
+    const card = byId(course.cards, id);
+    check(
+      byId(course.questions, state.lastQuestionId).skillId === card.skillId,
+    );
+    check(state.due === shiftDay(state.lastDay, intervals[state.level]));
+  }
+  const rounds = p.active ? [p.active, ...p.paused] : p.paused;
+  check(new Set(rounds.map((r) => r.id)).size === rounds.length);
+  check(
+    new Set(rounds.map((r) => r.kind + ":" + r.targetId)).size ===
+      rounds.length,
+  );
+  for (const r of rounds) checkRound(r, p);
+  if (p.lastResult) {
+    const r = p.lastResult;
+    const items = targetQuestions(r.kind, r.targetId);
+    const ordinary = r.kind === "lesson" || r.kind === "assessment";
+    check(
+      r.total === (ordinary ? items.length : 1) &&
+        r.xp <= p.xp &&
+        !rounds.some((round) => round.id === r.roundId),
+    );
+    if (ordinary) check(p.completedIds.includes(r.targetId));
+  }
+  return p;
+}
+/** Existing on-device v2 records and v2 portable backups use the same upgrade. */
+export function migratePrevious(input: unknown): Progress {
+  const legacy = previous.parse(input);
+  const { passedIds, active, lastResult, ...rest } = legacy;
+  const completedIds = [...passedIds];
+  if (
+    lastResult &&
+    (lastResult.kind === "lesson" || lastResult.kind === "assessment") &&
+    !completedIds.includes(lastResult.targetId)
+  )
+    completedIds.push(lastResult.targetId);
+  const result = lastResult && {
+    roundId: lastResult.roundId,
+    kind: lastResult.kind,
+    targetId: lastResult.targetId,
+    total: lastResult.total,
+    xp: lastResult.xp,
+  };
+  return checkProgress({
+    ...rest,
+    completedIds,
+    active: active && { ...active, index: Math.max(0, active.index) },
+    paused: [],
+    lastResult: result,
+  });
+}
 export function validateBackup(text: string): Progress {
   if (text.length > 4_000_000) throw new Error("备份超过 4 MB");
   let raw: unknown;
@@ -97,88 +219,7 @@ export function validateBackup(text: string): Progress {
   }
   const parsed = backup.safeParse(raw);
   if (!parsed.success) throw new Error("备份格式、日期或版本无效");
-  const p = parsed.data.progress;
-  for (const target of p.passedIds)
-    check(unlocked(course, p.passedIds, target));
-  for (const q of p.mistakes) byId(course.questions, q);
-  for (const [id, state] of Object.entries(p.cards)) {
-    const card = byId(course.cards, id);
-    const lastQuestion = byId(course.questions, state.lastQuestionId);
-    check(lastQuestion.skillId === card.skillId);
-    check(state.due === shiftDay(state.lastDay, intervals[state.level]));
-  }
-  if (p.active) {
-    const r = p.active;
-    const expected = targetQuestions(r.kind, r.targetId);
-    const normal = r.kind === "lesson" || r.kind === "assessment";
-    if (normal) {
-      check(unlocked(course, p.passedIds, r.targetId));
-      check(
-        r.questionIds.length === expected.length &&
-          expected.every((id, i) => id === r.questionIds[i]),
-      );
-    } else {
-      check(
-        r.questionIds.length === 1 &&
-          expected.includes(r.questionIds[0]) &&
-          r.index === 0,
-      );
-      if (r.kind === "review") check(p.cards[r.targetId]);
-    }
-    check(r.index < r.questionIds.length);
-    check(
-      Object.keys(r.attempts).every((id) =>
-        r.questionIds.slice(0, r.index + 1).includes(id),
-      ),
-    );
-    check(
-      r.questionIds
-        .slice(0, Math.max(r.index, 0))
-        .every((id) => r.attempts[id]),
-    );
-    if (r.index < 0)
-      check(!r.selected.length && !r.hinted && r.feedback === null);
-    else {
-      const q = byId(course.questions, r.questionIds[r.index]);
-      check(r.selected.every((id) => q.options.some((o) => o.id === id)));
-      check(r.selected.length <= q.answer.length);
-      if (r.feedback !== null) {
-        check(
-          r.attempts[q.id] &&
-            r.selected.length === q.answer.length &&
-            grade(q, r.selected) === r.feedback,
-        );
-      }
-    }
-  }
-  if (p.lastResult) {
-    const r = p.lastResult;
-    const items = targetQuestions(r.kind, r.targetId);
-    const normal = r.kind === "lesson" || r.kind === "assessment";
-    check(
-      r.total === (normal ? items.length : 1) &&
-        r.earned <= r.total &&
-        r.xp <= p.xp,
-    );
-    const skills =
-      r.kind === "lesson" ? byId(course.lessons, r.targetId).mainSkills : [];
-    check(
-      r.coverage.length === skills.length &&
-        r.coverage.every(
-          (c, i) =>
-            c.id === skills[i] &&
-            c.earned <= c.total &&
-            c.total ===
-              items.filter((id) => byId(course.questions, id).skillId === c.id)
-                .length,
-        ),
-    );
-    const threshold = passingScore(course, r.kind, r.targetId);
-    check(
-      r.passed ===
-        (r.earned >= threshold && r.coverage.every((c) => c.earned > 0)),
-    );
-    if (normal && r.passed) check(p.passedIds.includes(r.targetId));
-  }
-  return p;
+  return parsed.data.version === 2
+    ? migratePrevious(parsed.data.progress)
+    : checkProgress(parsed.data.progress);
 }

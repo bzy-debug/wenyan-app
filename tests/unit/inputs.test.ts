@@ -1,5 +1,5 @@
 import { afterEach, expect, it } from "vitest";
-import { cleanup, render, screen } from "@testing-library/vue";
+import { cleanup, render, screen, within } from "@testing-library/vue";
 import userEvent from "@testing-library/user-event";
 import { defineComponent, ref } from "vue";
 import { course } from "../../src/content";
@@ -70,5 +70,16 @@ it("从当前预览文档读取选段与原文", () => {
   render(QuestionInput, {
     props: { course: preview, question, selected: [], locked: false },
   });
-  expect(screen.getByRole("button", { name: replacement })).toBeTruthy();
+  const source = screen.getByText(passage.text, { selector: "blockquote" });
+  expect(source.textContent).toBe(passage.text);
+  expect(within(source).queryAllByRole("button")).toHaveLength(0);
+  const evidence = screen.getByRole("group", { name: "原文证据选项" });
+  expect(
+    within(evidence).getByRole("button", { name: replacement }),
+  ).toBeTruthy();
+  const buttons = within(evidence).getAllByRole("button");
+  expect(buttons).toHaveLength(question.options.length);
+  expect(buttons.every((button) => !button.classList.contains("correct"))).toBe(
+    true,
+  );
 });

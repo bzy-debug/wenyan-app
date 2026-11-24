@@ -57,7 +57,7 @@ async function choose(event: Event) {
     candidate.value = {
       text,
       name: file.name,
-      count: backup.passedIds.length,
+      count: backup.completedIds.length,
       xp: backup.xp,
     };
   } catch {
@@ -92,7 +92,7 @@ async function restore() {
         <div>
           <h3>下载学习记录</h3>
           <p>
-            保存关卡进度、复习安排和未完成的练习。换设备后可用此文件继续学习。
+            保存练习进度、复习安排和未完成的练习。换设备后可用此文件继续学习。
           </p>
         </div>
         <button class="secondary" :disabled="busy" @click="download">
@@ -116,7 +116,7 @@ async function restore() {
       <div v-if="candidate" class="preview">
         <h3>恢复这个备份？</h3>
         <p>
-          {{ candidate.name }} · 已通过 {{ candidate.count }} 个关卡 ·
+          {{ candidate.name }} · 已完成 {{ candidate.count }} 项练习 ·
           {{ candidate.xp }} XP
         </p>
         <p>确认后，备份中的学习记录将覆盖此浏览器的现有进度。</p>

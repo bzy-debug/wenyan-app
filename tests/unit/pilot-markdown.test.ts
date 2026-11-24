@@ -47,10 +47,33 @@ describe("试读 Markdown", () => {
     );
     expect(form.glossary).toContain("\n留意**动词**。");
   });
+  it("收录保留字序的其他读法，不从正文删掉标点", () => {
+    const first = ferry
+      .replaceAll("人行", "童行客返")
+      .replace("参考大意：", "其他读法：钟止／童行／客返\n参考大意：");
+    const form = compile(first).forms[0];
+    expect(form.extension.alternatives).toEqual(["钟止／童行／客返"]);
+    expect(form.passage).toBe("人至门前，闻钟而止。");
+  });
   it.each([
     ["多选", (s: string) => s.replace("- [ ] 人语", "- [x] 人语")],
     ["缺权利信息", (s: string) => s.replace(/^原文权利：.*\n/m, "")],
     ["断句改动原文", (s: string) => s.replace("断句：钟止", "断句：鼓止")],
+    ["原文残留标点", (s: string) => s.replaceAll("钟止", "钟止，")],
+    ["原文用空格分句", (s: string) => s.replaceAll("钟止", "钟止 ")],
+    [
+      "原文在正文中已标好断点",
+      (s: string) => s.replace("闻钟而止。", "钟止，人行。"),
+    ],
+    [
+      "未设置任何断点",
+      (s: string) => s.replace("断句：钟止／人行", "断句：钟止人行"),
+    ],
+    [
+      "其他读法更改了原字",
+      (s: string) =>
+        s.replace("参考大意：", "其他读法：钟歇／人行\n参考大意："),
+    ],
     ["已审核无审核人", (s: string) => s.replace("状态：草稿", "状态：已审核")],
     [
       "古籍漏出处",

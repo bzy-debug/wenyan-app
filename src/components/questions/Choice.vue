@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Circle, CircleCheck, CircleX } from "@lucide/vue";
+import { optionText } from "../../content";
 import type { InputProps } from "./types";
 const props = defineProps<InputProps>();
 defineEmits<{ select: [ids: string[]] }>();
@@ -23,7 +24,7 @@ function state(id: string) {
       @click="$emit('select', [option.id])"
     >
       <span class="q-key" aria-hidden="true">{{ i + 1 }}</span><span>{{
-        option.label
+        optionText(question, option.id, course)
       }}</span>
       <component
         class="option-icon"
