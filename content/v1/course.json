@@ -27,6 +27,204 @@
       "detail": "“闻”可指听见。留意钟、鼓、人声等可听到的事物。",
       "area": "实词",
       "status": "draft"
+    },
+    {
+      "id": "skill.write",
+      "word": "书",
+      "meaning": "书写",
+      "short": "从宾语判断动作",
+      "detail": "“书”后接要写的名字或文字时，常作动词。先找书写的内容，再找写在哪里。",
+      "area": "实词",
+      "status": "draft"
+    },
+    {
+      "id": "skill.letter",
+      "word": "书",
+      "meaning": "书信",
+      "short": "从传递双方辨义",
+      "detail": "“书”能指书信。寄、致、答等动作以及相隔两地的收发者，能帮助确认这个义项。",
+      "area": "实词",
+      "status": "draft"
+    },
+    {
+      "id": "skill.object-clue",
+      "word": "搭配",
+      "meaning": "从动作对象辨义",
+      "short": "动作和对象相互限定",
+      "detail": "“取火”与“取书”对象不同。遇到多义词，把它和所支配的对象连起来读，再检验全句是否通顺。",
+      "area": "阅读技能",
+      "status": "draft"
+    },
+    {
+      "id": "skill.result-clue",
+      "word": "下文",
+      "meaning": "用后果验证词义",
+      "short": "把候选义代回前后句",
+      "detail": "下句写出的状态或动作结果可以排除不合语境的解释。先说出发生了什么变化，再代回词义。",
+      "area": "阅读技能",
+      "status": "draft"
+    },
+    {
+      "id": "skill.zhi-object",
+      "word": "之",
+      "meaning": "代替前文的人或物",
+      "short": "动词后的宾语代词",
+      "detail": "先找“之”前面的动词，再回到上文找能承受该动作的人或物。",
+      "area": "虚词",
+      "status": "draft"
+    },
+    {
+      "id": "skill.zhi-link",
+      "word": "之",
+      "meaning": "连接修饰语和中心语",
+      "short": "表示所属或相关关系",
+      "detail": "在“甲之乙”里，先看后面的乙是什么，再读前面的限定。常可换成现代汉语的“的”。",
+      "area": "虚词",
+      "status": "draft"
+    },
+    {
+      "id": "skill.qi-possessive",
+      "word": "其",
+      "meaning": "指前述人或物所属",
+      "short": "名词前的领属代词",
+      "detail": "“其”后若是衣、门、子等名词，可问“谁的”。用上文给出的人或物来补足。",
+      "area": "虚词",
+      "status": "draft"
+    },
+    {
+      "id": "skill.qi-part",
+      "word": "其",
+      "meaning": "其中的",
+      "short": "从已知整体取一部分",
+      "detail": "“其一”“其二”放在一个明确的集合之后，常表示其中的一个或两个。先数清前文给出的整体。",
+      "area": "虚词",
+      "status": "draft"
+    },
+    {
+      "id": "skill.er-sequence",
+      "word": "而",
+      "meaning": "连接先后发生的动作",
+      "short": "前动作完成后再做后动作",
+      "detail": "相连的两个动词若有自然的先后依赖，“而”可表承接。核对前一件事是否为后一件事创造条件。",
+      "area": "虚词",
+      "status": "draft"
+    },
+    {
+      "id": "skill.er-turn",
+      "word": "而",
+      "meaning": "引出转折",
+      "short": "后项与通常预期相反",
+      "detail": "若后面的事实与前项带来的预期相反，“而”可读作“却”。从“虽”“未”“犹”等词寻找线索。",
+      "area": "虚词",
+      "status": "draft"
+    },
+    {
+      "id": "skill.action-verb",
+      "word": "谓语",
+      "meaning": "辨认表示动作的谓语",
+      "short": "谁做了什么",
+      "detail": "先找行事的人，再看其后的词中哪一个说出了这个人的动作。“于……”等成分还可能指出动作发生在哪里。",
+      "area": "句法",
+      "status": "draft"
+    },
+    {
+      "id": "skill.direct-object",
+      "word": "宾语",
+      "meaning": "辨认动作直接涉及的对象",
+      "short": "把动作与人或物连读",
+      "detail": "试着问“做了什么”或“对谁做”。同一句中，动作直接涉及的物件、所用的工具和所在的地点要分清。",
+      "area": "句法",
+      "status": "draft"
+    },
+    {
+      "id": "skill.subject-continuity",
+      "word": "承前省主",
+      "meaning": "连续动作沿用前句主语",
+      "short": "沿同一人的行动读下去",
+      "detail": "两句连写同一人的一串动作，后句的主语常省去。结合动作所需的工具、位置和目标，检验是否确实能沿用前一个主语。",
+      "area": "句法",
+      "status": "draft"
+    },
+    {
+      "id": "skill.respondent",
+      "word": "对曰",
+      "meaning": "由问答恢复省略的应答者",
+      "short": "根据说话者和听者换位",
+      "detail": "甲问乙，后面若直接接“对曰”，答话者通常是被问的乙。用称呼、第一人称和答话内容验证。",
+      "area": "句法",
+      "status": "draft"
+    },
+    {
+      "id": "skill.not-yet",
+      "word": "未",
+      "meaning": "说明到某时动作尚未发生",
+      "short": "判断否定的动作和时间界线",
+      "detail": "“未”放在谓语前，表示到叙述的时间还没有发生该动作。单凭“未”不能推断以后是否会发生。",
+      "area": "句法",
+      "status": "draft"
+    },
+    {
+      "id": "skill.interrogative-object",
+      "word": "何",
+      "meaning": "询问事物或内容",
+      "short": "读清疑问词所问的对象",
+      "detail": "“何”在“有何物”一类结构中询问是什么；在“何求”中，也可放在动词前，读作“求什么”。根据动词和答语确定提问目标。",
+      "area": "句法",
+      "status": "draft"
+    },
+    {
+      "id": "skill.track-actors",
+      "word": "人物",
+      "meaning": "沿叙事线索辨认行动者",
+      "short": "区分说话人、受话人与行动者",
+      "detail": "先找动作前点明的人物。再看人物各自所持的器物、所在的位置与前一句交代的任务。遇到“曰”，分清是谁在说、谁在听。",
+      "area": "篇章",
+      "status": "draft"
+    },
+    {
+      "id": "skill.time-links",
+      "word": "先后",
+      "meaning": "据时间标记重建事件顺序",
+      "short": "分辨回叙、当下和将来",
+      "detail": "先圈出“先是”“明日”“既”等时间线索。叙述者有时先写眼前的结果，再回过头补写来由；排列事件时，应按实际发生的时刻排列。",
+      "area": "篇章",
+      "status": "draft"
+    },
+    {
+      "id": "skill.causal-link",
+      "word": "缘由",
+      "meaning": "用原文事实解释行动或结果",
+      "short": "找出证据能支持的原因",
+      "detail": "先说明要解释的是哪一个动作，再回读与它有关的处境、话语或事实。“故”“以……故”等常明示因由；两个动作先后相接，本身还不足以断定因果。",
+      "area": "篇章",
+      "status": "draft"
+    },
+    {
+      "id": "skill.contrast-expectation",
+      "word": "转折",
+      "meaning": "辨认实际结果与原先预期的落差",
+      "short": "抓住前后的差别",
+      "detail": "先概括人物原先的判断或愿望，再找后文实际发生的情况。“然”“而”等有时连接相反或出乎预料的内容。须由前后两意确认关系。",
+      "area": "篇章",
+      "status": "draft"
+    },
+    {
+      "id": "skill.ferry-custom",
+      "word": "津渡",
+      "meaning": "结合渡口、渡船与舟子读懂行旅",
+      "short": "辨认过河场景中的地点、人物与器物",
+      "detail": "津可指渡口，渡船往返两岸，舟子操舟。遇到行旅文字，注意“待”“招”“解缆”等动作，辨清人物在岸上、船上还是已经到达彼岸。",
+      "area": "文化背景",
+      "status": "draft"
+    },
+    {
+      "id": "skill.mainline",
+      "word": "主线",
+      "meaning": "用处境、行动与结果概括短篇",
+      "short": "用可核对的细节约束概括",
+      "detail": "先用一句话回答“谁面对什么事，怎样做，结果如何”。把答案的每一处都放回原文核对，删去原文不能支持的动机、评价或结局。",
+      "area": "阅读技能",
+      "status": "draft"
     }
   ],
   "passages": [
@@ -68,8 +266,8 @@
     },
     {
       "id": "p.boat",
-      "text": "舟将发，客去岸登舟。",
-      "gloss": "船将出发，旅客离开岸边登船。",
+      "text": "客立岸上。舟将发，客去岸登舟。",
+      "gloss": "旅客站在岸上。船将出发，他离开岸边登船。",
       "kind": "teaching",
       "status": "draft",
       "textRights": "项目自撰教学例句",
@@ -104,8 +302,8 @@
     },
     {
       "id": "p.drum",
-      "text": "卒闻鼓声，乃执戈出营。",
-      "gloss": "士卒听见鼓声，才拿起戈走出军营。",
+      "text": "卒闻鼓声，乃取戈，既而出营。",
+      "gloss": "士卒听见鼓声，才拿起戈，随后走出军营。",
       "kind": "teaching",
       "status": "draft",
       "textRights": "项目自撰教学例句",
@@ -124,6 +322,1104 @@
       "id": "p.school",
       "text": "师既去，弟子犹坐堂中。",
       "gloss": "老师已经离开，学生仍坐在堂中。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.ex.write",
+      "text": "吏书其名于简。",
+      "gloss": "官吏把他的名字写在竹简上。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.ex.letter",
+      "text": "兄自远方寄书问母。",
+      "gloss": "哥哥从远方寄信问候母亲。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.2.wall",
+      "text": "童取墨，书一字于壁。",
+      "gloss": "孩子取来墨，在墙上写了一个字。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.2.courier",
+      "text": "父在郡，遣使致书于家。",
+      "gloss": "父亲在郡城，派人送信到家里。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.2.inscribe",
+      "text": "匠书其姓于器底。",
+      "gloss": "工匠把自己的姓写在器物底部。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.2.reply",
+      "text": "家书昨日始至，子读之，即作书以答。",
+      "gloss": "家信昨天才到，儿子读过，立即写信答复。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.2.snow",
+      "text": "雪初霁，童以杖书名于雪上。",
+      "gloss": "雪刚停，孩子用手杖在雪上写名字。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.2.seal",
+      "text": "使者持兄书至，弟启封而读。",
+      "gloss": "使者拿着哥哥的信来到，弟弟打开封套阅读。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.2.register",
+      "text": "吏问来者姓名，书之于册。",
+      "gloss": "官吏问来人的姓名，把它写在册子上。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.2.absent",
+      "text": "友别三月，忽得其书，言将归。",
+      "gloss": "友人分别三个月后，我忽然收到他的信，信中说他将回来。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.ex.object-clue",
+      "text": "童举石，置之于案。",
+      "gloss": "孩子举起石头，把它放在桌上。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.ex.result-clue",
+      "text": "樵者释担，肩乃轻。",
+      "gloss": "砍柴人放下担子，肩上才轻松了。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.3.water",
+      "text": "童汲井水，注之于瓮。",
+      "gloss": "孩子打了井水，把水倒进大瓮里。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.3.untie",
+      "text": "舟人解缆，舟乃离岸。",
+      "gloss": "船夫解开缆绳，船才离开岸边。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.3.door",
+      "text": "父启户，月光入室。",
+      "gloss": "父亲打开门，月光照进室内。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.3.weave",
+      "text": "妇持针，穿线于针孔。",
+      "gloss": "女子拿着针，把线穿过针孔。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.3.ice",
+      "text": "日出冰释，水满石凹。",
+      "gloss": "太阳升起，冰融化了，水积满石头的凹处。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.3.net",
+      "text": "渔者举网，网中有鱼。",
+      "gloss": "渔人提起渔网，网里面有鱼。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.3.fuel",
+      "text": "薪尽火灭，室复暗。",
+      "gloss": "柴烧尽，火熄了，屋里又暗下来。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.3.ink",
+      "text": "生磨墨，濡笔而书。",
+      "gloss": "学生磨墨，把笔蘸湿后写字。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.check.1.news",
+      "text": "夜半闻叩门声，主人披衣出。",
+      "gloss": "半夜听见敲门声，主人披上衣服出门。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.check.1.field",
+      "text": "野火近，牧童弃薪疾走。",
+      "gloss": "野火逼近，牧童丢下柴火疾奔。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.check.1.inn",
+      "text": "客去驿，驿吏独守空舍。",
+      "gloss": "旅客离开驿站，驿吏独守空屋。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.check.1.sign",
+      "text": "主人削木为牌，书价于其上。",
+      "gloss": "主人削木做牌，把价格写在上面。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.check.1.letter",
+      "text": "子书至，母启而读之，乃知子安。",
+      "gloss": "儿子的信到了，母亲拆开阅读，才知道儿子平安。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.check.1.window",
+      "text": "童掩窗，风不复入。",
+      "gloss": "孩子关上窗，风不再吹进来。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.ex.zhi-object",
+      "text": "庭有落叶，童扫之。",
+      "gloss": "庭院里有落叶，孩子把它们扫走。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.ex.zhi-link",
+      "text": "山之北有泉。",
+      "gloss": "山的北面有泉。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.4.seed",
+      "text": "翁得瓜种，谨藏之。",
+      "gloss": "老人得到瓜籽，小心地把它们收藏起来。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.4.roof",
+      "text": "夜雨入屋，屋之瓦破矣。",
+      "gloss": "夜里的雨漏进屋内，屋顶的瓦已经破了。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.4.brush",
+      "text": "案有新笔，生取之而书。",
+      "gloss": "桌上有一支新笔，学生拿起它写字。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.4.boat",
+      "text": "渔人之舟系于柳下。",
+      "gloss": "渔人的船系在柳树下。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.4.lost",
+      "text": "有客失囊，邻人拾之以还客。",
+      "gloss": "有个旅客丢了袋子，邻人捡起它归还旅客。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.4.slope",
+      "text": "村之东有坡，坡上多竹。",
+      "gloss": "村子的东面有山坡，坡上有许多竹子。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.4.jar",
+      "text": "小儿失珠，既得之，纳于匣。",
+      "gloss": "孩子丢了珠子，找到它以后，放进小盒。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.4.shade",
+      "text": "庭中柳之影及窗。",
+      "gloss": "庭中柳树的影子延伸到了窗边。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.ex.qi-possessive",
+      "text": "童患雨湿其衣。",
+      "gloss": "孩子担心雨淋湿自己的衣服。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.ex.qi-part",
+      "text": "庭有二树，其一已枯。",
+      "gloss": "院里有两棵树，其中一棵已经枯了。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.5.cap",
+      "text": "童临池，风吹其冠入水。",
+      "gloss": "孩子来到池边，风把他的帽子吹进水里。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.5.carts",
+      "text": "庭前有三车，其一无轮。",
+      "gloss": "庭前有三辆车，其中一辆缺轮子。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.5.nest",
+      "text": "燕归，衔泥补其巢。",
+      "gloss": "燕子回来了，衔着泥修补自己的巢。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.5.stones",
+      "text": "匠取五石，择其二以为阶，余三留之。",
+      "gloss": "工匠取来五块石头，挑其中两块做台阶，把其余三块留下。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.5.wound",
+      "text": "马足伤，主人洗其足。",
+      "gloss": "马脚受伤了，主人给它洗脚。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.5.pear",
+      "text": "盘中四梨，其一有斑，余皆洁。",
+      "gloss": "盘中有四个梨，其中一个有斑点，其余都干净。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.5.coat",
+      "text": "儿卧榻上，母恐其衣薄，为之加被。",
+      "gloss": "孩子躺在床上，母亲担心他的衣服单薄，替他添了被子。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.5.seeds",
+      "text": "翁种三核，其二生芽，一不生。",
+      "gloss": "老人种下三个果核，其中两个发芽，一个没有发芽。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.ex.er-sequence",
+      "text": "客启扉而入室。",
+      "gloss": "客人打开门后进入室内。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.ex.er-turn",
+      "text": "井虽深，而水已涸。",
+      "gloss": "井虽然很深，水却已经干了。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.6.payment",
+      "text": "客解囊而取钱，乃付舟人。",
+      "gloss": "客人解开钱袋取出钱，才付给船夫。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.6.coat",
+      "text": "衣虽薄，而身不寒。",
+      "gloss": "衣服虽然单薄，身上却不冷。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.6.seal",
+      "text": "吏破封而展书。",
+      "gloss": "官吏拆开封套，随即展开书信。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.6.closed",
+      "text": "天已明，而门犹闭。",
+      "gloss": "天已经亮了，门却还关着。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.6.tea",
+      "text": "仆揭盖而倾茶于盏。",
+      "gloss": "仆人揭开盖子，然后把茶倒进茶杯。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.6.late",
+      "text": "路虽近，而泥深难行。",
+      "gloss": "路虽然近，泥却很深，很难走。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.6.lock",
+      "text": "主人以钥开锁而启箱。",
+      "gloss": "主人用钥匙开了锁，接着打开箱子。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.6.dry",
+      "text": "雨虽终日，而瓮中无水，盖覆其口也。",
+      "gloss": "雨虽然下了一整天，瓮里却没有水，因为盖子覆住了瓮口。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.check.2.bird",
+      "text": "雏鸟坠地，童护之。",
+      "gloss": "雏鸟落地，孩子护着它。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.check.2.gate",
+      "text": "城之西门夜闭。",
+      "gloss": "城的西门在夜间关闭。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.check.2.fisher",
+      "text": "渔人返，其舟载鱼甚多。",
+      "gloss": "渔人回来，他的船上载着很多鱼。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.check.2.buckets",
+      "text": "井旁有二桶，其一漏水。",
+      "gloss": "井旁有两只桶，其中一只漏水。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.check.2.seal",
+      "text": "吏卷帛书而束之，乃置于匣。",
+      "gloss": "官吏卷起帛书并把它捆扎好，才放到匣中。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.check.2.poor",
+      "text": "翁虽贫，而常分粟以济邻。",
+      "gloss": "老人虽然贫穷，却常分出粮食帮助邻人。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.ex.action-verb",
+      "text": "渔者修网于岸。",
+      "gloss": "渔人在岸边修补渔网。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.ex.direct-object",
+      "text": "工以刀削竹。",
+      "gloss": "工匠用刀削竹子。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.7.weaver",
+      "text": "妇织布于室。",
+      "gloss": "女子在屋里织布。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.7.grain",
+      "text": "农负粟入仓。",
+      "gloss": "农人背着谷子进入粮仓。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.7.draw-water",
+      "text": "童以绳引桶。",
+      "gloss": "孩子用绳子拉桶。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.7.plant",
+      "text": "父植柳于庭。",
+      "gloss": "父亲在院中栽种柳树。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.7.meal",
+      "text": "主人以羹待客。",
+      "gloss": "主人用羹汤招待客人。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.7.lock",
+      "text": "吏出，阍者闭门。",
+      "gloss": "官吏出去了，守门人关上门。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.7.cloth",
+      "text": "商人陈帛于肆。",
+      "gloss": "商人在店铺中陈列丝织品。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.7.carpentry",
+      "text": "匠度木，断之，乃削为几足。",
+      "gloss": "工匠量木料，截断它，再削成几案的腿。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.ex.subject-continuity",
+      "text": "匠举斧，斫木为桷。",
+      "gloss": "工匠举起斧子，砍削木料做椽子。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.ex.respondent",
+      "text": "师问生所读，对曰：“读诗。”",
+      "gloss": "老师问学生读什么，学生回答说：“读诗。”",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.8.fish",
+      "text": "渔翁收网，得鱼三尾。",
+      "gloss": "老渔人收网，捕得三条鱼。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.8.gate",
+      "text": "客问守门者曰：“何时开门？”对曰：“日出则开。”",
+      "gloss": "旅客问守门人：“何时开门？”守门人回答：“太阳出来就开。”",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.8.oil",
+      "text": "妇持油至灯下，添之于盏。",
+      "gloss": "女子拿着油来到灯下，把油添进灯盏。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.8.cost",
+      "text": "客问陶者曰：“此瓮几钱？”对曰：“十钱。”",
+      "gloss": "客人问陶工：“这只瓮多少钱？”陶工回答：“十钱。”",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.8.bird",
+      "text": "童拾伤鸟，置于笼中，朝夕饲之。",
+      "gloss": "孩子拾起受伤的鸟，把它放进笼里，早晚给它喂食。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.8.herb",
+      "text": "父问采药子曰：“汝得何草？”对曰：“得艾。”",
+      "gloss": "父亲问采药的孩子：“你采得什么草？”孩子答：“采得艾草。”",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.8.clothroll",
+      "text": "商人持尺出，量布于庭。",
+      "gloss": "商人拿着尺子出来，在院中量布。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.8.pilot",
+      "text": "吏问舟人曰：“舟可渡乎？”对曰：“水涨，未可。”",
+      "gloss": "官吏问船夫：“船能渡河吗？”船夫答：“水上涨了，还不能渡。”",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.ex.not-yet",
+      "text": "日已高，市门未启。",
+      "gloss": "太阳已经升高，集市的门还没打开。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.ex.interrogative-object",
+      "text": "客曰：“子何求？”答曰：“求书。”",
+      "gloss": "客人说：“你求什么？”对方答道：“求书。”",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.9.shutter",
+      "text": "夜半雨止，客未寝。",
+      "gloss": "半夜雨停了，旅客还没有睡。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.9.parcel",
+      "text": "童携一囊，母问曰：“囊中有何物？”",
+      "gloss": "孩子带着一个袋子，母亲问：“袋里有什么？”",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.9.water",
+      "text": "井已成，水未至。",
+      "gloss": "井已经挖好，水还没有涌来。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.9.lesson",
+      "text": "师问生曰：“今读何书？”",
+      "gloss": "老师问学生：“今天读什么书？”",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.9.return",
+      "text": "使者未归，家人方候于门。",
+      "gloss": "使者还没回来，家人正在门口等候。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.9.river",
+      "text": "叟执竿临水。童问曰：“翁何求？”叟指水中鱼。",
+      "gloss": "老人持竿来到水边。孩子问：“您想得到什么？”老人指向水中的鱼。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.9.bridge",
+      "text": "桥未成，行者仍乘舟。",
+      "gloss": "桥还没建好，过路人仍坐船。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.9.planting",
+      "text": "客见农人持种，问曰：“将种何谷？”",
+      "gloss": "客人见农人拿着种子，问：“将种哪种谷物？”",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.check.3.cobbler",
+      "text": "工缀履于檐下。",
+      "gloss": "工匠在屋檐下缝补鞋子。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.check.3.carve",
+      "text": "童以石刻木。",
+      "gloss": "孩子用石头刻木头。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.check.3.lamp",
+      "text": "客取火，燃灯以照书。",
+      "gloss": "旅客取来火种，点灯照着书本。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.check.3.west-road",
+      "text": "客问樵者曰：“西径通村乎？”对曰：“通。”",
+      "gloss": "旅客问樵夫：“西边的小路通到村子吗？”樵夫回答：“通。”",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.check.3.drum",
+      "text": "众已集，鼓未鸣。",
+      "gloss": "众人已经集合，鼓还没响。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.check.3.tribute",
+      "text": "吏见车至，问曰：“车中载何物？”",
+      "gloss": "官吏看见车来了，问：“车里装着什么？”",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.ex.track-actors",
+      "text": "樵者负薪，童子挈水。樵者息树下，童子奉水与之。",
+      "gloss": "樵夫背柴，孩子提水。樵夫在树下歇息，孩子递水给他。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.ex.time-links",
+      "text": "旦，客见桥已成。先是，乡人集木，夜共架之。",
+      "gloss": "清晨，客人看见桥已经建好。在这之前，乡人收集木料，夜里一起架起了桥。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.10.key",
+      "text": "书生寓客舍。暮，主人以钥授生，曰：“明旦为我开户。”生受之。旦，主人未起，生已开户矣。",
+      "gloss": "书生住在客舍。傍晚，主人把钥匙交给书生，说：“明早替我开门。”书生接过钥匙。清早，主人还没起床，书生已经把门打开了。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.10.pear",
+      "text": "园翁晨见篮中有梨。先是，邻童拾梨于路，暮置翁篮中。翁问其孙，孙曰：“邻童之所置也。”",
+      "gloss": "园中老人清晨看见篮子里有梨。在这之前，邻家孩子在路上拾到梨，傍晚放进老人的篮中。老人询问孙子，孙子说：“那是邻家孩子放的。”",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.10.ferry",
+      "text": "行人到水边，问舟子可渡否。舟子指上流曰：“彼有空舟。”行人循岸往，得舟而渡。",
+      "gloss": "旅人来到水边，问船夫能否渡河。船夫指着上游说：“那里有空船。”旅人沿岸前往，找到船过了河。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.10.cloth",
+      "text": "妇买布于市，留其伞于肆。至家始觉。肆主见伞，遣子送之。妇出门欲返市，适逢肆主之子。",
+      "gloss": "妇人在市场买布，把伞落在铺子里，到家才发觉。店主看见伞，派自己的儿子送还。妇人出门想回市场，恰好遇见店主的儿子。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.ex.causal-link",
+      "text": "昨夜雨，板桥没于水。客以桥没故，循高岸行。",
+      "gloss": "昨夜下雨，木板桥被水淹没。客人因为桥被淹没，沿高处的岸走。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.ex.contrast-expectation",
+      "text": "客谓雨将止，欲即行。出户视之，雨反益急。",
+      "gloss": "客人以为雨快停了，想马上出行。出门一看，雨反而更急了。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.11.ford",
+      "text": "晨，父子至溪。子谓水浅，可徒涉。父以杖探水，穷杖而未及底。父曰：“水深，故当待舟。”父子遂坐岸上。",
+      "gloss": "早上，父子来到溪边。儿子以为水浅，可以步行涉过。父亲用手杖探水，整根杖探下去还没触到底。父亲说：“水深，因此应当等船。”父子便坐在岸上。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.11.light",
+      "text": "客夜读，见窗纸忽明，意月出也。开户视之，则邻人执炬寻牛。既失牛，故举火遍求。",
+      "gloss": "客人夜里读书，见窗纸忽然亮了，以为是月亮升起。开门一看，原来是邻居举着火把找牛。因为丢了牛，所以举火到处寻找。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.11.basket",
+      "text": "樵者携二筐入山。将归，恐薪重，留一筐于石下。既负薪而行，然道滑，数步辄止。",
+      "gloss": "樵夫带着两筐进山。准备回去时，他怕柴重，留下一筐在石下。背着柴行走时，路却很滑，走几步就得停。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.11.field",
+      "text": "农人引水入田，以为一夕可遍。明旦往视，田半犹干。循沟察之，乃有土块塞水。去其土，水始通。",
+      "gloss": "农人引水入田，以为一夜就能灌遍。次日清早去看，一半田地还干着。沿沟察看，原来有土块堵住水。去掉泥土后，水才畅通。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.ex.ferry-custom",
+      "text": "客至津，舟在彼岸。客招舟子，舟子鼓棹而来。",
+      "gloss": "旅人到达渡口，船在对岸。旅人招呼船夫，船夫划桨过来。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.ex.mainline",
+      "text": "道旁有折枝碍车。二童共移之，车乃过。",
+      "gloss": "路旁有折断的树枝挡住车。两个孩子一起移开树枝，车才通过。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.12.medicine",
+      "text": "医者负药至津，欲往东村。渡舟在东岸，医者招手，舟子乃来。既渡，病家之子已候于岸，引之入村。",
+      "gloss": "医者背着药来到渡口，想去东村。渡船在东岸，医者招手，船夫才过来。渡河之后，病家的儿子已经在岸上等候，领他进了村子。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.12.rope",
+      "text": "童随父过津，见舟系于柳。客登舟将行，童急牵其缆。父止之曰：“舟子自解，汝勿牵。”童释手，舟子解缆而发。",
+      "gloss": "孩子跟父亲经过渡口，看见船系在柳树上。旅客登船准备走，孩子急忙拉住船绳。父亲制止他说：“船夫会自己解开，你别拉。”孩子松手，船夫解缆出发了。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.12.cross",
+      "text": "暮，有客至津。风大，舟子不肯渡，客乃宿津旁。明旦风息，客登舟，回顾，昨所宿舍已远。",
+      "gloss": "傍晚有旅客到渡口。风大，船夫不肯渡他，旅客便住在渡口附近。次日清晨风停，旅客上船，回头看，昨夜住的屋子已经远了。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.l1.12.lost",
+      "text": "客既登舟，忽失其杖。舟子以篙指岸曰：“杖犹倚石也。”舟未离岸，童为取之。客得杖，谢童，乃渡。",
+      "gloss": "旅客已经登船，忽然发觉手杖不见了。船夫用篙指向岸上说：“手杖还靠在石头上。”船还没离岸，孩子替他取来。旅客拿到手杖，谢过孩子，才渡河。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.check.4.slips",
+      "text": "司书者晨失一简。先是，小儿拾简于庭，置之案上。司书者遍索于庭，归室，始见案上之简。",
+      "gloss": "掌管书简的人清早找不到一枚简。在这之前，小孩子在庭院拾起简，放到了案上。掌管书简的人在庭院遍寻，回屋才看见案上的简。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.check.4.jar",
+      "text": "父出，嘱子守瓮。邻人来借水，子以瓢酌而与之。父归，见水少，子具言其故。",
+      "gloss": "父亲出门，嘱咐儿子看守水瓮。邻人来借水，儿子用瓢舀水给他。父亲回来见水少了，儿子详细说明原因。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.check.4.gate",
+      "text": "里门旧狭，载薪者至而车不得入。守门者命分薪为二，先入其半，余薪继之。薪乃尽入。",
+      "gloss": "里门本来狭窄，载柴的人到了，车进不去。守门人让把柴分为两份，先运一半进去，剩下的随后运进。柴就全运进去了。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.check.4.rain",
+      "text": "暮云合，农人喜曰：“今夜必雨。”旦起视庭，土犹干。问邻翁，翁曰：“夜半风起，云已散矣。”",
+      "gloss": "傍晚云聚，农人高兴地说今夜一定下雨。清早他起来看院子，土还干着。他问邻家老人，老人说半夜起风，云已散了。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.check.4.shore",
+      "text": "妇携子至津，舟尚系岸。妇先登，以手引子。母子既坐，舟子始解缆。",
+      "gloss": "妇人带孩子到渡口，船还系在岸边。妇人先上船，伸手拉孩子。母子坐好以后，船夫才解缆。",
+      "kind": "teaching",
+      "status": "draft",
+      "textRights": "项目自撰教学例句",
+      "glossRights": "项目自撰译注"
+    },
+    {
+      "id": "p.check.4.bridge",
+      "text": "村桥一板折。牧童见行者将至，立桥头呼止之。行者察桥，乃从旁径过。童暮归，告里人修桥。",
+      "gloss": "村桥断了一块板。牧童看见有人快走过来，站在桥头喊他停下。行人查看桥面，便从旁边的小路经过。牧童傍晚回去，告诉乡人要修桥。",
       "kind": "teaching",
       "status": "draft",
       "textRights": "项目自撰教学例句",
@@ -193,6 +1489,615 @@
       "start": 8,
       "end": 9,
       "text": "走"
+    },
+    {
+      "id": "s.q.l1.2.3.o1",
+      "passageId": "p.l1.2.inscribe",
+      "start": 2,
+      "end": 4,
+      "text": "其姓"
+    },
+    {
+      "id": "s.q.l1.2.3.o2",
+      "passageId": "p.l1.2.inscribe",
+      "start": 0,
+      "end": 1,
+      "text": "匠"
+    },
+    {
+      "id": "s.q.l1.2.3.o3",
+      "passageId": "p.l1.2.inscribe",
+      "start": 5,
+      "end": 7,
+      "text": "器底"
+    },
+    {
+      "id": "s.q.l1.3.2.o1",
+      "passageId": "p.l1.3.untie",
+      "start": 5,
+      "end": 9,
+      "text": "舟乃离岸"
+    },
+    {
+      "id": "s.q.l1.3.2.o2",
+      "passageId": "p.l1.3.untie",
+      "start": 3,
+      "end": 4,
+      "text": "缆"
+    },
+    {
+      "id": "s.q.l1.3.2.o3",
+      "passageId": "p.l1.3.untie",
+      "start": 0,
+      "end": 2,
+      "text": "舟人"
+    },
+    {
+      "id": "s.q.l1.3.6.o1",
+      "passageId": "p.l1.3.net",
+      "start": 8,
+      "end": 9,
+      "text": "鱼"
+    },
+    {
+      "id": "s.q.l1.3.6.o2",
+      "passageId": "p.l1.3.net",
+      "start": 3,
+      "end": 4,
+      "text": "网"
+    },
+    {
+      "id": "s.q.l1.3.6.o3",
+      "passageId": "p.l1.3.net",
+      "start": 0,
+      "end": 2,
+      "text": "渔者"
+    },
+    {
+      "id": "s.q.check.1.2.o1",
+      "passageId": "p.check.1.field",
+      "start": 8,
+      "end": 10,
+      "text": "疾走"
+    },
+    {
+      "id": "s.q.check.1.2.o2",
+      "passageId": "p.check.1.field",
+      "start": 0,
+      "end": 2,
+      "text": "野火"
+    },
+    {
+      "id": "s.q.check.1.2.o3",
+      "passageId": "p.check.1.field",
+      "start": 6,
+      "end": 8,
+      "text": "弃薪"
+    },
+    {
+      "id": "s.q.check.1.6.o1",
+      "passageId": "p.check.1.window",
+      "start": 0,
+      "end": 1,
+      "text": "童"
+    },
+    {
+      "id": "s.q.check.1.6.o2",
+      "passageId": "p.check.1.window",
+      "start": 4,
+      "end": 8,
+      "text": "风不复入"
+    },
+    {
+      "id": "s.q.check.1.6.o3",
+      "passageId": "p.check.1.window",
+      "start": 2,
+      "end": 3,
+      "text": "窗"
+    },
+    {
+      "id": "s.q.l1.4.3.o1",
+      "passageId": "p.l1.4.brush",
+      "start": 0,
+      "end": 1,
+      "text": "案"
+    },
+    {
+      "id": "s.q.l1.4.3.o2",
+      "passageId": "p.l1.4.brush",
+      "start": 5,
+      "end": 6,
+      "text": "生"
+    },
+    {
+      "id": "s.q.l1.4.3.o3",
+      "passageId": "p.l1.4.brush",
+      "start": 2,
+      "end": 4,
+      "text": "新笔"
+    },
+    {
+      "id": "s.q.l1.4.4.o1",
+      "passageId": "p.l1.4.boat",
+      "start": 6,
+      "end": 7,
+      "text": "柳"
+    },
+    {
+      "id": "s.q.l1.4.4.o2",
+      "passageId": "p.l1.4.boat",
+      "start": 3,
+      "end": 4,
+      "text": "舟"
+    },
+    {
+      "id": "s.q.l1.4.4.o3",
+      "passageId": "p.l1.4.boat",
+      "start": 0,
+      "end": 2,
+      "text": "渔人"
+    },
+    {
+      "id": "s.q.l1.5.3.o1",
+      "passageId": "p.l1.5.nest",
+      "start": 4,
+      "end": 5,
+      "text": "泥"
+    },
+    {
+      "id": "s.q.l1.5.3.o2",
+      "passageId": "p.l1.5.nest",
+      "start": 0,
+      "end": 1,
+      "text": "燕"
+    },
+    {
+      "id": "s.q.l1.5.3.o3",
+      "passageId": "p.l1.5.nest",
+      "start": 7,
+      "end": 8,
+      "text": "巢"
+    },
+    {
+      "id": "s.q.l1.5.6.o1",
+      "passageId": "p.l1.5.pear",
+      "start": 0,
+      "end": 1,
+      "text": "盘"
+    },
+    {
+      "id": "s.q.l1.5.6.o2",
+      "passageId": "p.l1.5.pear",
+      "start": 8,
+      "end": 9,
+      "text": "斑"
+    },
+    {
+      "id": "s.q.l1.5.6.o3",
+      "passageId": "p.l1.5.pear",
+      "start": 2,
+      "end": 4,
+      "text": "四梨"
+    },
+    {
+      "id": "s.q.l1.6.4.o1",
+      "passageId": "p.l1.6.closed",
+      "start": 1,
+      "end": 3,
+      "text": "已明"
+    },
+    {
+      "id": "s.q.l1.6.4.o2",
+      "passageId": "p.l1.6.closed",
+      "start": 0,
+      "end": 1,
+      "text": "天"
+    },
+    {
+      "id": "s.q.l1.6.4.o3",
+      "passageId": "p.l1.6.closed",
+      "start": 5,
+      "end": 8,
+      "text": "门犹闭"
+    },
+    {
+      "id": "s.q.l1.6.7.o1",
+      "passageId": "p.l1.6.lock",
+      "start": 7,
+      "end": 9,
+      "text": "启箱"
+    },
+    {
+      "id": "s.q.l1.6.7.o2",
+      "passageId": "p.l1.6.lock",
+      "start": 4,
+      "end": 6,
+      "text": "开锁"
+    },
+    {
+      "id": "s.q.l1.6.7.o3",
+      "passageId": "p.l1.6.lock",
+      "start": 0,
+      "end": 2,
+      "text": "主人"
+    },
+    {
+      "id": "s.q.check.2.1.o1",
+      "passageId": "p.check.2.bird",
+      "start": 5,
+      "end": 6,
+      "text": "童"
+    },
+    {
+      "id": "s.q.check.2.1.o2",
+      "passageId": "p.check.2.bird",
+      "start": 3,
+      "end": 4,
+      "text": "地"
+    },
+    {
+      "id": "s.q.check.2.1.o3",
+      "passageId": "p.check.2.bird",
+      "start": 0,
+      "end": 2,
+      "text": "雏鸟"
+    },
+    {
+      "id": "s.q.l1.7.1.o1",
+      "passageId": "p.l1.7.weaver",
+      "start": 0,
+      "end": 1,
+      "text": "妇"
+    },
+    {
+      "id": "s.q.l1.7.1.o2",
+      "passageId": "p.l1.7.weaver",
+      "start": 1,
+      "end": 2,
+      "text": "织"
+    },
+    {
+      "id": "s.q.l1.7.1.o3",
+      "passageId": "p.l1.7.weaver",
+      "start": 4,
+      "end": 5,
+      "text": "室"
+    },
+    {
+      "id": "s.q.l1.7.3.o1",
+      "passageId": "p.l1.7.draw-water",
+      "start": 0,
+      "end": 1,
+      "text": "童"
+    },
+    {
+      "id": "s.q.l1.7.3.o2",
+      "passageId": "p.l1.7.draw-water",
+      "start": 4,
+      "end": 5,
+      "text": "桶"
+    },
+    {
+      "id": "s.q.l1.7.3.o3",
+      "passageId": "p.l1.7.draw-water",
+      "start": 2,
+      "end": 3,
+      "text": "绳"
+    },
+    {
+      "id": "s.q.l1.7.6.o1",
+      "passageId": "p.l1.7.lock",
+      "start": 1,
+      "end": 2,
+      "text": "出"
+    },
+    {
+      "id": "s.q.l1.7.6.o2",
+      "passageId": "p.l1.7.lock",
+      "start": 6,
+      "end": 7,
+      "text": "门"
+    },
+    {
+      "id": "s.q.l1.7.6.o3",
+      "passageId": "p.l1.7.lock",
+      "start": 5,
+      "end": 6,
+      "text": "闭"
+    },
+    {
+      "id": "s.q.l1.7.7.o1",
+      "passageId": "p.l1.7.cloth",
+      "start": 0,
+      "end": 2,
+      "text": "商人"
+    },
+    {
+      "id": "s.q.l1.7.7.o2",
+      "passageId": "p.l1.7.cloth",
+      "start": 5,
+      "end": 6,
+      "text": "肆"
+    },
+    {
+      "id": "s.q.l1.7.7.o3",
+      "passageId": "p.l1.7.cloth",
+      "start": 3,
+      "end": 4,
+      "text": "帛"
+    },
+    {
+      "id": "s.q.l1.8.2.o1",
+      "passageId": "p.l1.8.gate",
+      "start": 2,
+      "end": 5,
+      "text": "守门者"
+    },
+    {
+      "id": "s.q.l1.8.2.o2",
+      "passageId": "p.l1.8.gate",
+      "start": 0,
+      "end": 1,
+      "text": "客"
+    },
+    {
+      "id": "s.q.l1.8.2.o3",
+      "passageId": "p.l1.8.gate",
+      "start": 18,
+      "end": 20,
+      "text": "日出"
+    },
+    {
+      "id": "s.q.l1.8.7.o1",
+      "passageId": "p.l1.8.clothroll",
+      "start": 0,
+      "end": 2,
+      "text": "商人"
+    },
+    {
+      "id": "s.q.l1.8.7.o2",
+      "passageId": "p.l1.8.clothroll",
+      "start": 8,
+      "end": 10,
+      "text": "于庭"
+    },
+    {
+      "id": "s.q.l1.8.7.o3",
+      "passageId": "p.l1.8.clothroll",
+      "start": 2,
+      "end": 4,
+      "text": "持尺"
+    },
+    {
+      "id": "s.q.l1.9.3.o1",
+      "passageId": "p.l1.9.water",
+      "start": 4,
+      "end": 5,
+      "text": "水"
+    },
+    {
+      "id": "s.q.l1.9.3.o2",
+      "passageId": "p.l1.9.water",
+      "start": 2,
+      "end": 3,
+      "text": "成"
+    },
+    {
+      "id": "s.q.l1.9.3.o3",
+      "passageId": "p.l1.9.water",
+      "start": 6,
+      "end": 7,
+      "text": "至"
+    },
+    {
+      "id": "s.q.l1.9.6.o1",
+      "passageId": "p.l1.9.river",
+      "start": 2,
+      "end": 3,
+      "text": "竿"
+    },
+    {
+      "id": "s.q.l1.9.6.o2",
+      "passageId": "p.l1.9.river",
+      "start": 6,
+      "end": 7,
+      "text": "童"
+    },
+    {
+      "id": "s.q.l1.9.6.o3",
+      "passageId": "p.l1.9.river",
+      "start": 20,
+      "end": 21,
+      "text": "鱼"
+    },
+    {
+      "id": "s.q.check.3.1.o1",
+      "passageId": "p.check.3.cobbler",
+      "start": 0,
+      "end": 1,
+      "text": "工"
+    },
+    {
+      "id": "s.q.check.3.1.o2",
+      "passageId": "p.check.3.cobbler",
+      "start": 2,
+      "end": 3,
+      "text": "履"
+    },
+    {
+      "id": "s.q.check.3.1.o3",
+      "passageId": "p.check.3.cobbler",
+      "start": 1,
+      "end": 2,
+      "text": "缀"
+    },
+    {
+      "id": "s.q.check.3.4.o1",
+      "passageId": "p.check.3.west-road",
+      "start": 2,
+      "end": 4,
+      "text": "樵者"
+    },
+    {
+      "id": "s.q.check.3.4.o2",
+      "passageId": "p.check.3.west-road",
+      "start": 0,
+      "end": 1,
+      "text": "客"
+    },
+    {
+      "id": "s.q.check.3.4.o3",
+      "passageId": "p.check.3.west-road",
+      "start": 7,
+      "end": 9,
+      "text": "西径"
+    },
+    {
+      "id": "s.q.l1.10.3.o1",
+      "passageId": "p.l1.10.pear",
+      "start": 12,
+      "end": 14,
+      "text": "邻童"
+    },
+    {
+      "id": "s.q.l1.10.3.o2",
+      "passageId": "p.l1.10.pear",
+      "start": 27,
+      "end": 29,
+      "text": "其孙"
+    },
+    {
+      "id": "s.q.l1.10.3.o3",
+      "passageId": "p.l1.10.pear",
+      "start": 0,
+      "end": 2,
+      "text": "园翁"
+    },
+    {
+      "id": "s.q.l1.10.6.o1",
+      "passageId": "p.l1.10.ferry",
+      "start": 29,
+      "end": 32,
+      "text": "循岸往"
+    },
+    {
+      "id": "s.q.l1.10.6.o2",
+      "passageId": "p.l1.10.ferry",
+      "start": 35,
+      "end": 37,
+      "text": "而渡"
+    },
+    {
+      "id": "s.q.l1.10.6.o3",
+      "passageId": "p.l1.10.ferry",
+      "start": 2,
+      "end": 5,
+      "text": "到水边"
+    },
+    {
+      "id": "s.q.l1.11.3.o1",
+      "passageId": "p.l1.11.light",
+      "start": 5,
+      "end": 9,
+      "text": "窗纸忽明"
+    },
+    {
+      "id": "s.q.l1.11.3.o2",
+      "passageId": "p.l1.11.light",
+      "start": 28,
+      "end": 31,
+      "text": "既失牛"
+    },
+    {
+      "id": "s.q.l1.11.3.o3",
+      "passageId": "p.l1.11.light",
+      "start": 15,
+      "end": 19,
+      "text": "开户视之"
+    },
+    {
+      "id": "s.q.l1.11.6.o1",
+      "passageId": "p.l1.11.basket",
+      "start": 15,
+      "end": 18,
+      "text": "留一筐"
+    },
+    {
+      "id": "s.q.l1.11.6.o2",
+      "passageId": "p.l1.11.basket",
+      "start": 5,
+      "end": 7,
+      "text": "入山"
+    },
+    {
+      "id": "s.q.l1.11.6.o3",
+      "passageId": "p.l1.11.basket",
+      "start": 32,
+      "end": 36,
+      "text": "数步辄止"
+    },
+    {
+      "id": "s.q.l1.12.3.o1",
+      "passageId": "p.l1.12.rope",
+      "start": 46,
+      "end": 48,
+      "text": "解缆"
+    },
+    {
+      "id": "s.q.l1.12.3.o2",
+      "passageId": "p.l1.12.rope",
+      "start": 13,
+      "end": 15,
+      "text": "登舟"
+    },
+    {
+      "id": "s.q.l1.12.3.o3",
+      "passageId": "p.l1.12.rope",
+      "start": 20,
+      "end": 23,
+      "text": "牵其缆"
+    },
+    {
+      "id": "s.q.l1.12.7.o1",
+      "passageId": "p.l1.12.lost",
+      "start": 26,
+      "end": 30,
+      "text": "舟未离岸"
+    },
+    {
+      "id": "s.q.l1.12.7.o2",
+      "passageId": "p.l1.12.lost",
+      "start": 43,
+      "end": 45,
+      "text": "乃渡"
+    },
+    {
+      "id": "s.q.l1.12.7.o3",
+      "passageId": "p.l1.12.lost",
+      "start": 5,
+      "end": 9,
+      "text": "忽失其杖"
+    },
+    {
+      "id": "s.q.check.4.4.o1",
+      "passageId": "p.check.4.rain",
+      "start": 0,
+      "end": 3,
+      "text": "暮云合"
+    },
+    {
+      "id": "s.q.check.4.4.o2",
+      "passageId": "p.check.4.rain",
+      "start": 38,
+      "end": 42,
+      "text": "云已散矣"
+    },
+    {
+      "id": "s.q.check.4.4.o3",
+      "passageId": "p.check.4.rain",
+      "start": 21,
+      "end": 24,
+      "text": "土犹干"
     }
   ],
   "cards": [
@@ -220,6 +2125,226 @@
       "questionIds": [
         "q.3",
         "q.6"
+      ]
+    },
+    {
+      "id": "card.skill.write",
+      "skillId": "skill.write",
+      "questionIds": [
+        "q.l1.2.1",
+        "q.l1.2.3",
+        "q.l1.2.5",
+        "q.l1.2.7"
+      ]
+    },
+    {
+      "id": "card.skill.letter",
+      "skillId": "skill.letter",
+      "questionIds": [
+        "q.l1.2.2",
+        "q.l1.2.4",
+        "q.l1.2.6",
+        "q.l1.2.8"
+      ]
+    },
+    {
+      "id": "card.skill.object-clue",
+      "skillId": "skill.object-clue",
+      "questionIds": [
+        "q.l1.3.1",
+        "q.l1.3.4",
+        "q.l1.3.6",
+        "q.l1.3.8"
+      ]
+    },
+    {
+      "id": "card.skill.result-clue",
+      "skillId": "skill.result-clue",
+      "questionIds": [
+        "q.l1.3.2",
+        "q.l1.3.3",
+        "q.l1.3.5",
+        "q.l1.3.7"
+      ]
+    },
+    {
+      "id": "card.skill.zhi-object",
+      "skillId": "skill.zhi-object",
+      "questionIds": [
+        "q.l1.4.1",
+        "q.l1.4.3",
+        "q.l1.4.5",
+        "q.l1.4.7"
+      ]
+    },
+    {
+      "id": "card.skill.zhi-link",
+      "skillId": "skill.zhi-link",
+      "questionIds": [
+        "q.l1.4.2",
+        "q.l1.4.4",
+        "q.l1.4.6",
+        "q.l1.4.8"
+      ]
+    },
+    {
+      "id": "card.skill.qi-possessive",
+      "skillId": "skill.qi-possessive",
+      "questionIds": [
+        "q.l1.5.1",
+        "q.l1.5.3",
+        "q.l1.5.5",
+        "q.l1.5.7"
+      ]
+    },
+    {
+      "id": "card.skill.qi-part",
+      "skillId": "skill.qi-part",
+      "questionIds": [
+        "q.l1.5.2",
+        "q.l1.5.4",
+        "q.l1.5.6",
+        "q.l1.5.8"
+      ]
+    },
+    {
+      "id": "card.skill.er-sequence",
+      "skillId": "skill.er-sequence",
+      "questionIds": [
+        "q.l1.6.1",
+        "q.l1.6.3",
+        "q.l1.6.5",
+        "q.l1.6.7"
+      ]
+    },
+    {
+      "id": "card.skill.er-turn",
+      "skillId": "skill.er-turn",
+      "questionIds": [
+        "q.l1.6.2",
+        "q.l1.6.4",
+        "q.l1.6.6",
+        "q.l1.6.8"
+      ]
+    },
+    {
+      "id": "card.skill.action-verb",
+      "skillId": "skill.action-verb",
+      "questionIds": [
+        "q.l1.7.1",
+        "q.l1.7.4",
+        "q.l1.7.6",
+        "q.l1.7.8"
+      ]
+    },
+    {
+      "id": "card.skill.direct-object",
+      "skillId": "skill.direct-object",
+      "questionIds": [
+        "q.l1.7.2",
+        "q.l1.7.3",
+        "q.l1.7.5",
+        "q.l1.7.7"
+      ]
+    },
+    {
+      "id": "card.skill.subject-continuity",
+      "skillId": "skill.subject-continuity",
+      "questionIds": [
+        "q.l1.8.1",
+        "q.l1.8.3",
+        "q.l1.8.5",
+        "q.l1.8.7"
+      ]
+    },
+    {
+      "id": "card.skill.respondent",
+      "skillId": "skill.respondent",
+      "questionIds": [
+        "q.l1.8.2",
+        "q.l1.8.4",
+        "q.l1.8.6",
+        "q.l1.8.8"
+      ]
+    },
+    {
+      "id": "card.skill.not-yet",
+      "skillId": "skill.not-yet",
+      "questionIds": [
+        "q.l1.9.1",
+        "q.l1.9.3",
+        "q.l1.9.5",
+        "q.l1.9.7"
+      ]
+    },
+    {
+      "id": "card.skill.interrogative-object",
+      "skillId": "skill.interrogative-object",
+      "questionIds": [
+        "q.l1.9.2",
+        "q.l1.9.4",
+        "q.l1.9.6",
+        "q.l1.9.8"
+      ]
+    },
+    {
+      "id": "card.skill.track-actors",
+      "skillId": "skill.track-actors",
+      "questionIds": [
+        "q.l1.10.1",
+        "q.l1.10.3",
+        "q.l1.10.5",
+        "q.l1.10.7"
+      ]
+    },
+    {
+      "id": "card.skill.time-links",
+      "skillId": "skill.time-links",
+      "questionIds": [
+        "q.l1.10.2",
+        "q.l1.10.4",
+        "q.l1.10.6",
+        "q.l1.10.8"
+      ]
+    },
+    {
+      "id": "card.skill.causal-link",
+      "skillId": "skill.causal-link",
+      "questionIds": [
+        "q.l1.11.1",
+        "q.l1.11.3",
+        "q.l1.11.5",
+        "q.l1.11.7"
+      ]
+    },
+    {
+      "id": "card.skill.contrast-expectation",
+      "skillId": "skill.contrast-expectation",
+      "questionIds": [
+        "q.l1.11.2",
+        "q.l1.11.4",
+        "q.l1.11.6",
+        "q.l1.11.8"
+      ]
+    },
+    {
+      "id": "card.skill.ferry-custom",
+      "skillId": "skill.ferry-custom",
+      "questionIds": [
+        "q.l1.12.1",
+        "q.l1.12.3",
+        "q.l1.12.5",
+        "q.l1.12.7"
+      ]
+    },
+    {
+      "id": "card.skill.mainline",
+      "skillId": "skill.mainline",
+      "questionIds": [
+        "q.l1.12.2",
+        "q.l1.12.4",
+        "q.l1.12.6",
+        "q.l1.12.8"
       ]
     }
   ],
@@ -281,7 +2406,7 @@
       "answer": [
         "q2.3"
       ],
-      "analysis": "“舟将发”交代背景。“去岸”与“登舟”相接，动作从岸上开始。",
+      "analysis": "“客立岸上”点明动作起点；船将出发，客人便离开岸边登船。",
       "hint": "抓住后面的动作“登舟”。"
     },
     {
@@ -403,7 +2528,7 @@
         "q6.3",
         "q6.1"
       ],
-      "analysis": "“闻鼓声”先写触发行动的声音；“乃”引出随后执戈、出营两个动作。",
+      "analysis": "“闻鼓声”是触发行动的声音，“乃”引出取戈，“既而”引出随后出营。",
       "hint": "“乃”后面的动作发生得更晚。"
     },
     {
@@ -442,7 +2567,7 @@
       "mode": "choice",
       "skillId": "skill.leave",
       "passageId": "p.school",
-      "prompt": "这句话中，老师与学生分别在哪里？",
+      "prompt": "哪一项准确概括师生的动向？",
       "options": [
         {
           "id": "q8.1",
@@ -465,6 +2590,3386 @@
       ],
       "analysis": "“既”表示已经，“犹”表示仍然。“去”与“坐堂中”对照，可知老师离开了。",
       "hint": "对照“既”和“犹”所修饰的动作。"
+    },
+    {
+      "id": "q.l1.2.1",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.write",
+      "passageId": "p.l1.2.wall",
+      "prompt": "这里的“书”应该怎样理解？",
+      "options": [
+        {
+          "id": "q.l1.2.1.o1",
+          "reason": "“一字”是写的内容，“于壁”说明写在墙上。",
+          "label": "写下"
+        },
+        {
+          "id": "q.l1.2.1.o2",
+          "reason": "“于壁”交代落笔的位置。",
+          "label": "一封信"
+        },
+        {
+          "id": "q.l1.2.1.o3",
+          "reason": "“一字”是动作的对象，前文未出现书籍。",
+          "label": "一本书"
+        }
+      ],
+      "answer": [
+        "q.l1.2.1.o1"
+      ],
+      "analysis": "“一字”是写的内容，“于壁”说明写在墙上。",
+      "hint": "想想“取墨”之后可以做什么。"
+    },
+    {
+      "id": "q.l1.2.2",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.letter",
+      "passageId": "p.l1.2.courier",
+      "prompt": "使者送到家中的是什么？",
+      "options": [
+        {
+          "id": "q.l1.2.2.o1",
+          "reason": "父亲在郡城，派出的是使者。",
+          "label": "父亲本人"
+        },
+        {
+          "id": "q.l1.2.2.o2",
+          "reason": "文中没有笔，“致”写传递。",
+          "label": "写字的笔"
+        },
+        {
+          "id": "q.l1.2.2.o3",
+          "reason": "“致书于家”是把书信送到家里。",
+          "label": "家书"
+        }
+      ],
+      "answer": [
+        "q.l1.2.2.o3"
+      ],
+      "analysis": "“致书于家”是把书信送到家里。",
+      "hint": "留意父亲与家人是否同处一地。"
+    },
+    {
+      "id": "q.l1.2.3",
+      "status": "draft",
+      "mode": "span",
+      "skillId": "skill.write",
+      "passageId": "p.l1.2.inscribe",
+      "prompt": "点选写下的内容。",
+      "options": [
+        {
+          "id": "q.l1.2.3.o1",
+          "reason": "“书其姓”把“姓”作为书写对象。",
+          "spanId": "s.q.l1.2.3.o1"
+        },
+        {
+          "id": "q.l1.2.3.o2",
+          "reason": "工匠是书写的人。",
+          "spanId": "s.q.l1.2.3.o2"
+        },
+        {
+          "id": "q.l1.2.3.o3",
+          "reason": "器底是落字的位置。",
+          "spanId": "s.q.l1.2.3.o3"
+        }
+      ],
+      "answer": [
+        "q.l1.2.3.o1"
+      ],
+      "analysis": "“书其姓”把“姓”作为书写对象。",
+      "hint": "从“书”后面找写了什么。"
+    },
+    {
+      "id": "q.l1.2.4",
+      "status": "draft",
+      "mode": "order",
+      "skillId": "skill.letter",
+      "passageId": "p.l1.2.reply",
+      "prompt": "按原文排列收信、回信的过程。",
+      "options": [
+        {
+          "id": "q.l1.2.4.o1",
+          "reason": "",
+          "label": "写信答复"
+        },
+        {
+          "id": "q.l1.2.4.o2",
+          "reason": "",
+          "label": "读信"
+        },
+        {
+          "id": "q.l1.2.4.o3",
+          "reason": "",
+          "label": "收到家信"
+        }
+      ],
+      "answer": [
+        "q.l1.2.4.o3",
+        "q.l1.2.4.o2",
+        "q.l1.2.4.o1"
+      ],
+      "analysis": "“始至”写信抵达，“读之”回指来信，最后“作书以答”。",
+      "hint": "先分清来信与回信。"
+    },
+    {
+      "id": "q.l1.2.5",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.write",
+      "passageId": "p.l1.2.snow",
+      "prompt": "“以杖书名”中的“书”与哪个词最接近？",
+      "options": [
+        {
+          "id": "q.l1.2.5.o1",
+          "reason": "“名”是写的内容，不能与“书籍”组成这里的动作。",
+          "label": "书籍"
+        },
+        {
+          "id": "q.l1.2.5.o2",
+          "reason": "杖是书写工具，雪是落字的地方。",
+          "label": "书写"
+        },
+        {
+          "id": "q.l1.2.5.o3",
+          "reason": "手杖在雪上留字，此处没有收信人。",
+          "label": "书信"
+        }
+      ],
+      "answer": [
+        "q.l1.2.5.o2"
+      ],
+      "analysis": "杖是书写工具，雪是落字的地方。",
+      "hint": "留意器具和落字的位置。"
+    },
+    {
+      "id": "q.l1.2.6",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.letter",
+      "passageId": "p.l1.2.seal",
+      "prompt": "使者所持的“兄书”最可能是什么？",
+      "options": [
+        {
+          "id": "q.l1.2.6.o1",
+          "reason": "弟弟收到后启封，是收信方。",
+          "label": "弟弟寄给哥哥的信"
+        },
+        {
+          "id": "q.l1.2.6.o2",
+          "reason": "“兄书”由使者带到，弟弟随后启封阅读；写信人和收信人由此可分。",
+          "label": "哥哥捎给弟弟的信"
+        },
+        {
+          "id": "q.l1.2.6.o3",
+          "reason": "使者可以拿走和交付的是信件。",
+          "label": "哥哥正在墙上写字"
+        }
+      ],
+      "answer": [
+        "q.l1.2.6.o2"
+      ],
+      "analysis": "“兄书”由使者带到，弟弟随后启封阅读；写信人和收信人由此可分。",
+      "hint": "分清捎信、写信和收信的人。"
+    },
+    {
+      "id": "q.l1.2.7",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.write",
+      "passageId": "p.l1.2.register",
+      "prompt": "“书之于册”写了什么事？",
+      "options": [
+        {
+          "id": "q.l1.2.7.o1",
+          "reason": "“于册”交代书写位置，没有寄送动作。",
+          "label": "把册子寄给来人"
+        },
+        {
+          "id": "q.l1.2.7.o2",
+          "reason": "“之”承接前文的姓名，“书”是把它写下来。",
+          "label": "把来人的姓名登记下来"
+        },
+        {
+          "id": "q.l1.2.7.o3",
+          "reason": "先问姓名，再把姓名写下。",
+          "label": "读出册子上的姓名"
+        }
+      ],
+      "answer": [
+        "q.l1.2.7.o2"
+      ],
+      "analysis": "“之”承接前文的姓名，“书”是把它写下来。",
+      "hint": "找“之”承接的内容。"
+    },
+    {
+      "id": "q.l1.2.8",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.letter",
+      "passageId": "p.l1.2.absent",
+      "prompt": "从哪件物品得知友人将归？",
+      "options": [
+        {
+          "id": "q.l1.2.8.o1",
+          "reason": "相别后“得其书”，没有在门上题字的情境。",
+          "label": "门上的题字"
+        },
+        {
+          "id": "q.l1.2.8.o2",
+          "reason": "“言将归”传递友人的近况。",
+          "label": "记载古事的书籍"
+        },
+        {
+          "id": "q.l1.2.8.o3",
+          "reason": "分别、得书、得知友人将归，构成收信的情境。",
+          "label": "友人寄来的信"
+        }
+      ],
+      "answer": [
+        "q.l1.2.8.o3"
+      ],
+      "analysis": "分别、得书、得知友人将归，构成收信的情境。",
+      "hint": "这是旧知识，还是远方友人的消息？"
+    },
+    {
+      "id": "q.l1.3.1",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.object-clue",
+      "passageId": "p.l1.3.water",
+      "prompt": "“注之于瓮”的“注”是哪种动作？",
+      "options": [
+        {
+          "id": "q.l1.3.1.o1",
+          "reason": "“之”指井水，瓮是容器，“注”只能是把水倒入。",
+          "label": "倒入"
+        },
+        {
+          "id": "q.l1.3.1.o2",
+          "reason": "被处理的是井水，没有待解释的文字。",
+          "label": "注解"
+        },
+        {
+          "id": "q.l1.3.1.o3",
+          "reason": "水进到瓮里，眼光不能完成这种移动。",
+          "label": "注视"
+        }
+      ],
+      "answer": [
+        "q.l1.3.1.o1"
+      ],
+      "analysis": "“之”指井水，瓮是容器，“注”只能是把水倒入。",
+      "hint": "先确定“之”指什么。"
+    },
+    {
+      "id": "q.l1.3.2",
+      "status": "draft",
+      "mode": "span",
+      "skillId": "skill.result-clue",
+      "passageId": "p.l1.3.untie",
+      "prompt": "哪处结果能帮助判断“解”的意思？",
+      "options": [
+        {
+          "id": "q.l1.3.2.o1",
+          "reason": "船能离岸说明原先的系缚已被解除。",
+          "spanId": "s.q.l1.3.2.o1"
+        },
+        {
+          "id": "q.l1.3.2.o2",
+          "reason": "这是被解开的物品，题目要找后果。",
+          "spanId": "s.q.l1.3.2.o2"
+        },
+        {
+          "id": "q.l1.3.2.o3",
+          "reason": "这是解缆的人。",
+          "spanId": "s.q.l1.3.2.o3"
+        }
+      ],
+      "answer": [
+        "q.l1.3.2.o1"
+      ],
+      "analysis": "船能离岸说明原先的系缚已被解除。",
+      "hint": "找“乃”引出的变化。"
+    },
+    {
+      "id": "q.l1.3.3",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.result-clue",
+      "passageId": "p.l1.3.door",
+      "prompt": "由下句推知，“启户”是怎样做？",
+      "options": [
+        {
+          "id": "q.l1.3.3.o1",
+          "reason": "“月光入室”支持打开门的理解。",
+          "label": "打开门"
+        },
+        {
+          "id": "q.l1.3.3.o2",
+          "reason": "门关闭不合月光照入的结果。",
+          "label": "关上门"
+        },
+        {
+          "id": "q.l1.3.3.o3",
+          "reason": "句中没有损坏或修补的情节。",
+          "label": "修补门"
+        }
+      ],
+      "answer": [
+        "q.l1.3.3.o1"
+      ],
+      "analysis": "“月光入室”支持打开门的理解。",
+      "hint": "比较门开与关各有什么结果。"
+    },
+    {
+      "id": "q.l1.3.4",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.object-clue",
+      "passageId": "p.l1.3.weave",
+      "prompt": "这里的“穿”该如何解释？",
+      "options": [
+        {
+          "id": "q.l1.3.4.o1",
+          "reason": "“线”是移动的东西，“针孔”是它通过的位置。",
+          "label": "使线通过小孔"
+        },
+        {
+          "id": "q.l1.3.4.o2",
+          "reason": "已有针孔，无须开凿。",
+          "label": "凿开岩石"
+        },
+        {
+          "id": "q.l1.3.4.o3",
+          "reason": "对象是线，目的处是针孔。",
+          "label": "穿上衣服"
+        }
+      ],
+      "answer": [
+        "q.l1.3.4.o1"
+      ],
+      "analysis": "“线”是移动的东西，“针孔”是它通过的位置。",
+      "hint": "把“穿”和紧接的名词连读。"
+    },
+    {
+      "id": "q.l1.3.5",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.result-clue",
+      "passageId": "p.l1.3.ice",
+      "prompt": "此处“释”的意思是哪一个？",
+      "options": [
+        {
+          "id": "q.l1.3.5.o1",
+          "reason": "冰不能发表说明。",
+          "label": "解释"
+        },
+        {
+          "id": "q.l1.3.5.o2",
+          "reason": "水积在石凹里，写的是冰的状态改变。",
+          "label": "释放囚徒"
+        },
+        {
+          "id": "q.l1.3.5.o3",
+          "reason": "由冰变成水的结果可以确定“释”指融化。",
+          "label": "消融"
+        }
+      ],
+      "answer": [
+        "q.l1.3.5.o3"
+      ],
+      "analysis": "由冰变成水的结果可以确定“释”指融化。",
+      "hint": "前后的物质形态发生了什么变化？"
+    },
+    {
+      "id": "q.l1.3.6",
+      "status": "draft",
+      "mode": "span",
+      "skillId": "skill.object-clue",
+      "passageId": "p.l1.3.net",
+      "prompt": "点选紧跟“举”、说明举起何物的字。",
+      "options": [
+        {
+          "id": "q.l1.3.6.o1",
+          "reason": "鱼是网中之物。",
+          "spanId": "s.q.l1.3.6.o1"
+        },
+        {
+          "id": "q.l1.3.6.o2",
+          "reason": "“举网”的宾语是网，因此“举”是提起。",
+          "spanId": "s.q.l1.3.6.o2"
+        },
+        {
+          "id": "q.l1.3.6.o3",
+          "reason": "渔者是动作的发出者。",
+          "spanId": "s.q.l1.3.6.o3"
+        }
+      ],
+      "answer": [
+        "q.l1.3.6.o2"
+      ],
+      "analysis": "“举网”的宾语是网，因此“举”是提起。",
+      "hint": "找动词后面直接相接的物件。"
+    },
+    {
+      "id": "q.l1.3.7",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.result-clue",
+      "passageId": "p.l1.3.fuel",
+      "prompt": "后文哪种现象印证“灭”的意思？",
+      "options": [
+        {
+          "id": "q.l1.3.7.o1",
+          "reason": "“薪尽”是柴烧完了。",
+          "label": "柴还有很多"
+        },
+        {
+          "id": "q.l1.3.7.o2",
+          "reason": "原文说“复暗”。",
+          "label": "屋里亮起来"
+        },
+        {
+          "id": "q.l1.3.7.o3",
+          "reason": "失去光亮印证“灭”是火熄了。",
+          "label": "屋里暗下来"
+        }
+      ],
+      "answer": [
+        "q.l1.3.7.o3"
+      ],
+      "analysis": "失去光亮印证“灭”是火熄了。",
+      "hint": "看火的变化给屋内带来什么结果。"
+    },
+    {
+      "id": "q.l1.3.8",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.object-clue",
+      "passageId": "p.l1.3.ink",
+      "prompt": "“濡笔”的“濡”在这里应指什么？",
+      "options": [
+        {
+          "id": "q.l1.3.8.o1",
+          "reason": "折笔后无法接着书写。",
+          "label": "折断笔"
+        },
+        {
+          "id": "q.l1.3.8.o2",
+          "reason": "笔是对象，墨已备好，又将书写，可以判断是在蘸湿笔尖。",
+          "label": "把笔蘸湿"
+        },
+        {
+          "id": "q.l1.3.8.o3",
+          "reason": "紧接着要用刚磨的墨写字。",
+          "label": "晾干笔"
+        }
+      ],
+      "answer": [
+        "q.l1.3.8.o2"
+      ],
+      "analysis": "笔是对象，墨已备好，又将书写，可以判断是在蘸湿笔尖。",
+      "hint": "联系前面的墨和后面的书写。"
+    },
+    {
+      "id": "q.check.1.1",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.hear",
+      "passageId": "p.check.1.news",
+      "prompt": "主人为何起身出门？",
+      "options": [
+        {
+          "id": "q.check.1.1.o1",
+          "reason": "“叩门声”是听觉对象。",
+          "label": "闻到门外气味"
+        },
+        {
+          "id": "q.check.1.1.o2",
+          "reason": "“闻”以敲门的声音为对象，应解为听见。",
+          "label": "听到有人敲门"
+        },
+        {
+          "id": "q.check.1.1.o3",
+          "reason": "句中没有信件或送信人。",
+          "label": "收到一封书信"
+        }
+      ],
+      "answer": [
+        "q.check.1.1.o2"
+      ],
+      "analysis": "“闻”以敲门的声音为对象，应解为听见。",
+      "hint": "看看“闻”所接的名词。"
+    },
+    {
+      "id": "q.check.1.2",
+      "status": "draft",
+      "mode": "span",
+      "skillId": "skill.run",
+      "passageId": "p.check.1.field",
+      "prompt": "哪两个字写出牧童奔跑之急？",
+      "options": [
+        {
+          "id": "q.check.1.2.o1",
+          "reason": "“疾”说明快，“走”指奔跑。",
+          "spanId": "s.q.check.1.2.o1"
+        },
+        {
+          "id": "q.check.1.2.o2",
+          "reason": "这是危险来源。",
+          "spanId": "s.q.check.1.2.o2"
+        },
+        {
+          "id": "q.check.1.2.o3",
+          "reason": "这是奔跑前的动作。",
+          "spanId": "s.q.check.1.2.o3"
+        }
+      ],
+      "answer": [
+        "q.check.1.2.o1"
+      ],
+      "analysis": "“疾”说明快，“走”指奔跑。",
+      "hint": "找表示动作及其速度的词组。"
+    },
+    {
+      "id": "q.check.1.3",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.leave",
+      "passageId": "p.check.1.inn",
+      "prompt": "由“空舍”推断，“去驿”指什么？",
+      "options": [
+        {
+          "id": "q.check.1.3.o1",
+          "reason": "句中没有工匠和营建过程。",
+          "label": "修建驿站"
+        },
+        {
+          "id": "q.check.1.3.o2",
+          "reason": "“独守空舍”说明旅客已经离开。",
+          "label": "离开驿站"
+        },
+        {
+          "id": "q.check.1.3.o3",
+          "reason": "若正进入，便与留下空屋的结果不合。",
+          "label": "前往驿站"
+        }
+      ],
+      "answer": [
+        "q.check.1.3.o2"
+      ],
+      "analysis": "“独守空舍”说明旅客已经离开。",
+      "hint": "看驿吏身旁是否还有旅客。"
+    },
+    {
+      "id": "q.check.1.4",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.write",
+      "passageId": "p.check.1.sign",
+      "prompt": "“书价”中“书”起什么作用？",
+      "options": [
+        {
+          "id": "q.check.1.4.o1",
+          "reason": "“于其上”说明把价格写在牌上。",
+          "label": "名词，图书"
+        },
+        {
+          "id": "q.check.1.4.o2",
+          "reason": "价是写下的内容，木牌是书写位置。",
+          "label": "动词，表示写上"
+        },
+        {
+          "id": "q.check.1.4.o3",
+          "reason": "这里记的是价格，没有寄信的双方。",
+          "label": "名词，信函"
+        }
+      ],
+      "answer": [
+        "q.check.1.4.o2"
+      ],
+      "analysis": "价是写下的内容，木牌是书写位置。",
+      "hint": "读“价”与“其上”。"
+    },
+    {
+      "id": "q.check.1.5",
+      "status": "draft",
+      "mode": "order",
+      "skillId": "skill.letter",
+      "passageId": "p.check.1.letter",
+      "prompt": "按情节排列事件。",
+      "options": [
+        {
+          "id": "q.check.1.5.o1",
+          "reason": "",
+          "label": "打开并阅读"
+        },
+        {
+          "id": "q.check.1.5.o2",
+          "reason": "",
+          "label": "收到儿子的信"
+        },
+        {
+          "id": "q.check.1.5.o3",
+          "reason": "",
+          "label": "得知儿子平安"
+        }
+      ],
+      "answer": [
+        "q.check.1.5.o2",
+        "q.check.1.5.o1",
+        "q.check.1.5.o3"
+      ],
+      "analysis": "先是信到，接着启读，才由信的内容得知近况。",
+      "hint": "“乃知”表示最后得知的事情。"
+    },
+    {
+      "id": "q.check.1.6",
+      "status": "draft",
+      "mode": "span",
+      "skillId": "skill.result-clue",
+      "passageId": "p.check.1.window",
+      "prompt": "哪处结果让你能确定“掩”是关上？",
+      "options": [
+        {
+          "id": "q.check.1.6.o1",
+          "reason": "这是关窗的人。",
+          "spanId": "s.q.check.1.6.o1"
+        },
+        {
+          "id": "q.check.1.6.o2",
+          "reason": "风不再进来，说明窗被关上了。",
+          "spanId": "s.q.check.1.6.o2"
+        },
+        {
+          "id": "q.check.1.6.o3",
+          "reason": "这是关的对象。",
+          "spanId": "s.q.check.1.6.o3"
+        }
+      ],
+      "answer": [
+        "q.check.1.6.o2"
+      ],
+      "analysis": "风不再进来，说明窗被关上了。",
+      "hint": "找发生在掩窗之后的变化。"
+    },
+    {
+      "id": "q.l1.4.1",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.zhi-object",
+      "passageId": "p.l1.4.seed",
+      "prompt": "老人收藏的是什么？",
+      "options": [
+        {
+          "id": "q.l1.4.1.o1",
+          "reason": "“之”作“藏”的宾语，承接刚得到的瓜种。",
+          "label": "瓜籽"
+        },
+        {
+          "id": "q.l1.4.1.o2",
+          "reason": "“翁”是收藏者。",
+          "label": "老人自己"
+        },
+        {
+          "id": "q.l1.4.1.o3",
+          "reason": "原文只有瓜种，还未写到结果。",
+          "label": "已经结的瓜"
+        }
+      ],
+      "answer": [
+        "q.l1.4.1.o1"
+      ],
+      "analysis": "“之”作“藏”的宾语，承接刚得到的瓜种。",
+      "hint": "找前句中作为“得”的对象的词。"
+    },
+    {
+      "id": "q.l1.4.2",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.zhi-link",
+      "passageId": "p.l1.4.roof",
+      "prompt": "“屋之瓦”中“之”的作用是什么？",
+      "options": [
+        {
+          "id": "q.l1.4.2.o1",
+          "reason": "“屋”限定“瓦”的所属，中心词是瓦。",
+          "label": "连接屋和瓦，说明是哪处的瓦"
+        },
+        {
+          "id": "q.l1.4.2.o2",
+          "reason": "句中没有人移动。",
+          "label": "表示前往屋顶"
+        },
+        {
+          "id": "q.l1.4.2.o3",
+          "reason": "“之”后还有中心词“瓦”。",
+          "label": "代替漏下的雨"
+        }
+      ],
+      "answer": [
+        "q.l1.4.2.o1"
+      ],
+      "analysis": "“屋”限定“瓦”的所属，中心词是瓦。",
+      "hint": "比较“屋的瓦”能否说通。"
+    },
+    {
+      "id": "q.l1.4.3",
+      "status": "draft",
+      "mode": "span",
+      "skillId": "skill.zhi-object",
+      "passageId": "p.l1.4.brush",
+      "prompt": "点出“取之”的“之”指代的物品。",
+      "options": [
+        {
+          "id": "q.l1.4.3.o1",
+          "reason": "案是放笔的桌子。",
+          "spanId": "s.q.l1.4.3.o1"
+        },
+        {
+          "id": "q.l1.4.3.o2",
+          "reason": "学生是取笔的人。",
+          "spanId": "s.q.l1.4.3.o2"
+        },
+        {
+          "id": "q.l1.4.3.o3",
+          "reason": "作为书写工具的“新笔”正是“取”的对象。",
+          "spanId": "s.q.l1.4.3.o3"
+        }
+      ],
+      "answer": [
+        "q.l1.4.3.o3"
+      ],
+      "analysis": "作为书写工具的“新笔”正是“取”的对象。",
+      "hint": "谁能被拿起来用来写字？"
+    },
+    {
+      "id": "q.l1.4.4",
+      "status": "draft",
+      "mode": "span",
+      "skillId": "skill.zhi-link",
+      "passageId": "p.l1.4.boat",
+      "prompt": "“渔人之舟”中，被限定的中心词是哪个？",
+      "options": [
+        {
+          "id": "q.l1.4.4.o1",
+          "reason": "柳树是系船地点的线索。",
+          "spanId": "s.q.l1.4.4.o1"
+        },
+        {
+          "id": "q.l1.4.4.o2",
+          "reason": "“渔人”说明所属，整组词指一条船。",
+          "spanId": "s.q.l1.4.4.o2"
+        },
+        {
+          "id": "q.l1.4.4.o3",
+          "reason": "渔人说明船属于谁。",
+          "spanId": "s.q.l1.4.4.o3"
+        }
+      ],
+      "answer": [
+        "q.l1.4.4.o2"
+      ],
+      "analysis": "“渔人”说明所属，整组词指一条船。",
+      "hint": "把整组词换成“他的什么”。"
+    },
+    {
+      "id": "q.l1.4.5",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.zhi-object",
+      "passageId": "p.l1.4.lost",
+      "prompt": "把“拾之”补足，最合句意的是哪项？",
+      "options": [
+        {
+          "id": "q.l1.4.5.o1",
+          "reason": "前句的失物是“囊”，“拾”“还”都围绕它。",
+          "label": "捡起袋子"
+        },
+        {
+          "id": "q.l1.4.5.o2",
+          "reason": "客人是失物者和归还的对象。",
+          "label": "扶起旅客"
+        },
+        {
+          "id": "q.l1.4.5.o3",
+          "reason": "邻人是动作的发出者。",
+          "label": "捡起邻人"
+        }
+      ],
+      "answer": [
+        "q.l1.4.5.o1"
+      ],
+      "analysis": "前句的失物是“囊”，“拾”“还”都围绕它。",
+      "hint": "哪样东西先丢失又被归还？"
+    },
+    {
+      "id": "q.l1.4.6",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.zhi-link",
+      "passageId": "p.l1.4.slope",
+      "prompt": "“村之东”指哪里？",
+      "options": [
+        {
+          "id": "q.l1.4.6.o1",
+          "reason": "“村”给出方位的参照，“东”才是所指位置。",
+          "label": "村子的东面"
+        },
+        {
+          "id": "q.l1.4.6.o2",
+          "reason": "“东”是方位，中心不是“村”。",
+          "label": "东边的每一个村子"
+        },
+        {
+          "id": "q.l1.4.6.o3",
+          "reason": "这里交代山坡的位置，不叙述行走。",
+          "label": "向东走到村子"
+        }
+      ],
+      "answer": [
+        "q.l1.4.6.o1"
+      ],
+      "analysis": "“村”给出方位的参照，“东”才是所指位置。",
+      "hint": "方位是相对于什么说的？"
+    },
+    {
+      "id": "q.l1.4.7",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.zhi-object",
+      "passageId": "p.l1.4.jar",
+      "prompt": "“既得之”中，“之”代什么？",
+      "options": [
+        {
+          "id": "q.l1.4.7.o1",
+          "reason": "“失珠”交代失物。找回它，才能接着把它放进匣子。",
+          "label": "先前丢失的珠子"
+        },
+        {
+          "id": "q.l1.4.7.o2",
+          "reason": "匣子在“得之”之后才引入。",
+          "label": "后来用来收藏的匣子"
+        },
+        {
+          "id": "q.l1.4.7.o3",
+          "reason": "孩子是找回东西的人。",
+          "label": "丢了东西的孩子"
+        }
+      ],
+      "answer": [
+        "q.l1.4.7.o1"
+      ],
+      "analysis": "“失珠”交代失物。找回它，才能接着把它放进匣子。",
+      "hint": "看“既得之”之前丢了什么。"
+    },
+    {
+      "id": "q.l1.4.8",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.zhi-link",
+      "passageId": "p.l1.4.shade",
+      "prompt": "延伸到窗边的是什么？",
+      "options": [
+        {
+          "id": "q.l1.4.8.o1",
+          "reason": "“柳之影”整体作主语，中心是“影”。",
+          "label": "柳树的影子"
+        },
+        {
+          "id": "q.l1.4.8.o2",
+          "reason": "“柳”在“之”前，限定影子的来源。",
+          "label": "整株柳树"
+        },
+        {
+          "id": "q.l1.4.8.o3",
+          "reason": "“窗”是影子所到的位置。",
+          "label": "庭院的窗户"
+        }
+      ],
+      "answer": [
+        "q.l1.4.8.o1"
+      ],
+      "analysis": "“柳之影”整体作主语，中心是“影”。",
+      "hint": "把“柳之影”改说成一个带“的”的词组。"
+    },
+    {
+      "id": "q.l1.5.1",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.qi-possessive",
+      "passageId": "p.l1.5.cap",
+      "prompt": "谁的帽子落入水中？",
+      "options": [
+        {
+          "id": "q.l1.5.1.o1",
+          "reason": "“其冠”指上文孩子的帽子。",
+          "label": "孩子的"
+        },
+        {
+          "id": "q.l1.5.1.o2",
+          "reason": "风是施力者，不能拥有帽子。",
+          "label": "风的"
+        },
+        {
+          "id": "q.l1.5.1.o3",
+          "reason": "池是落帽的地方。",
+          "label": "池塘的"
+        }
+      ],
+      "answer": [
+        "q.l1.5.1.o1"
+      ],
+      "analysis": "“其冠”指上文孩子的帽子。",
+      "hint": "是谁来到池边？"
+    },
+    {
+      "id": "q.l1.5.2",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.qi-part",
+      "passageId": "p.l1.5.carts",
+      "prompt": "“其一”限定了多大的范围？",
+      "options": [
+        {
+          "id": "q.l1.5.2.o1",
+          "reason": "先说三车，随后“其一”选出其中一辆。",
+          "label": "三辆中有一辆"
+        },
+        {
+          "id": "q.l1.5.2.o2",
+          "reason": "“其”回指已有的三辆车。",
+          "label": "另外增添一辆"
+        },
+        {
+          "id": "q.l1.5.2.o3",
+          "reason": "“一”只从三辆中取一辆。",
+          "label": "三辆车全部"
+        }
+      ],
+      "answer": [
+        "q.l1.5.2.o1"
+      ],
+      "analysis": "先说三车，随后“其一”选出其中一辆。",
+      "hint": "看“一”前面给出的总数。"
+    },
+    {
+      "id": "q.l1.5.3",
+      "status": "draft",
+      "mode": "span",
+      "skillId": "skill.qi-possessive",
+      "passageId": "p.l1.5.nest",
+      "prompt": "点选“其巢”的主人。",
+      "options": [
+        {
+          "id": "q.l1.5.3.o1",
+          "reason": "泥是补巢的材料。",
+          "spanId": "s.q.l1.5.3.o1"
+        },
+        {
+          "id": "q.l1.5.3.o2",
+          "reason": "归来衔泥的是燕，所补的巢也属于燕。",
+          "spanId": "s.q.l1.5.3.o2"
+        },
+        {
+          "id": "q.l1.5.3.o3",
+          "reason": "巢是被修补的东西。",
+          "spanId": "s.q.l1.5.3.o3"
+        }
+      ],
+      "answer": [
+        "q.l1.5.3.o2"
+      ],
+      "analysis": "归来衔泥的是燕，所补的巢也属于燕。",
+      "hint": "找会衔泥筑巢的生物。"
+    },
+    {
+      "id": "q.l1.5.4",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.qi-part",
+      "passageId": "p.l1.5.stones",
+      "prompt": "用来做台阶的石头有多少块？",
+      "options": [
+        {
+          "id": "q.l1.5.4.o1",
+          "reason": "“其”承接前面取来的五块。",
+          "label": "另找来的两块"
+        },
+        {
+          "id": "q.l1.5.4.o2",
+          "reason": "由“余三”倒推，五块中用掉两块。“其二”是其中的两块。",
+          "label": "五块中的两块"
+        },
+        {
+          "id": "q.l1.5.4.o3",
+          "reason": "“择”与“二”限制了数量。",
+          "label": "五块全部"
+        }
+      ],
+      "answer": [
+        "q.l1.5.4.o2"
+      ],
+      "analysis": "由“余三”倒推，五块中用掉两块。“其二”是其中的两块。",
+      "hint": "先有总数，再有被选出的数量。"
+    },
+    {
+      "id": "q.l1.5.5",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.qi-possessive",
+      "passageId": "p.l1.5.wound",
+      "prompt": "“洗其足”中“其”回指谁？",
+      "options": [
+        {
+          "id": "q.l1.5.5.o1",
+          "reason": "原文没有医者。",
+          "label": "医者"
+        },
+        {
+          "id": "q.l1.5.5.o2",
+          "reason": "前句明说受伤的是马脚。",
+          "label": "马主人"
+        },
+        {
+          "id": "q.l1.5.5.o3",
+          "reason": "“马足伤”解释为什么要洗，“其足”承接这匹马的脚。",
+          "label": "受伤的马"
+        }
+      ],
+      "answer": [
+        "q.l1.5.5.o3"
+      ],
+      "analysis": "“马足伤”解释为什么要洗，“其足”承接这匹马的脚。",
+      "hint": "谁的脚在上句受伤？"
+    },
+    {
+      "id": "q.l1.5.6",
+      "status": "draft",
+      "mode": "span",
+      "skillId": "skill.qi-part",
+      "passageId": "p.l1.5.pear",
+      "prompt": "“其一”是从哪一组事物中取出一个？",
+      "options": [
+        {
+          "id": "q.l1.5.6.o1",
+          "reason": "盘是盛梨的容器。",
+          "spanId": "s.q.l1.5.6.o1"
+        },
+        {
+          "id": "q.l1.5.6.o2",
+          "reason": "斑是一个梨上的特征。",
+          "spanId": "s.q.l1.5.6.o2"
+        },
+        {
+          "id": "q.l1.5.6.o3",
+          "reason": "“其一”的范围是盘中的四个梨。",
+          "spanId": "s.q.l1.5.6.o3"
+        }
+      ],
+      "answer": [
+        "q.l1.5.6.o3"
+      ],
+      "analysis": "“其一”的范围是盘中的四个梨。",
+      "hint": "先找带有总数的词组。"
+    },
+    {
+      "id": "q.l1.5.7",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.qi-possessive",
+      "passageId": "p.l1.5.coat",
+      "prompt": "“其衣”在这句里表达哪一层关系？",
+      "options": [
+        {
+          "id": "q.l1.5.7.o1",
+          "reason": "“其”没有给出具体数目。",
+          "label": "说明衣服有几件"
+        },
+        {
+          "id": "q.l1.5.7.o2",
+          "reason": "“其”放在名词“衣”前限定所属。母亲担心孩子衣薄，才为他添被。",
+          "label": "说明衣服所属"
+        },
+        {
+          "id": "q.l1.5.7.o3",
+          "reason": "句中没有先列出一批衣服或总数。",
+          "label": "列举其中一件"
+        }
+      ],
+      "answer": [
+        "q.l1.5.7.o2"
+      ],
+      "analysis": "“其”放在名词“衣”前限定所属。母亲担心孩子衣薄，才为他添被。",
+      "hint": "比较“其衣”与“其一”。"
+    },
+    {
+      "id": "q.l1.5.8",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.qi-part",
+      "passageId": "p.l1.5.seeds",
+      "prompt": "发芽的是哪部分？",
+      "options": [
+        {
+          "id": "q.l1.5.8.o1",
+          "reason": "最后明说“一不生”。",
+          "label": "三个都发了芽"
+        },
+        {
+          "id": "q.l1.5.8.o2",
+          "reason": "文中只有一次种核。",
+          "label": "又种下的第二批果核"
+        },
+        {
+          "id": "q.l1.5.8.o3",
+          "reason": "“其二”从“三核”中取二，与剩下的一个相对。",
+          "label": "原先三个果核中的两个"
+        }
+      ],
+      "answer": [
+        "q.l1.5.8.o3"
+      ],
+      "analysis": "“其二”从“三核”中取二，与剩下的一个相对。",
+      "hint": "对照“其二”和“一不生”。"
+    },
+    {
+      "id": "q.l1.6.1",
+      "status": "draft",
+      "mode": "order",
+      "skillId": "skill.er-sequence",
+      "passageId": "p.l1.6.payment",
+      "prompt": "按原文排出付钱的过程。",
+      "options": [
+        {
+          "id": "q.l1.6.1.o1",
+          "reason": "",
+          "label": "把钱交给船夫"
+        },
+        {
+          "id": "q.l1.6.1.o2",
+          "reason": "",
+          "label": "取出钱"
+        },
+        {
+          "id": "q.l1.6.1.o3",
+          "reason": "",
+          "label": "解开钱袋"
+        }
+      ],
+      "answer": [
+        "q.l1.6.1.o3",
+        "q.l1.6.1.o2",
+        "q.l1.6.1.o1"
+      ],
+      "analysis": "解囊是从袋中取钱的前提，付钱又在取钱之后。",
+      "hint": "从袋子还系着的状态想起。"
+    },
+    {
+      "id": "q.l1.6.2",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.er-turn",
+      "passageId": "p.l1.6.coat",
+      "prompt": "“而”在这里最适合换成哪个词？",
+      "options": [
+        {
+          "id": "q.l1.6.2.o1",
+          "reason": "衣服薄通常不能构成身体不冷的原因。",
+          "label": "因此"
+        },
+        {
+          "id": "q.l1.6.2.o2",
+          "reason": "上下句对照衣薄与不冷，没有两个先后动作。",
+          "label": "然后"
+        },
+        {
+          "id": "q.l1.6.2.o3",
+          "reason": "“虽”引出衣薄这个事实，后句出现与预期不同的结果。",
+          "label": "却"
+        }
+      ],
+      "answer": [
+        "q.l1.6.2.o3"
+      ],
+      "analysis": "“虽”引出衣薄这个事实，后句出现与预期不同的结果。",
+      "hint": "找与“虽”呼应的语气。"
+    },
+    {
+      "id": "q.l1.6.3",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.er-sequence",
+      "passageId": "p.l1.6.seal",
+      "prompt": "两项动作有什么关系？",
+      "options": [
+        {
+          "id": "q.l1.6.3.o1",
+          "reason": "展开信件符合拆封后的预期。",
+          "label": "拆信与展信意思相反"
+        },
+        {
+          "id": "q.l1.6.3.o2",
+          "reason": "信原先封着，次序不能颠倒。",
+          "label": "先展信再拆封"
+        },
+        {
+          "id": "q.l1.6.3.o3",
+          "reason": "封套未开时不能取出里面的信，“而”表承接。",
+          "label": "拆开封套后才展开里面的信"
+        }
+      ],
+      "answer": [
+        "q.l1.6.3.o3"
+      ],
+      "analysis": "封套未开时不能取出里面的信，“而”表承接。",
+      "hint": "信原先处于什么状态？"
+    },
+    {
+      "id": "q.l1.6.4",
+      "status": "draft",
+      "mode": "span",
+      "skillId": "skill.er-turn",
+      "passageId": "p.l1.6.closed",
+      "prompt": "哪一处写出与天明后开门的预期不同的事实？",
+      "options": [
+        {
+          "id": "q.l1.6.4.o1",
+          "reason": "这是带来预期的前项。",
+          "spanId": "s.q.l1.6.4.o1"
+        },
+        {
+          "id": "q.l1.6.4.o2",
+          "reason": "单独的“天”没有表达反向事实。",
+          "spanId": "s.q.l1.6.4.o2"
+        },
+        {
+          "id": "q.l1.6.4.o3",
+          "reason": "“犹”表示仍然。门还关着是“而”引出的后项。",
+          "spanId": "s.q.l1.6.4.o3"
+        }
+      ],
+      "answer": [
+        "q.l1.6.4.o3"
+      ],
+      "analysis": "“犹”表示仍然。门还关着是“而”引出的后项。",
+      "hint": "注意表示“仍然”的字。"
+    },
+    {
+      "id": "q.l1.6.5",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.er-sequence",
+      "passageId": "p.l1.6.tea",
+      "prompt": "把这句话分成两步，哪一步在先？",
+      "options": [
+        {
+          "id": "q.l1.6.5.o1",
+          "reason": "原文没有喝茶的动作。",
+          "label": "饮尽杯中茶"
+        },
+        {
+          "id": "q.l1.6.5.o2",
+          "reason": "先揭盖，接着倾茶，“而”连接前后动作。",
+          "label": "揭开盖子"
+        },
+        {
+          "id": "q.l1.6.5.o3",
+          "reason": "“而”后面的倾茶发生在揭盖之后。",
+          "label": "倒茶入杯"
+        }
+      ],
+      "answer": [
+        "q.l1.6.5.o2"
+      ],
+      "analysis": "先揭盖，接着倾茶，“而”连接前后动作。",
+      "hint": "看“而”两边的动词。"
+    },
+    {
+      "id": "q.l1.6.6",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.er-turn",
+      "passageId": "p.l1.6.late",
+      "prompt": "哪一项保留了原句转折？",
+      "options": [
+        {
+          "id": "q.l1.6.6.o1",
+          "reason": "“虽”并未引出时间次序。",
+          "label": "先走近路，后来才有泥"
+        },
+        {
+          "id": "q.l1.6.6.o2",
+          "reason": "距离短并未造成泥深。",
+          "label": "因为路近，所以泥深"
+        },
+        {
+          "id": "q.l1.6.6.o3",
+          "reason": "前项“近”看似有利，后项指出实际困难。",
+          "label": "路近，本应易达，偏偏泥深难行"
+        }
+      ],
+      "answer": [
+        "q.l1.6.6.o3"
+      ],
+      "analysis": "前项“近”看似有利，后项指出实际困难。",
+      "hint": "把“而”试换成“却”。"
+    },
+    {
+      "id": "q.l1.6.7",
+      "status": "draft",
+      "mode": "span",
+      "skillId": "skill.er-sequence",
+      "passageId": "p.l1.6.lock",
+      "prompt": "点选为“启箱”创造条件的前一个动作。",
+      "options": [
+        {
+          "id": "q.l1.6.7.o1",
+          "reason": "这是后一步。",
+          "spanId": "s.q.l1.6.7.o1"
+        },
+        {
+          "id": "q.l1.6.7.o2",
+          "reason": "锁打开后箱子才能开启。",
+          "spanId": "s.q.l1.6.7.o2"
+        },
+        {
+          "id": "q.l1.6.7.o3",
+          "reason": "这是进行动作的人。",
+          "spanId": "s.q.l1.6.7.o3"
+        }
+      ],
+      "answer": [
+        "q.l1.6.7.o2"
+      ],
+      "analysis": "锁打开后箱子才能开启。",
+      "hint": "留意“而”的前项。"
+    },
+    {
+      "id": "q.l1.6.8",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.er-turn",
+      "passageId": "p.l1.6.dry",
+      "prompt": "雨与瓮中无水之间是何种关系？",
+      "options": [
+        {
+          "id": "q.l1.6.8.o1",
+          "reason": "原文未写倒水。",
+          "label": "先把瓮灌满再倒空"
+        },
+        {
+          "id": "q.l1.6.8.o2",
+          "reason": "有雨却无积水，后文揭示盖子挡雨的原因。",
+          "label": "预期落空的转折"
+        },
+        {
+          "id": "q.l1.6.8.o3",
+          "reason": "瓮口被盖住才是水未进入的解释。",
+          "label": "下雨直接导致瓮无水"
+        }
+      ],
+      "answer": [
+        "q.l1.6.8.o2"
+      ],
+      "analysis": "有雨却无积水，后文揭示盖子挡雨的原因。",
+      "hint": "区分“而”连接的两项与末句的解释。"
+    },
+    {
+      "id": "q.check.2.1",
+      "status": "draft",
+      "mode": "span",
+      "skillId": "skill.zhi-object",
+      "passageId": "p.check.2.bird",
+      "prompt": "点选“护之”所护的对象。",
+      "options": [
+        {
+          "id": "q.check.2.1.o1",
+          "reason": "童是保护者。",
+          "spanId": "s.q.check.2.1.o1"
+        },
+        {
+          "id": "q.check.2.1.o2",
+          "reason": "地是雏鸟落下的地方。",
+          "spanId": "s.q.check.2.1.o2"
+        },
+        {
+          "id": "q.check.2.1.o3",
+          "reason": "“之”承接雏鸟，位于动词“护”之后。",
+          "spanId": "s.q.check.2.1.o3"
+        }
+      ],
+      "answer": [
+        "q.check.2.1.o3"
+      ],
+      "analysis": "“之”承接雏鸟，位于动词“护”之后。",
+      "hint": "什么值得孩子保护？"
+    },
+    {
+      "id": "q.check.2.2",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.zhi-link",
+      "passageId": "p.check.2.gate",
+      "prompt": "“城之西门”整体指什么？",
+      "options": [
+        {
+          "id": "q.check.2.2.o1",
+          "reason": "中心语是门。",
+          "label": "一座名叫西门的城"
+        },
+        {
+          "id": "q.check.2.2.o2",
+          "reason": "“城”限定“西门”的所属。",
+          "label": "这座城的西门"
+        },
+        {
+          "id": "q.check.2.2.o3",
+          "reason": "此处“之”连接城与门。",
+          "label": "从城里走往西门"
+        }
+      ],
+      "answer": [
+        "q.check.2.2.o2"
+      ],
+      "analysis": "“城”限定“西门”的所属。",
+      "hint": "读出“的”两边的成分。"
+    },
+    {
+      "id": "q.check.2.3",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.qi-possessive",
+      "passageId": "p.check.2.fisher",
+      "prompt": "“其舟”指谁的船？",
+      "options": [
+        {
+          "id": "q.check.2.3.o1",
+          "reason": "鱼是船上所载之物。",
+          "label": "鱼的船"
+        },
+        {
+          "id": "q.check.2.3.o2",
+          "reason": "“其”在“舟”前表示所属，回指渔人。",
+          "label": "渔人的船"
+        },
+        {
+          "id": "q.check.2.3.o3",
+          "reason": "前文没有给出一组船。",
+          "label": "其中一条船"
+        }
+      ],
+      "answer": [
+        "q.check.2.3.o2"
+      ],
+      "analysis": "“其”在“舟”前表示所属，回指渔人。",
+      "hint": "前文引入了哪位人物？"
+    },
+    {
+      "id": "q.check.2.4",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.qi-part",
+      "passageId": "p.check.2.buckets",
+      "prompt": "文中明确说漏水的是几只桶？",
+      "options": [
+        {
+          "id": "q.check.2.4.o1",
+          "reason": "“二桶”是整体，“其一”是所指的部分。",
+          "label": "两只中的一只"
+        },
+        {
+          "id": "q.check.2.4.o2",
+          "reason": "“其”承接已经说到的两桶。",
+          "label": "另外一只新桶"
+        },
+        {
+          "id": "q.check.2.4.o3",
+          "reason": "“其一”仅指出其中一个。",
+          "label": "两只全都"
+        }
+      ],
+      "answer": [
+        "q.check.2.4.o1"
+      ],
+      "analysis": "“二桶”是整体，“其一”是所指的部分。",
+      "hint": "数清“其”前后的数量。"
+    },
+    {
+      "id": "q.check.2.5",
+      "status": "draft",
+      "mode": "order",
+      "skillId": "skill.er-sequence",
+      "passageId": "p.check.2.seal",
+      "prompt": "按文意排列收藏文书的步骤。",
+      "options": [
+        {
+          "id": "q.check.2.5.o1",
+          "reason": "",
+          "label": "放入匣中"
+        },
+        {
+          "id": "q.check.2.5.o2",
+          "reason": "",
+          "label": "捆好文书"
+        },
+        {
+          "id": "q.check.2.5.o3",
+          "reason": "",
+          "label": "卷起文书"
+        }
+      ],
+      "answer": [
+        "q.check.2.5.o3",
+        "q.check.2.5.o2",
+        "q.check.2.5.o1"
+      ],
+      "analysis": "“而”承接卷帛书和捆帛书，“乃”引出收藏的最后一步。",
+      "hint": "先使文书成卷，再看“之”所指。"
+    },
+    {
+      "id": "q.check.2.6",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.er-turn",
+      "passageId": "p.check.2.poor",
+      "prompt": "哪一说法准确表达“而”？",
+      "options": [
+        {
+          "id": "q.check.2.6.o1",
+          "reason": "“虽”引出困难，“而”引出超出预期的做法。",
+          "label": "家贫，却肯分粮助人"
+        },
+        {
+          "id": "q.check.2.6.o2",
+          "reason": "文中没有交代贫穷的来历。",
+          "label": "分粮之后才变穷"
+        },
+        {
+          "id": "q.check.2.6.o3",
+          "reason": "前后表达出人意料的对照。",
+          "label": "因为家贫，所以能分粮"
+        }
+      ],
+      "answer": [
+        "q.check.2.6.o1"
+      ],
+      "analysis": "“虽”引出困难，“而”引出超出预期的做法。",
+      "hint": "先看“虽”标出的条件。"
+    },
+    {
+      "id": "q.l1.7.1",
+      "status": "draft",
+      "mode": "span",
+      "skillId": "skill.action-verb",
+      "passageId": "p.l1.7.weaver",
+      "prompt": "点选直接写女子动作的字。",
+      "options": [
+        {
+          "id": "q.l1.7.1.o1",
+          "reason": "“妇”是织布的人。",
+          "spanId": "s.q.l1.7.1.o1"
+        },
+        {
+          "id": "q.l1.7.1.o2",
+          "reason": "读作“妇／织布／于室”，“织”写出女子正在做的事。",
+          "spanId": "s.q.l1.7.1.o2"
+        },
+        {
+          "id": "q.l1.7.1.o3",
+          "reason": "“室”是织布的地点。",
+          "spanId": "s.q.l1.7.1.o3"
+        }
+      ],
+      "answer": [
+        "q.l1.7.1.o2"
+      ],
+      "analysis": "读作“妇／织布／于室”，“织”写出女子正在做的事。",
+      "hint": "先问：女子在屋里做什么？"
+    },
+    {
+      "id": "q.l1.7.2",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.direct-object",
+      "passageId": "p.l1.7.grain",
+      "prompt": "农人背着什么？",
+      "options": [
+        {
+          "id": "q.l1.7.2.o1",
+          "reason": "“仓”与后面的动作“入”相连。",
+          "label": "粮仓"
+        },
+        {
+          "id": "q.l1.7.2.o2",
+          "reason": "本句没有说农人带着农具。",
+          "label": "农具"
+        },
+        {
+          "id": "q.l1.7.2.o3",
+          "reason": "“负粟”是背着谷子。接下来的“入仓”才说人走向哪里。",
+          "label": "谷子"
+        }
+      ],
+      "answer": [
+        "q.l1.7.2.o3"
+      ],
+      "analysis": "“负粟”是背着谷子。接下来的“入仓”才说人走向哪里。",
+      "hint": "把“负”和紧接其后的字连读。"
+    },
+    {
+      "id": "q.l1.7.3",
+      "status": "draft",
+      "mode": "span",
+      "skillId": "skill.direct-object",
+      "passageId": "p.l1.7.draw-water",
+      "prompt": "点选被拉动的物件。",
+      "options": [
+        {
+          "id": "q.l1.7.3.o1",
+          "reason": "“童”是拉桶的人。",
+          "spanId": "s.q.l1.7.3.o1"
+        },
+        {
+          "id": "q.l1.7.3.o2",
+          "reason": "句子先以“以绳”交代工具；“引桶”中，桶才是“引”的对象。",
+          "spanId": "s.q.l1.7.3.o2"
+        },
+        {
+          "id": "q.l1.7.3.o3",
+          "reason": "“以绳”说明用什么拉。",
+          "spanId": "s.q.l1.7.3.o3"
+        }
+      ],
+      "answer": [
+        "q.l1.7.3.o2"
+      ],
+      "analysis": "句子先以“以绳”交代工具；“引桶”中，桶才是“引”的对象。",
+      "hint": "区分“用什么拉”和“拉什么”。"
+    },
+    {
+      "id": "q.l1.7.4",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.action-verb",
+      "passageId": "p.l1.7.plant",
+      "prompt": "“植柳于庭”说明父亲做了哪件事？",
+      "options": [
+        {
+          "id": "q.l1.7.4.o1",
+          "reason": "“庭”指庭院，介绍栽树地点。",
+          "label": "建院墙"
+        },
+        {
+          "id": "q.l1.7.4.o2",
+          "reason": "“植”是动作，“柳”是栽下的树，“于庭”是地点。",
+          "label": "栽柳树"
+        },
+        {
+          "id": "q.l1.7.4.o3",
+          "reason": "“植”是栽种，句中没有砍伐动作。",
+          "label": "砍柳树"
+        }
+      ],
+      "answer": [
+        "q.l1.7.4.o2"
+      ],
+      "analysis": "“植”是动作，“柳”是栽下的树，“于庭”是地点。",
+      "hint": "去掉“于庭”，读剩下的两个字。"
+    },
+    {
+      "id": "q.l1.7.5",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.direct-object",
+      "passageId": "p.l1.7.meal",
+      "prompt": "谁是“待”这一动作的对象？",
+      "options": [
+        {
+          "id": "q.l1.7.5.o1",
+          "reason": "“待客”是招待客人。羹汤是待客用的食物。",
+          "label": "客人"
+        },
+        {
+          "id": "q.l1.7.5.o2",
+          "reason": "主人发出这个动作。",
+          "label": "主人"
+        },
+        {
+          "id": "q.l1.7.5.o3",
+          "reason": "“以羹”说明主人用什么待客。",
+          "label": "羹汤"
+        }
+      ],
+      "answer": [
+        "q.l1.7.5.o1"
+      ],
+      "analysis": "“待客”是招待客人。羹汤是待客用的食物。",
+      "hint": "比较“以羹”和“待客”。"
+    },
+    {
+      "id": "q.l1.7.6",
+      "status": "draft",
+      "mode": "span",
+      "skillId": "skill.action-verb",
+      "passageId": "p.l1.7.lock",
+      "prompt": "点选守门人所做的动作。",
+      "options": [
+        {
+          "id": "q.l1.7.6.o1",
+          "reason": "出去的是前半句的官吏。",
+          "spanId": "s.q.l1.7.6.o1"
+        },
+        {
+          "id": "q.l1.7.6.o2",
+          "reason": "门是被关上的物件。",
+          "spanId": "s.q.l1.7.6.o2"
+        },
+        {
+          "id": "q.l1.7.6.o3",
+          "reason": "逗号后另起一层，守门人是行事者，“闭”是关门的动作。",
+          "spanId": "s.q.l1.7.6.o3"
+        }
+      ],
+      "answer": [
+        "q.l1.7.6.o3"
+      ],
+      "analysis": "逗号后另起一层，守门人是行事者，“闭”是关门的动作。",
+      "hint": "先确定哪半句的主语是守门人。"
+    },
+    {
+      "id": "q.l1.7.7",
+      "status": "draft",
+      "mode": "span",
+      "skillId": "skill.direct-object",
+      "passageId": "p.l1.7.cloth",
+      "prompt": "点选被陈列的物品。",
+      "options": [
+        {
+          "id": "q.l1.7.7.o1",
+          "reason": "商人是陈列物品的人。",
+          "spanId": "s.q.l1.7.7.o1"
+        },
+        {
+          "id": "q.l1.7.7.o2",
+          "reason": "“于肆”说的是商铺这一地点。",
+          "spanId": "s.q.l1.7.7.o2"
+        },
+        {
+          "id": "q.l1.7.7.o3",
+          "reason": "“陈帛”是陈列丝织品。不要把后面的地点当作陈列品。",
+          "spanId": "s.q.l1.7.7.o3"
+        }
+      ],
+      "answer": [
+        "q.l1.7.7.o3"
+      ],
+      "analysis": "“陈帛”是陈列丝织品。不要把后面的地点当作陈列品。",
+      "hint": "先把“于肆”放到一旁。"
+    },
+    {
+      "id": "q.l1.7.8",
+      "status": "draft",
+      "mode": "order",
+      "skillId": "skill.action-verb",
+      "passageId": "p.l1.7.carpentry",
+      "prompt": "按三个动作的顺序排列。",
+      "options": [
+        {
+          "id": "q.l1.7.8.o1",
+          "reason": "",
+          "label": "量木料"
+        },
+        {
+          "id": "q.l1.7.8.o2",
+          "reason": "",
+          "label": "削成案腿"
+        },
+        {
+          "id": "q.l1.7.8.o3",
+          "reason": "",
+          "label": "截断木料"
+        }
+      ],
+      "answer": [
+        "q.l1.7.8.o1",
+        "q.l1.7.8.o3",
+        "q.l1.7.8.o2"
+      ],
+      "analysis": "“度”“断”“削”依次是量、截、削。这三处各写工匠的一步操作。",
+      "hint": "先找动词，再找它们各自涉及什么。"
+    },
+    {
+      "id": "q.l1.8.1",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.subject-continuity",
+      "passageId": "p.l1.8.fish",
+      "prompt": "“得鱼三尾”省去了谁？",
+      "options": [
+        {
+          "id": "q.l1.8.1.o1",
+          "reason": "句中没有出现买鱼人。",
+          "label": "买鱼的人"
+        },
+        {
+          "id": "q.l1.8.1.o2",
+          "reason": "鱼是捕获的对象。",
+          "label": "三条鱼"
+        },
+        {
+          "id": "q.l1.8.1.o3",
+          "reason": "收网和得到鱼是一串连续动作，后句承接渔翁这个主语。",
+          "label": "收网的渔翁"
+        }
+      ],
+      "answer": [
+        "q.l1.8.1.o3"
+      ],
+      "analysis": "收网和得到鱼是一串连续动作，后句承接渔翁这个主语。",
+      "hint": "谁完成了捕捞的前一步？"
+    },
+    {
+      "id": "q.l1.8.2",
+      "status": "draft",
+      "mode": "span",
+      "skillId": "skill.respondent",
+      "passageId": "p.l1.8.gate",
+      "prompt": "点选“对曰”省去的答话者在前文的称呼。",
+      "options": [
+        {
+          "id": "q.l1.8.2.o1",
+          "reason": "客问守门者，知道开门时刻的守门者回答。",
+          "spanId": "s.q.l1.8.2.o1"
+        },
+        {
+          "id": "q.l1.8.2.o2",
+          "reason": "客人提出开门时间的问题。",
+          "spanId": "s.q.l1.8.2.o2"
+        },
+        {
+          "id": "q.l1.8.2.o3",
+          "reason": "这是开门的时间条件。",
+          "spanId": "s.q.l1.8.2.o3"
+        }
+      ],
+      "answer": [
+        "q.l1.8.2.o1"
+      ],
+      "analysis": "客问守门者，知道开门时刻的守门者回答。",
+      "hint": "先找“客问”的对象。"
+    },
+    {
+      "id": "q.l1.8.3",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.subject-continuity",
+      "passageId": "p.l1.8.oil",
+      "prompt": "是谁把油添进灯盏？",
+      "options": [
+        {
+          "id": "q.l1.8.3.o1",
+          "reason": "灯盏是盛油的器具。",
+          "label": "灯盏"
+        },
+        {
+          "id": "q.l1.8.3.o2",
+          "reason": "“持油”到“添之”衔接成一件事，后句沿用“妇”为主语。",
+          "label": "拿油来的女子"
+        },
+        {
+          "id": "q.l1.8.3.o3",
+          "reason": "句中没有出现递油的孩子。",
+          "label": "递油的孩子"
+        }
+      ],
+      "answer": [
+        "q.l1.8.3.o2"
+      ],
+      "analysis": "“持油”到“添之”衔接成一件事，后句沿用“妇”为主语。",
+      "hint": "看看油原本在谁的手中。"
+    },
+    {
+      "id": "q.l1.8.4",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.respondent",
+      "passageId": "p.l1.8.cost",
+      "prompt": "说“十钱”的是谁？",
+      "options": [
+        {
+          "id": "q.l1.8.4.o1",
+          "reason": "原句只交代了提问的客人与被问的陶工。",
+          "label": "另一位买家"
+        },
+        {
+          "id": "q.l1.8.4.o2",
+          "reason": "客人先问价，“对曰”引出对方的答话。",
+          "label": "客人"
+        },
+        {
+          "id": "q.l1.8.4.o3",
+          "reason": "“问陶者”交代听者。下一句以价钱回应问题，省略的答者就是陶工。",
+          "label": "陶工"
+        }
+      ],
+      "answer": [
+        "q.l1.8.4.o3"
+      ],
+      "analysis": "“问陶者”交代听者。下一句以价钱回应问题，省略的答者就是陶工。",
+      "hint": "一个人问价，谁在回答？"
+    },
+    {
+      "id": "q.l1.8.5",
+      "status": "draft",
+      "mode": "order",
+      "skillId": "skill.subject-continuity",
+      "passageId": "p.l1.8.bird",
+      "prompt": "按同一个孩子做的事排列。",
+      "options": [
+        {
+          "id": "q.l1.8.5.o1",
+          "reason": "",
+          "label": "把鸟安置在笼中"
+        },
+        {
+          "id": "q.l1.8.5.o2",
+          "reason": "",
+          "label": "早晚给鸟喂食"
+        },
+        {
+          "id": "q.l1.8.5.o3",
+          "reason": "",
+          "label": "拾起受伤的小鸟"
+        }
+      ],
+      "answer": [
+        "q.l1.8.5.o3",
+        "q.l1.8.5.o1",
+        "q.l1.8.5.o2"
+      ],
+      "analysis": "“拾”“置”“饲”依次展开孩子对鸟的照料，后两处均沿用主语“童”。",
+      "hint": "把省去的“童”补在每个动作前。"
+    },
+    {
+      "id": "q.l1.8.6",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.respondent",
+      "passageId": "p.l1.8.herb",
+      "prompt": "把“得艾”补足，哪个理解最合适？",
+      "options": [
+        {
+          "id": "q.l1.8.6.o1",
+          "reason": "“汝”是父亲面前的采药孩子。应答者承接这个被问者。",
+          "label": "采药的孩子说自己采到了艾草"
+        },
+        {
+          "id": "q.l1.8.6.o2",
+          "reason": "回答直接针对孩子自己的采药所得。",
+          "label": "孩子说父亲采到了艾草"
+        },
+        {
+          "id": "q.l1.8.6.o3",
+          "reason": "父亲问的是“汝”采得什么。",
+          "label": "父亲说自己采到了艾草"
+        }
+      ],
+      "answer": [
+        "q.l1.8.6.o1"
+      ],
+      "analysis": "“汝”是父亲面前的采药孩子。应答者承接这个被问者。",
+      "hint": "先确定父亲称“汝”的人。"
+    },
+    {
+      "id": "q.l1.8.7",
+      "status": "draft",
+      "mode": "span",
+      "skillId": "skill.subject-continuity",
+      "passageId": "p.l1.8.clothroll",
+      "prompt": "如果在“量布”前补出主语，应从原文选哪两个字？",
+      "options": [
+        {
+          "id": "q.l1.8.7.o1",
+          "reason": "拿尺与量布顺势相接，省略的是拿尺的商人。",
+          "spanId": "s.q.l1.8.7.o1"
+        },
+        {
+          "id": "q.l1.8.7.o2",
+          "reason": "这交代量布的地点。",
+          "spanId": "s.q.l1.8.7.o2"
+        },
+        {
+          "id": "q.l1.8.7.o3",
+          "reason": "这是拿尺子的动作。",
+          "spanId": "s.q.l1.8.7.o3"
+        }
+      ],
+      "answer": [
+        "q.l1.8.7.o1"
+      ],
+      "analysis": "拿尺与量布顺势相接，省略的是拿尺的商人。",
+      "hint": "谁拿着量布所需的工具？"
+    },
+    {
+      "id": "q.l1.8.8",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.respondent",
+      "passageId": "p.l1.8.pilot",
+      "prompt": "对水势作判断的是谁？",
+      "options": [
+        {
+          "id": "q.l1.8.8.o1",
+          "reason": "官吏想知道能否渡河。",
+          "label": "发问的官吏"
+        },
+        {
+          "id": "q.l1.8.8.o2",
+          "reason": "“吏问舟人”点明问答双方，“对曰”省去被问者“舟人”。",
+          "label": "回答询问的船夫"
+        },
+        {
+          "id": "q.l1.8.8.o3",
+          "reason": "句中没有提到其他行人。",
+          "label": "岸上的行人"
+        }
+      ],
+      "answer": [
+        "q.l1.8.8.o2"
+      ],
+      "analysis": "“吏问舟人”点明问答双方，“对曰”省去被问者“舟人”。",
+      "hint": "把“谁问谁”理清，再看谁答。"
+    },
+    {
+      "id": "q.l1.9.1",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.not-yet",
+      "passageId": "p.l1.9.shutter",
+      "prompt": "可以从“客未寝”确定什么？",
+      "options": [
+        {
+          "id": "q.l1.9.1.o1",
+          "reason": "“未”只说明当时的情况。",
+          "label": "客人整夜一定不睡"
+        },
+        {
+          "id": "q.l1.9.1.o2",
+          "reason": "“未”否定“寝”，以半夜雨停时为观察点。",
+          "label": "到雨停时客人还没睡"
+        },
+        {
+          "id": "q.l1.9.1.o3",
+          "reason": "“未寝”不能读成“睡醒”。",
+          "label": "客人已睡醒"
+        }
+      ],
+      "answer": [
+        "q.l1.9.1.o2"
+      ],
+      "analysis": "“未”否定“寝”，以半夜雨停时为观察点。",
+      "hint": "只说在文中那个时刻能确定的事。"
+    },
+    {
+      "id": "q.l1.9.2",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.interrogative-object",
+      "passageId": "p.l1.9.parcel",
+      "prompt": "哪句话能直接回答母亲？",
+      "options": [
+        {
+          "id": "q.l1.9.2.o1",
+          "reason": "“何物”问的是袋中物品的种类，说明装的东西即可。",
+          "label": "袋里装着豆子"
+        },
+        {
+          "id": "q.l1.9.2.o2",
+          "reason": "这是在回答制袋时间。",
+          "label": "袋子是昨天缝的"
+        },
+        {
+          "id": "q.l1.9.2.o3",
+          "reason": "这是在回答袋子的位置。",
+          "label": "袋子放在车上"
+        }
+      ],
+      "answer": [
+        "q.l1.9.2.o1"
+      ],
+      "analysis": "“何物”问的是袋中物品的种类，说明装的东西即可。",
+      "hint": "留意“何”后面的“物”。"
+    },
+    {
+      "id": "q.l1.9.3",
+      "status": "draft",
+      "mode": "span",
+      "skillId": "skill.not-yet",
+      "passageId": "p.l1.9.water",
+      "prompt": "点选仍未发生的事所对应的动词。",
+      "options": [
+        {
+          "id": "q.l1.9.3.o1",
+          "reason": "水是尚未涌来的事物，题目问动词。",
+          "spanId": "s.q.l1.9.3.o1"
+        },
+        {
+          "id": "q.l1.9.3.o2",
+          "reason": "“已成”说明井已经挖好。",
+          "spanId": "s.q.l1.9.3.o2"
+        },
+        {
+          "id": "q.l1.9.3.o3",
+          "reason": "“未”紧接在“至”前面，否定到达，并不否定挖井这件事已经完成。",
+          "spanId": "s.q.l1.9.3.o3"
+        }
+      ],
+      "answer": [
+        "q.l1.9.3.o3"
+      ],
+      "analysis": "“未”紧接在“至”前面，否定到达，并不否定挖井这件事已经完成。",
+      "hint": "分清“已”与“未”各修饰哪个动作。"
+    },
+    {
+      "id": "q.l1.9.4",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.interrogative-object",
+      "passageId": "p.l1.9.lesson",
+      "prompt": "教师要学生说明什么？",
+      "options": [
+        {
+          "id": "q.l1.9.4.o1",
+          "reason": "“何”与“书”相连，不是询问地点。",
+          "label": "坐在哪里读书"
+        },
+        {
+          "id": "q.l1.9.4.o2",
+          "reason": "“何书”是“读”的对象，应报出书名或说明所读之书。",
+          "label": "所读的书是哪一本"
+        },
+        {
+          "id": "q.l1.9.4.o3",
+          "reason": "时间“今”已经给出。",
+          "label": "何时开始读书"
+        }
+      ],
+      "answer": [
+        "q.l1.9.4.o2"
+      ],
+      "analysis": "“何书”是“读”的对象，应报出书名或说明所读之书。",
+      "hint": "把“读”的对象找出来。"
+    },
+    {
+      "id": "q.l1.9.5",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.not-yet",
+      "passageId": "p.l1.9.return",
+      "prompt": "关于使者归来，哪项有原文依据？",
+      "options": [
+        {
+          "id": "q.l1.9.5.o1",
+          "reason": "“未归”说明此时尚未归来。",
+          "label": "使者已在家中歇息"
+        },
+        {
+          "id": "q.l1.9.5.o2",
+          "reason": "“方候”点明当下情境。“未归”只确定这个时刻前还没回来。",
+          "label": "家人在门口等候时，使者还未回来"
+        },
+        {
+          "id": "q.l1.9.5.o3",
+          "reason": "“未”没有断定以后的情形。",
+          "label": "使者将永远不归"
+        }
+      ],
+      "answer": [
+        "q.l1.9.5.o2"
+      ],
+      "analysis": "“方候”点明当下情境。“未归”只确定这个时刻前还没回来。",
+      "hint": "看作者写的是眼下，还是一生。"
+    },
+    {
+      "id": "q.l1.9.6",
+      "status": "draft",
+      "mode": "span",
+      "skillId": "skill.interrogative-object",
+      "passageId": "p.l1.9.river",
+      "prompt": "点选能补出“求”的对象的字。",
+      "options": [
+        {
+          "id": "q.l1.9.6.o1",
+          "reason": "竿是老人已经拿着的用具。",
+          "spanId": "s.q.l1.9.6.o1"
+        },
+        {
+          "id": "q.l1.9.6.o2",
+          "reason": "孩子是发问者。",
+          "spanId": "s.q.l1.9.6.o2"
+        },
+        {
+          "id": "q.l1.9.6.o3",
+          "reason": "“何求”是在问求什么。老人指鱼，以动作表明要得到鱼。",
+          "spanId": "s.q.l1.9.6.o3"
+        }
+      ],
+      "answer": [
+        "q.l1.9.6.o3"
+      ],
+      "analysis": "“何求”是在问求什么。老人指鱼，以动作表明要得到鱼。",
+      "hint": "看老人用手指向什么。"
+    },
+    {
+      "id": "q.l1.9.7",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.not-yet",
+      "passageId": "p.l1.9.bridge",
+      "prompt": "“未成”解释了哪一情形？",
+      "options": [
+        {
+          "id": "q.l1.9.7.o1",
+          "reason": "“未成”的主语是桥。",
+          "label": "船还没有造好"
+        },
+        {
+          "id": "q.l1.9.7.o2",
+          "reason": "文中只写桥成之前。",
+          "label": "行者永远只能坐船"
+        },
+        {
+          "id": "q.l1.9.7.o3",
+          "reason": "“未成”说的是桥目前的状态，后半句写人在此时怎样过河。",
+          "label": "桥尚未建好，所以过路人仍坐船"
+        }
+      ],
+      "answer": [
+        "q.l1.9.7.o3"
+      ],
+      "analysis": "“未成”说的是桥目前的状态，后半句写人在此时怎样过河。",
+      "hint": "找出“未成”前面的主语。"
+    },
+    {
+      "id": "q.l1.9.8",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.interrogative-object",
+      "passageId": "p.l1.9.planting",
+      "prompt": "客人想知道什么？",
+      "options": [
+        {
+          "id": "q.l1.9.8.o1",
+          "reason": "“何谷”未问地点。",
+          "label": "农人在哪里播种"
+        },
+        {
+          "id": "q.l1.9.8.o2",
+          "reason": "“将种”是将要播种，询问词与“谷”相连。",
+          "label": "谷物何时成熟"
+        },
+        {
+          "id": "q.l1.9.8.o3",
+          "reason": "“种何谷”把所种之物作为问题焦点。",
+          "label": "准备播种的谷物种类"
+        }
+      ],
+      "answer": [
+        "q.l1.9.8.o3"
+      ],
+      "analysis": "“种何谷”把所种之物作为问题焦点。",
+      "hint": "“何”与它后面的名词合在一起读。"
+    },
+    {
+      "id": "q.check.3.1",
+      "status": "draft",
+      "mode": "span",
+      "skillId": "skill.action-verb",
+      "passageId": "p.check.3.cobbler",
+      "prompt": "点选缝补这一动作。",
+      "options": [
+        {
+          "id": "q.check.3.1.o1",
+          "reason": "工匠做这个动作。",
+          "spanId": "s.q.check.3.1.o1"
+        },
+        {
+          "id": "q.check.3.1.o2",
+          "reason": "鞋子是缝补的对象。",
+          "spanId": "s.q.check.3.1.o2"
+        },
+        {
+          "id": "q.check.3.1.o3",
+          "reason": "“工／缀履／于檐下”依次交代行事者、动作和对象、地点。",
+          "spanId": "s.q.check.3.1.o3"
+        }
+      ],
+      "answer": [
+        "q.check.3.1.o3"
+      ],
+      "analysis": "“工／缀履／于檐下”依次交代行事者、动作和对象、地点。",
+      "hint": "哪一个字能回答“做了什么”？"
+    },
+    {
+      "id": "q.check.3.2",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.direct-object",
+      "passageId": "p.check.3.carve",
+      "prompt": "“刻”的直接对象是什么？",
+      "options": [
+        {
+          "id": "q.check.3.2.o1",
+          "reason": "“以石”说明刻木所用的工具。",
+          "label": "石头"
+        },
+        {
+          "id": "q.check.3.2.o2",
+          "reason": "“童”是刻木的人。",
+          "label": "孩子"
+        },
+        {
+          "id": "q.check.3.2.o3",
+          "reason": "“以石”交代工具，“刻木”才是动作和它作用的对象。",
+          "label": "木头"
+        }
+      ],
+      "answer": [
+        "q.check.3.2.o3"
+      ],
+      "analysis": "“以石”交代工具，“刻木”才是动作和它作用的对象。",
+      "hint": "留心“以”引出的是工具。"
+    },
+    {
+      "id": "q.check.3.3",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.subject-continuity",
+      "passageId": "p.check.3.lamp",
+      "prompt": "“燃灯”的主语怎样补足？",
+      "options": [
+        {
+          "id": "q.check.3.3.o1",
+          "reason": "取火是点灯的前一步，前句的“客”仍然是点灯者。",
+          "label": "取火的旅客"
+        },
+        {
+          "id": "q.check.3.3.o2",
+          "reason": "灯是被点燃的物件。",
+          "label": "灯"
+        },
+        {
+          "id": "q.check.3.3.o3",
+          "reason": "原句没有提到著书人。",
+          "label": "著书的人"
+        }
+      ],
+      "answer": [
+        "q.check.3.3.o1"
+      ],
+      "analysis": "取火是点灯的前一步，前句的“客”仍然是点灯者。",
+      "hint": "前后两个动作是否组成一件事？"
+    },
+    {
+      "id": "q.check.3.4",
+      "status": "draft",
+      "mode": "span",
+      "skillId": "skill.respondent",
+      "passageId": "p.check.3.west-road",
+      "prompt": "点选第二个“通”是谁说的。",
+      "options": [
+        {
+          "id": "q.check.3.4.o1",
+          "reason": "问答之间换了说话人。“对曰”的主语承接被问的樵夫。",
+          "spanId": "s.q.check.3.4.o1"
+        },
+        {
+          "id": "q.check.3.4.o2",
+          "reason": "旅客问路，尚不知道答案。",
+          "spanId": "s.q.check.3.4.o2"
+        },
+        {
+          "id": "q.check.3.4.o3",
+          "reason": "西边小路是谈论的对象。",
+          "spanId": "s.q.check.3.4.o3"
+        }
+      ],
+      "answer": [
+        "q.check.3.4.o1"
+      ],
+      "analysis": "问答之间换了说话人。“对曰”的主语承接被问的樵夫。",
+      "hint": "先辨出“问”的对象。"
+    },
+    {
+      "id": "q.check.3.5",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.not-yet",
+      "passageId": "p.check.3.drum",
+      "prompt": "在叙述的这个时刻，哪项理解正确？",
+      "options": [
+        {
+          "id": "q.check.3.5.o1",
+          "reason": "“已”修饰“集”，“未”修饰“鸣”。两者对照交代当时情形。",
+          "label": "人已集合，鼓声还没响起"
+        },
+        {
+          "id": "q.check.3.5.o2",
+          "reason": "“未”不足以判断将来。",
+          "label": "从此不会再击鼓"
+        },
+        {
+          "id": "q.check.3.5.o3",
+          "reason": "“已”和“未”对应的动作被调换了。",
+          "label": "人还未到，鼓已响过"
+        }
+      ],
+      "answer": [
+        "q.check.3.5.o1"
+      ],
+      "analysis": "“已”修饰“集”，“未”修饰“鸣”。两者对照交代当时情形。",
+      "hint": "分别指出“已”和“未”后面的词。"
+    },
+    {
+      "id": "q.check.3.6",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.interrogative-object",
+      "passageId": "p.check.3.tribute",
+      "prompt": "哪一个答语切中问题？",
+      "options": [
+        {
+          "id": "q.check.3.6.o1",
+          "reason": "“载何物”的答案要给出被运载的事物，木材符合。",
+          "label": "车上装的是木材"
+        },
+        {
+          "id": "q.check.3.6.o2",
+          "reason": "“何物”没有问时间。",
+          "label": "车夫傍晚动身"
+        },
+        {
+          "id": "q.check.3.6.o3",
+          "reason": "“何物”没有问来处。",
+          "label": "车是从南门来的"
+        }
+      ],
+      "answer": [
+        "q.check.3.6.o1"
+      ],
+      "analysis": "“载何物”的答案要给出被运载的事物，木材符合。",
+      "hint": "“载”的对象才是要回答的信息。"
+    },
+    {
+      "id": "q.l1.10.1",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.track-actors",
+      "passageId": "p.l1.10.key",
+      "prompt": "谁交付了钥匙，谁完成了开门的事？",
+      "options": [
+        {
+          "id": "q.l1.10.1.o1",
+          "reason": "“授生”表明书生是接受钥匙的人；末句“生已开户”明确开门的人。",
+          "label": "主人交钥匙，书生开门"
+        },
+        {
+          "id": "q.l1.10.1.o2",
+          "reason": "“主人以钥授生”已经指出交付者和接受者。",
+          "label": "书生交钥匙，主人开门"
+        },
+        {
+          "id": "q.l1.10.1.o3",
+          "reason": "开门时主人“未起”。",
+          "label": "主人先后交钥匙、开门"
+        }
+      ],
+      "answer": [
+        "q.l1.10.1.o1"
+      ],
+      "analysis": "“授生”表明书生是接受钥匙的人；末句“生已开户”明确开门的人。",
+      "hint": "把“授生”和“生已”分别连到它们的动作。"
+    },
+    {
+      "id": "q.l1.10.2",
+      "status": "draft",
+      "mode": "order",
+      "skillId": "skill.time-links",
+      "passageId": "p.l1.10.key",
+      "prompt": "按事情实际发生的次序排列。",
+      "options": [
+        {
+          "id": "q.l1.10.2.o1",
+          "reason": "",
+          "label": "书生开门"
+        },
+        {
+          "id": "q.l1.10.2.o2",
+          "reason": "",
+          "label": "书生接过钥匙"
+        },
+        {
+          "id": "q.l1.10.2.o3",
+          "reason": "",
+          "label": "主人托付钥匙"
+        }
+      ],
+      "answer": [
+        "q.l1.10.2.o3",
+        "q.l1.10.2.o2",
+        "q.l1.10.2.o1"
+      ],
+      "analysis": "“暮”引出托付和接钥，“旦”把时间推进到次日清晨，开门发生在后。",
+      "hint": "想想两个“旦”中，哪一个是主人说的将来。"
+    },
+    {
+      "id": "q.l1.10.3",
+      "status": "draft",
+      "mode": "span",
+      "skillId": "skill.track-actors",
+      "passageId": "p.l1.10.pear",
+      "prompt": "谁把梨放进了篮子？点选拾梨句中点明此人的词。",
+      "options": [
+        {
+          "id": "q.l1.10.3.o1",
+          "reason": "“邻童拾梨于路，暮置翁篮中”由邻童连续完成拾、置两个动作。",
+          "spanId": "s.q.l1.10.3.o1"
+        },
+        {
+          "id": "q.l1.10.3.o2",
+          "reason": "孙子是回答问话的人。",
+          "spanId": "s.q.l1.10.3.o2"
+        },
+        {
+          "id": "q.l1.10.3.o3",
+          "reason": "老人是清晨看见梨的人。",
+          "spanId": "s.q.l1.10.3.o3"
+        }
+      ],
+      "answer": [
+        "q.l1.10.3.o1"
+      ],
+      "analysis": "“邻童拾梨于路，暮置翁篮中”由邻童连续完成拾、置两个动作。",
+      "hint": "找“拾梨于路”的主语。"
+    },
+    {
+      "id": "q.l1.10.4",
+      "status": "draft",
+      "mode": "order",
+      "skillId": "skill.time-links",
+      "passageId": "p.l1.10.pear",
+      "prompt": "原文开头是老人的见闻。按真实先后排列。",
+      "options": [
+        {
+          "id": "q.l1.10.4.o1",
+          "reason": "",
+          "label": "邻童在路上拾梨"
+        },
+        {
+          "id": "q.l1.10.4.o2",
+          "reason": "",
+          "label": "老人清晨见梨"
+        },
+        {
+          "id": "q.l1.10.4.o3",
+          "reason": "",
+          "label": "邻童傍晚把梨放入篮子"
+        }
+      ],
+      "answer": [
+        "q.l1.10.4.o1",
+        "q.l1.10.4.o3",
+        "q.l1.10.4.o2"
+      ],
+      "analysis": "“先是”让叙事回到见梨之前：先拾梨，再置篮，最后老人才看到它。",
+      "hint": "先找到回叙的起点“先是”。"
+    },
+    {
+      "id": "q.l1.10.5",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.track-actors",
+      "passageId": "p.l1.10.ferry",
+      "prompt": "谁指出了空船所在，谁沿岸去找船？",
+      "options": [
+        {
+          "id": "q.l1.10.5.o1",
+          "reason": "“舟子指”与“行人循岸往”分别指明行动者。",
+          "label": "旅人指点，船夫找船"
+        },
+        {
+          "id": "q.l1.10.5.o2",
+          "reason": "“行人循岸往”的主语已经换成旅人。",
+          "label": "船夫既指点又沿岸找船"
+        },
+        {
+          "id": "q.l1.10.5.o3",
+          "reason": "“曰”前是舟子，听话后出发的却是行人。",
+          "label": "船夫指点，旅人找船"
+        }
+      ],
+      "answer": [
+        "q.l1.10.5.o3"
+      ],
+      "analysis": "“曰”前是舟子，听话后出发的却是行人。",
+      "hint": "两次动作前分别写了哪个人物称呼？"
+    },
+    {
+      "id": "q.l1.10.6",
+      "status": "draft",
+      "mode": "span",
+      "skillId": "skill.time-links",
+      "passageId": "p.l1.10.ferry",
+      "prompt": "哪段行动直接接在船夫的指点之后、找到船之前？",
+      "options": [
+        {
+          "id": "q.l1.10.6.o1",
+          "reason": "先循岸往，才得舟，最后渡河。",
+          "spanId": "s.q.l1.10.6.o1"
+        },
+        {
+          "id": "q.l1.10.6.o2",
+          "reason": "渡河发生在得舟之后。",
+          "spanId": "s.q.l1.10.6.o2"
+        },
+        {
+          "id": "q.l1.10.6.o3",
+          "reason": "到水边发生在问话之前。",
+          "spanId": "s.q.l1.10.6.o3"
+        }
+      ],
+      "answer": [
+        "q.l1.10.6.o1"
+      ],
+      "analysis": "先循岸往，才得舟，最后渡河。",
+      "hint": "看引号结束后，行人先做了什么。"
+    },
+    {
+      "id": "q.l1.10.7",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.track-actors",
+      "passageId": "p.l1.10.cloth",
+      "prompt": "送伞的人是谁？",
+      "options": [
+        {
+          "id": "q.l1.10.7.o1",
+          "reason": "妇人是失伞者，正要回市场寻找。",
+          "label": "买布的妇人"
+        },
+        {
+          "id": "q.l1.10.7.o2",
+          "reason": "“遣子”是派儿子去，并非自己去。",
+          "label": "店主本人"
+        },
+        {
+          "id": "q.l1.10.7.o3",
+          "reason": "“肆主”是派人者，“子”受派送伞；最后明言遇到“肆主之子”。",
+          "label": "店主的儿子"
+        }
+      ],
+      "answer": [
+        "q.l1.10.7.o3"
+      ],
+      "analysis": "“肆主”是派人者，“子”受派送伞；最后明言遇到“肆主之子”。",
+      "hint": "区分“遣”的发出者与受派者。"
+    },
+    {
+      "id": "q.l1.10.8",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.time-links",
+      "passageId": "p.l1.10.cloth",
+      "prompt": "依据原文，可以确定哪一组先后关系？",
+      "options": [
+        {
+          "id": "q.l1.10.8.o1",
+          "reason": "“见伞，遣子送之”写先发现才托付。",
+          "label": "店主先派儿子，再发现铺中有伞"
+        },
+        {
+          "id": "q.l1.10.8.o2",
+          "reason": "忘伞是后来送还的起因。",
+          "label": "妇人先遇见送伞人，再在铺里忘伞"
+        },
+        {
+          "id": "q.l1.10.8.o3",
+          "reason": "“至家始觉”先于“出门欲返市”；店主在另一条行动线上，不能随意补写两个地点的精确时刻。",
+          "label": "妇人先发现伞丢了，再出门想回市场"
+        }
+      ],
+      "answer": [
+        "q.l1.10.8.o3"
+      ],
+      "analysis": "“至家始觉”先于“出门欲返市”；店主在另一条行动线上，不能随意补写两个地点的精确时刻。",
+      "hint": "只比较同一人物已经交代的动作。"
+    },
+    {
+      "id": "q.l1.11.1",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.causal-link",
+      "passageId": "p.l1.11.ford",
+      "prompt": "父亲决定等船的直接依据是什么？",
+      "options": [
+        {
+          "id": "q.l1.11.1.o1",
+          "reason": "“穷杖而未及底”是探水的结果，父亲据此说水深而当待舟。",
+          "label": "用整根杖探水，仍没触到底"
+        },
+        {
+          "id": "q.l1.11.1.o2",
+          "reason": "时间和地点没有解释为何不能涉水。",
+          "label": "父子清晨来到岸边"
+        },
+        {
+          "id": "q.l1.11.1.o3",
+          "reason": "儿子的话本应支持徒涉，与等船的判断相反。",
+          "label": "儿子说水浅"
+        }
+      ],
+      "answer": [
+        "q.l1.11.1.o1"
+      ],
+      "analysis": "“穷杖而未及底”是探水的结果，父亲据此说水深而当待舟。",
+      "hint": "区分到溪边的时间和试水所得的事实。"
+    },
+    {
+      "id": "q.l1.11.2",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.contrast-expectation",
+      "passageId": "p.l1.11.ford",
+      "prompt": "前后两种判断的差别是什么？",
+      "options": [
+        {
+          "id": "q.l1.11.2.o1",
+          "reason": "原文没有写父亲已经看见船。",
+          "label": "儿子以为没有船，父亲却看见船"
+        },
+        {
+          "id": "q.l1.11.2.o2",
+          "reason": "先写“谓水浅，可徒涉”，后有“水深，故当待舟”，两人对溪水的判断不同。",
+          "label": "儿子以为水浅，父亲试后认为水深"
+        },
+        {
+          "id": "q.l1.11.2.o3",
+          "reason": "两人的判断被对调了。",
+          "label": "儿子想等船，父亲坚持徒涉"
+        }
+      ],
+      "answer": [
+        "q.l1.11.2.o2"
+      ],
+      "analysis": "先写“谓水浅，可徒涉”，后有“水深，故当待舟”，两人对溪水的判断不同。",
+      "hint": "把“水浅”与父亲说的话放在一起读。"
+    },
+    {
+      "id": "q.l1.11.3",
+      "status": "draft",
+      "mode": "span",
+      "skillId": "skill.causal-link",
+      "passageId": "p.l1.11.light",
+      "prompt": "点选原文明示邻人持火遍寻的起因。",
+      "options": [
+        {
+          "id": "q.l1.11.3.o1",
+          "reason": "这是客人看到的现象。",
+          "spanId": "s.q.l1.11.3.o1"
+        },
+        {
+          "id": "q.l1.11.3.o2",
+          "reason": "“既失牛，故举火遍求”前半说明失牛，后半写出因之而有的行动。",
+          "spanId": "s.q.l1.11.3.o2"
+        },
+        {
+          "id": "q.l1.11.3.o3",
+          "reason": "这是客人的查证动作。",
+          "spanId": "s.q.l1.11.3.o3"
+        }
+      ],
+      "answer": [
+        "q.l1.11.3.o2"
+      ],
+      "analysis": "“既失牛，故举火遍求”前半说明失牛，后半写出因之而有的行动。",
+      "hint": "找到“故”前面解释邻人行为的一句。"
+    },
+    {
+      "id": "q.l1.11.4",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.contrast-expectation",
+      "passageId": "p.l1.11.light",
+      "prompt": "客人最初的推测和后来所见有何不同？",
+      "options": [
+        {
+          "id": "q.l1.11.4.o1",
+          "reason": "客人说的是“月出”，没有提太阳。",
+          "label": "原以为是日光，后来看到月光"
+        },
+        {
+          "id": "q.l1.11.4.o2",
+          "reason": "“意”引出推测，“则”引出实际所见。照亮窗纸的是邻人手中的火把。",
+          "label": "原以为是月光，实际是火把的光"
+        },
+        {
+          "id": "q.l1.11.4.o3",
+          "reason": "客人最初推测的是月亮升起。",
+          "label": "原以为邻人失火，后来发现走失了牛"
+        }
+      ],
+      "answer": [
+        "q.l1.11.4.o2"
+      ],
+      "analysis": "“意”引出推测，“则”引出实际所见。照亮窗纸的是邻人手中的火把。",
+      "hint": "读“意”与“则”各自领起的内容。"
+    },
+    {
+      "id": "q.l1.11.5",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.causal-link",
+      "passageId": "p.l1.11.basket",
+      "prompt": "樵夫留下一筐与走几步就停，各有何因？",
+      "options": [
+        {
+          "id": "q.l1.11.5.o1",
+          "reason": "前文写的是“恐薪重”，全文没有迷路。",
+          "label": "留筐因为路滑，频停因为迷路"
+        },
+        {
+          "id": "q.l1.11.5.o2",
+          "reason": "“恐薪重”紧接留筐；“道滑”紧接频停。两种困难分别解释不同动作。",
+          "label": "留筐因为怕柴重，频停因为路滑"
+        },
+        {
+          "id": "q.l1.11.5.o3",
+          "reason": "文中没有等人的情节。",
+          "label": "两件事都是为了等同伴"
+        }
+      ],
+      "answer": [
+        "q.l1.11.5.o2"
+      ],
+      "analysis": "“恐薪重”紧接留筐；“道滑”紧接频停。两种困难分别解释不同动作。",
+      "hint": "给“留”和“止”各找附近的理由。"
+    },
+    {
+      "id": "q.l1.11.6",
+      "status": "draft",
+      "mode": "span",
+      "skillId": "skill.contrast-expectation",
+      "passageId": "p.l1.11.basket",
+      "prompt": "哪处写出减了负担后仍然走不顺的表现？",
+      "options": [
+        {
+          "id": "q.l1.11.6.o1",
+          "reason": "留下筐是减轻负担的办法。",
+          "spanId": "s.q.l1.11.6.o1"
+        },
+        {
+          "id": "q.l1.11.6.o2",
+          "reason": "入山是之前的行动。",
+          "spanId": "s.q.l1.11.6.o2"
+        },
+        {
+          "id": "q.l1.11.6.o3",
+          "reason": "“然”后写路滑，“数步辄止”呈现仍难行的结果。",
+          "spanId": "s.q.l1.11.6.o3"
+        }
+      ],
+      "answer": [
+        "q.l1.11.6.o3"
+      ],
+      "analysis": "“然”后写路滑，“数步辄止”呈现仍难行的结果。",
+      "hint": "找“然”之后表示行动停顿的短语。"
+    },
+    {
+      "id": "q.l1.11.7",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.causal-link",
+      "passageId": "p.l1.11.field",
+      "prompt": "从哪件事可以验证水不畅通的原因？",
+      "options": [
+        {
+          "id": "q.l1.11.7.o1",
+          "reason": "“土块塞水”指出阻碍；“去其土，水始通”用后续变化印证了原因。",
+          "label": "去掉土块后水才通"
+        },
+        {
+          "id": "q.l1.11.7.o2",
+          "reason": "估计所需时间没有揭示原因。",
+          "label": "农人以为一夜就够"
+        },
+        {
+          "id": "q.l1.11.7.o3",
+          "reason": "去查看本身不能说明哪里出了问题。",
+          "label": "农人次日清早去田里"
+        }
+      ],
+      "answer": [
+        "q.l1.11.7.o1"
+      ],
+      "analysis": "“土块塞水”指出阻碍；“去其土，水始通”用后续变化印证了原因。",
+      "hint": "看移走土块前后的变化。"
+    },
+    {
+      "id": "q.l1.11.8",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.contrast-expectation",
+      "passageId": "p.l1.11.field",
+      "prompt": "“田半犹干”与哪一处预期相对？",
+      "options": [
+        {
+          "id": "q.l1.11.8.o1",
+          "reason": "本来以为能灌遍整田，次日却还有半田干着。“犹”表示实际仍未达到预期。",
+          "label": "以为一夕可遍"
+        },
+        {
+          "id": "q.l1.11.8.o2",
+          "reason": "循沟是发现问题后的调查。",
+          "label": "循沟察之"
+        },
+        {
+          "id": "q.l1.11.8.o3",
+          "reason": "这是清沟后的结果。",
+          "label": "水始通"
+        }
+      ],
+      "answer": [
+        "q.l1.11.8.o1"
+      ],
+      "analysis": "本来以为能灌遍整田，次日却还有半田干着。“犹”表示实际仍未达到预期。",
+      "hint": "回读农人最初怎样估计灌溉的结果。"
+    },
+    {
+      "id": "q.l1.12.1",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.ferry-custom",
+      "passageId": "p.l1.12.medicine",
+      "prompt": "医者招手时，渡船在哪里？",
+      "options": [
+        {
+          "id": "q.l1.12.1.o1",
+          "reason": "“招手，舟子乃来”说明船夫随后才过来。",
+          "label": "已经停在医者身边"
+        },
+        {
+          "id": "q.l1.12.1.o2",
+          "reason": "“渡舟在东岸”先交代船的位置，招手是为了唤船来接。",
+          "label": "在河的东岸"
+        },
+        {
+          "id": "q.l1.12.1.o3",
+          "reason": "“东岸”说的是河岸，没有写船到了病人家。",
+          "label": "正在东村病家门前"
+        }
+      ],
+      "answer": [
+        "q.l1.12.1.o2"
+      ],
+      "analysis": "“渡舟在东岸”先交代船的位置，招手是为了唤船来接。",
+      "hint": "读“招手”之前所交代的船的位置。"
+    },
+    {
+      "id": "q.l1.12.2",
+      "status": "draft",
+      "mode": "order",
+      "skillId": "skill.mainline",
+      "passageId": "p.l1.12.medicine",
+      "prompt": "用三个事件概括医者的行程。",
+      "options": [
+        {
+          "id": "q.l1.12.2.o1",
+          "reason": "",
+          "label": "由病家之子领进村中"
+        },
+        {
+          "id": "q.l1.12.2.o2",
+          "reason": "",
+          "label": "招舟过河"
+        },
+        {
+          "id": "q.l1.12.2.o3",
+          "reason": "",
+          "label": "背药来到渡口"
+        }
+      ],
+      "answer": [
+        "q.l1.12.2.o3",
+        "q.l1.12.2.o2",
+        "q.l1.12.2.o1"
+      ],
+      "analysis": "“至津”是起点，“既渡”表示过河已经完成，接着才由人引入村中。",
+      "hint": "确认“既渡”分开的两段行程。"
+    },
+    {
+      "id": "q.l1.12.3",
+      "status": "draft",
+      "mode": "span",
+      "skillId": "skill.ferry-custom",
+      "passageId": "p.l1.12.rope",
+      "prompt": "点出渡船启程前，船夫解除系缚的动作。",
+      "options": [
+        {
+          "id": "q.l1.12.3.o1",
+          "reason": "“舟子解缆而发”说船夫解开系船的绳索，然后发船。",
+          "spanId": "s.q.l1.12.3.o1"
+        },
+        {
+          "id": "q.l1.12.3.o2",
+          "reason": "登船的是旅客，船仍可能系着。",
+          "spanId": "s.q.l1.12.3.o2"
+        },
+        {
+          "id": "q.l1.12.3.o3",
+          "reason": "拉绳子的是孩子，拉绳不同于解开。",
+          "spanId": "s.q.l1.12.3.o3"
+        }
+      ],
+      "answer": [
+        "q.l1.12.3.o1"
+      ],
+      "analysis": "“舟子解缆而发”说船夫解开系船的绳索，然后发船。",
+      "hint": "将“童”与“舟子”各自的动作分开。"
+    },
+    {
+      "id": "q.l1.12.4",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.mainline",
+      "passageId": "p.l1.12.rope",
+      "prompt": "哪一概括与全文相合？",
+      "options": [
+        {
+          "id": "q.l1.12.4.o1",
+          "reason": "旅客登舟，文中没有落水或夸奖。",
+          "label": "孩子救下落水的旅客，父亲夸奖他"
+        },
+        {
+          "id": "q.l1.12.4.o2",
+          "reason": "末句明说解缆而发的是舟子。",
+          "label": "父亲帮忙解缆开船，船夫在岸上休息"
+        },
+        {
+          "id": "q.l1.12.4.o3",
+          "reason": "概括保留孩子的动作、父亲的制止和船夫发船三个环节，未增添新的情节。",
+          "label": "孩子拉住船缆，被父亲制止，船夫自行解缆出发"
+        }
+      ],
+      "answer": [
+        "q.l1.12.4.o3"
+      ],
+      "analysis": "概括保留孩子的动作、父亲的制止和船夫发船三个环节，未增添新的情节。",
+      "hint": "读父亲的话，再核对末句动作的主语。"
+    },
+    {
+      "id": "q.l1.12.5",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.ferry-custom",
+      "passageId": "p.l1.12.cross",
+      "prompt": "旅客傍晚在哪里过夜？",
+      "options": [
+        {
+          "id": "q.l1.12.5.o1",
+          "reason": "傍晚舟子不肯渡，次日才写登舟。",
+          "label": "在已经离岸的船上"
+        },
+        {
+          "id": "q.l1.12.5.o2",
+          "reason": "次日才上船，原文未说先抵达对岸。",
+          "label": "在河对岸的村里"
+        },
+        {
+          "id": "q.l1.12.5.o3",
+          "reason": "“宿津旁”中，“宿”是过夜，“津旁”指渡口附近。",
+          "label": "在渡口附近"
+        }
+      ],
+      "answer": [
+        "q.l1.12.5.o3"
+      ],
+      "analysis": "“宿津旁”中，“宿”是过夜，“津旁”指渡口附近。",
+      "hint": "注意“登舟”发生在何时。"
+    },
+    {
+      "id": "q.l1.12.6",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.mainline",
+      "passageId": "p.l1.12.cross",
+      "prompt": "结尾“昨所宿舍已远”说明什么？",
+      "options": [
+        {
+          "id": "q.l1.12.6.o1",
+          "reason": "船已行远不能证明终身去留的决定。",
+          "label": "旅客决定不再返回故乡"
+        },
+        {
+          "id": "q.l1.12.6.o2",
+          "reason": "回头看见距离增加，这是行舟后的可见事实。概括到“行远”即可。",
+          "label": "旅客乘船后已离开昨夜住宿处一段距离"
+        },
+        {
+          "id": "q.l1.12.6.o3",
+          "reason": "原文只写回望时屋子已远，未交代抵达。",
+          "label": "旅客已经到达目的地"
+        }
+      ],
+      "answer": [
+        "q.l1.12.6.o2"
+      ],
+      "analysis": "回头看见距离增加，这是行舟后的可见事实。概括到“行远”即可。",
+      "hint": "区分已经写出的结果与可能的后续。"
+    },
+    {
+      "id": "q.l1.12.7",
+      "status": "draft",
+      "mode": "span",
+      "skillId": "skill.ferry-custom",
+      "passageId": "p.l1.12.lost",
+      "prompt": "哪处明确说明孩子取杖时船的位置？",
+      "options": [
+        {
+          "id": "q.l1.12.7.o1",
+          "reason": "“舟未离岸”说明此时船仍在岸边，孩子能从岸上帮忙取杖。",
+          "spanId": "s.q.l1.12.7.o1"
+        },
+        {
+          "id": "q.l1.12.7.o2",
+          "reason": "这是得到手杖之后的行动。",
+          "spanId": "s.q.l1.12.7.o2"
+        },
+        {
+          "id": "q.l1.12.7.o3",
+          "reason": "这是旅客发现物品不在身边。",
+          "spanId": "s.q.l1.12.7.o3"
+        }
+      ],
+      "answer": [
+        "q.l1.12.7.o1"
+      ],
+      "analysis": "“舟未离岸”说明此时船仍在岸边，孩子能从岸上帮忙取杖。",
+      "hint": "找写船与岸的相对位置的一小句。"
+    },
+    {
+      "id": "q.l1.12.8",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.mainline",
+      "passageId": "p.l1.12.lost",
+      "prompt": "哪种复述把行动归给了正确的人？",
+      "options": [
+        {
+          "id": "q.l1.12.8.o1",
+          "reason": "用篙指的是舟子，取杖的是童。",
+          "label": "旅客用篙指岸，船夫代取手杖"
+        },
+        {
+          "id": "q.l1.12.8.o2",
+          "reason": "“舟子以篙指岸”“童为取之”“客……谢童”依次说明三人的作用。",
+          "label": "船夫指明杖的位置，孩子取回，旅客道谢"
+        },
+        {
+          "id": "q.l1.12.8.o3",
+          "reason": "手杖靠在岸石上，原文也没写落水。",
+          "label": "船夫跳下水捞杖，孩子道谢"
+        }
+      ],
+      "answer": [
+        "q.l1.12.8.o2"
+      ],
+      "analysis": "“舟子以篙指岸”“童为取之”“客……谢童”依次说明三人的作用。",
+      "hint": "把“指”“取”“谢”与各自的主语配对。"
+    },
+    {
+      "id": "q.check.4.1",
+      "status": "draft",
+      "mode": "order",
+      "skillId": "skill.time-links",
+      "passageId": "p.check.4.slips",
+      "prompt": "按实际发生的先后排列，留意回叙。",
+      "options": [
+        {
+          "id": "q.check.4.1.o1",
+          "reason": "",
+          "label": "掌书简者回屋看见简"
+        },
+        {
+          "id": "q.check.4.1.o2",
+          "reason": "",
+          "label": "掌书简者遍寻庭院"
+        },
+        {
+          "id": "q.check.4.1.o3",
+          "reason": "",
+          "label": "孩子拾简并放在案上"
+        }
+      ],
+      "answer": [
+        "q.check.4.1.o3",
+        "q.check.4.1.o2",
+        "q.check.4.1.o1"
+      ],
+      "analysis": "“先是”领回叙。孩子早已收起了简，掌书简者先在庭院找，回屋后才发现。",
+      "hint": "把“先是”后写的事摆回时间线上。"
+    },
+    {
+      "id": "q.check.4.2",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.track-actors",
+      "passageId": "p.check.4.jar",
+      "prompt": "谁是“与”的发出者，谁接受了水？",
+      "options": [
+        {
+          "id": "q.check.4.2.o1",
+          "reason": "父亲此时已经出门，末句才“归”。",
+          "label": "父亲给水，邻人受水"
+        },
+        {
+          "id": "q.check.4.2.o2",
+          "reason": "借水的邻人随后成为受水者。“子”在“酌而与”前面，两个动作都由儿子完成。",
+          "label": "儿子舀水，邻人受水"
+        },
+        {
+          "id": "q.check.4.2.o3",
+          "reason": "“子以瓢酌而与之”的主语是子。",
+          "label": "邻人舀水，儿子受水"
+        }
+      ],
+      "answer": [
+        "q.check.4.2.o2"
+      ],
+      "analysis": "借水的邻人随后成为受水者。“子”在“酌而与”前面，两个动作都由儿子完成。",
+      "hint": "读清“来借”与“酌而与”前面的人物。"
+    },
+    {
+      "id": "q.check.4.3",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.causal-link",
+      "passageId": "p.check.4.gate",
+      "prompt": "守门人为何让人分薪？",
+      "options": [
+        {
+          "id": "q.check.4.3.o1",
+          "reason": "原文没有提柴的干湿。",
+          "label": "柴湿，想放在门外晒干"
+        },
+        {
+          "id": "q.check.4.3.o2",
+          "reason": "柴随后全运进了门，未写修门。",
+          "label": "门坏，想用柴木修门"
+        },
+        {
+          "id": "q.check.4.3.o3",
+          "reason": "“门旧狭”交代处境，“车不得入”是要解决的问题；分装后再运便能通过。",
+          "label": "门窄，满载柴的车过不去"
+        }
+      ],
+      "answer": [
+        "q.check.4.3.o3"
+      ],
+      "analysis": "“门旧狭”交代处境，“车不得入”是要解决的问题；分装后再运便能通过。",
+      "hint": "看命令之前遇到了什么困难。"
+    },
+    {
+      "id": "q.check.4.4",
+      "status": "draft",
+      "mode": "span",
+      "skillId": "skill.contrast-expectation",
+      "passageId": "p.check.4.rain",
+      "prompt": "哪处是农人清晨亲眼看到、与昨夜预期相违的现象？",
+      "options": [
+        {
+          "id": "q.check.4.4.o1",
+          "reason": "这是他作出预期的依据。",
+          "spanId": "s.q.check.4.4.o1"
+        },
+        {
+          "id": "q.check.4.4.o2",
+          "reason": "这是邻翁后来说明的夜间变化。",
+          "spanId": "s.q.check.4.4.o2"
+        },
+        {
+          "id": "q.check.4.4.o3",
+          "reason": "农人本来预期降雨，却在清晨看到地面仍然干着。",
+          "spanId": "s.q.check.4.4.o3"
+        }
+      ],
+      "answer": [
+        "q.check.4.4.o3"
+      ],
+      "analysis": "农人本来预期降雨，却在清晨看到地面仍然干着。",
+      "hint": "题目问清早亲见，区分农人的眼见和邻翁的话。"
+    },
+    {
+      "id": "q.check.4.5",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.ferry-custom",
+      "passageId": "p.check.4.shore",
+      "prompt": "船夫哪一刻才准备离岸？",
+      "options": [
+        {
+          "id": "q.check.4.5.o1",
+          "reason": "缆把渡船系于岸，解缆准备离开。“既……始……”把离岸的准备放在母子落座之后。",
+          "label": "母子已经坐好之后"
+        },
+        {
+          "id": "q.check.4.5.o2",
+          "reason": "这时“舟尚系岸”，人还没有上船。",
+          "label": "母子刚到渡口时"
+        },
+        {
+          "id": "q.check.4.5.o3",
+          "reason": "“母子既坐”之后才“始解缆”。",
+          "label": "妇人刚伸手拉孩子时"
+        }
+      ],
+      "answer": [
+        "q.check.4.5.o1"
+      ],
+      "analysis": "缆把渡船系于岸，解缆准备离开。“既……始……”把离岸的准备放在母子落座之后。",
+      "hint": "把“系岸”和“解缆”分开读。"
+    },
+    {
+      "id": "q.check.4.6",
+      "status": "draft",
+      "mode": "choice",
+      "skillId": "skill.mainline",
+      "passageId": "p.check.4.bridge",
+      "prompt": "读到结尾，哪些事情确已发生？",
+      "options": [
+        {
+          "id": "q.check.4.6.o1",
+          "reason": "“呼止”“从旁径过”“告里人修桥”是已交代的行动。修桥是否完成属于未交代的后续。",
+          "label": "牧童提醒行人避开断桥，并告诉乡人要修桥"
+        },
+        {
+          "id": "q.check.4.6.o2",
+          "reason": "原文只写提出修桥，未写修好。",
+          "label": "行人当场修好桥，乡人都从桥上过"
+        },
+        {
+          "id": "q.check.4.6.o3",
+          "reason": "行人从旁径通过，未发生落桥。",
+          "label": "牧童与行人一同掉下桥，乡人来救"
+        }
+      ],
+      "answer": [
+        "q.check.4.6.o1"
+      ],
+      "analysis": "“呼止”“从旁径过”“告里人修桥”是已交代的行动。修桥是否完成属于未交代的后续。",
+      "hint": "把已经发生的事与人物建议要做的事区分开。"
     }
   ],
   "lessons": [
@@ -499,67 +6004,276 @@
       "id": "l1.2",
       "title": "一词多义与古今义对照",
       "status": "draft",
-      "stage": "planned"
+      "stage": "available",
+      "intro": "今天单说“一本书”，常指书籍；古文中的“书”还可指写字或信件。读前后相连的词，别一概读作书籍。",
+      "mainSkills": [
+        "skill.write",
+        "skill.letter"
+      ],
+      "exampleIds": [
+        "p.ex.write",
+        "p.ex.letter"
+      ],
+      "questionIds": [
+        "q.l1.2.1",
+        "q.l1.2.2",
+        "q.l1.2.3",
+        "q.l1.2.4",
+        "q.l1.2.5",
+        "q.l1.2.6",
+        "q.l1.2.7",
+        "q.l1.2.8"
+      ]
     },
     {
       "id": "l1.3",
       "title": "根据上下文判断词义",
       "status": "draft",
-      "stage": "planned"
+      "stage": "available",
+      "intro": "先用动词的对象缩小范围，再用后文的结果验证。",
+      "mainSkills": [
+        "skill.object-clue",
+        "skill.result-clue"
+      ],
+      "exampleIds": [
+        "p.ex.object-clue",
+        "p.ex.result-clue"
+      ],
+      "questionIds": [
+        "q.l1.3.1",
+        "q.l1.3.2",
+        "q.l1.3.3",
+        "q.l1.3.4",
+        "q.l1.3.5",
+        "q.l1.3.6",
+        "q.l1.3.7",
+        "q.l1.3.8"
+      ]
     },
     {
       "id": "l1.4",
       "title": "之的常见用法",
       "status": "draft",
-      "stage": "planned"
+      "stage": "available",
+      "intro": "比较动词后的“之”和两个名词之间的“之”。",
+      "mainSkills": [
+        "skill.zhi-object",
+        "skill.zhi-link"
+      ],
+      "exampleIds": [
+        "p.ex.zhi-object",
+        "p.ex.zhi-link"
+      ],
+      "questionIds": [
+        "q.l1.4.1",
+        "q.l1.4.2",
+        "q.l1.4.3",
+        "q.l1.4.4",
+        "q.l1.4.5",
+        "q.l1.4.6",
+        "q.l1.4.7",
+        "q.l1.4.8"
+      ]
     },
     {
       "id": "l1.5",
       "title": "其的常见用法",
       "status": "draft",
-      "stage": "planned"
+      "stage": "available",
+      "intro": "在所属与部分两种关系里，根据前文找准“其”的指向。",
+      "mainSkills": [
+        "skill.qi-possessive",
+        "skill.qi-part"
+      ],
+      "exampleIds": [
+        "p.ex.qi-possessive",
+        "p.ex.qi-part"
+      ],
+      "questionIds": [
+        "q.l1.5.1",
+        "q.l1.5.2",
+        "q.l1.5.3",
+        "q.l1.5.4",
+        "q.l1.5.5",
+        "q.l1.5.6",
+        "q.l1.5.7",
+        "q.l1.5.8"
+      ]
     },
     {
       "id": "l1.6",
       "title": "而的常见用法",
       "status": "draft",
-      "stage": "planned"
+      "stage": "available",
+      "intro": "“而”连接两个片段。分清动作的承接和意思的转折。",
+      "mainSkills": [
+        "skill.er-sequence",
+        "skill.er-turn"
+      ],
+      "exampleIds": [
+        "p.ex.er-sequence",
+        "p.ex.er-turn"
+      ],
+      "questionIds": [
+        "q.l1.6.1",
+        "q.l1.6.2",
+        "q.l1.6.3",
+        "q.l1.6.4",
+        "q.l1.6.5",
+        "q.l1.6.6",
+        "q.l1.6.7",
+        "q.l1.6.8"
+      ]
     },
     {
       "id": "l1.7",
       "title": "谓语与动作对象",
       "status": "draft",
-      "stage": "planned"
+      "stage": "available",
+      "intro": "沿着“谁—做什么—涉及谁或什么”的顺序读句子，再补上工具与地点。",
+      "mainSkills": [
+        "skill.action-verb",
+        "skill.direct-object"
+      ],
+      "exampleIds": [
+        "p.ex.action-verb",
+        "p.ex.direct-object"
+      ],
+      "questionIds": [
+        "q.l1.7.1",
+        "q.l1.7.2",
+        "q.l1.7.3",
+        "q.l1.7.4",
+        "q.l1.7.5",
+        "q.l1.7.6",
+        "q.l1.7.7",
+        "q.l1.7.8"
+      ]
     },
     {
       "id": "l1.8",
       "title": "主语省略与指代恢复",
       "status": "draft",
-      "stage": "planned"
+      "stage": "available",
+      "intro": "古文常省去已经说过的人。沿连续动作找同一行事者，遇到一问一答时留意说话人转换。",
+      "mainSkills": [
+        "skill.subject-continuity",
+        "skill.respondent"
+      ],
+      "exampleIds": [
+        "p.ex.subject-continuity",
+        "p.ex.respondent"
+      ],
+      "questionIds": [
+        "q.l1.8.1",
+        "q.l1.8.2",
+        "q.l1.8.3",
+        "q.l1.8.4",
+        "q.l1.8.5",
+        "q.l1.8.6",
+        "q.l1.8.7",
+        "q.l1.8.8"
+      ]
     },
     {
       "id": "l1.9",
       "title": "否定与疑问",
       "status": "draft",
-      "stage": "planned"
+      "stage": "available",
+      "intro": "看清谓语前的“未”限定到什么时间，再看“何”要问哪一件事物。",
+      "mainSkills": [
+        "skill.not-yet",
+        "skill.interrogative-object"
+      ],
+      "exampleIds": [
+        "p.ex.not-yet",
+        "p.ex.interrogative-object"
+      ],
+      "questionIds": [
+        "q.l1.9.1",
+        "q.l1.9.2",
+        "q.l1.9.3",
+        "q.l1.9.4",
+        "q.l1.9.5",
+        "q.l1.9.6",
+        "q.l1.9.7",
+        "q.l1.9.8"
+      ]
     },
     {
       "id": "l1.10",
       "title": "人物与事件顺序",
       "status": "draft",
-      "stage": "planned"
+      "stage": "available",
+      "intro": "在短篇中追踪人物与行动，借时间词重新排列事件。",
+      "mainSkills": [
+        "skill.track-actors",
+        "skill.time-links"
+      ],
+      "exampleIds": [
+        "p.ex.track-actors",
+        "p.ex.time-links"
+      ],
+      "questionIds": [
+        "q.l1.10.1",
+        "q.l1.10.2",
+        "q.l1.10.3",
+        "q.l1.10.4",
+        "q.l1.10.5",
+        "q.l1.10.6",
+        "q.l1.10.7",
+        "q.l1.10.8"
+      ]
     },
     {
       "id": "l1.11",
       "title": "因果与转折",
       "status": "draft",
-      "stage": "planned"
+      "stage": "available",
+      "intro": "从一句行动回看它的缘由，再辨认与预期相反的结果。",
+      "mainSkills": [
+        "skill.causal-link",
+        "skill.contrast-expectation"
+      ],
+      "exampleIds": [
+        "p.ex.causal-link",
+        "p.ex.contrast-expectation"
+      ],
+      "questionIds": [
+        "q.l1.11.1",
+        "q.l1.11.2",
+        "q.l1.11.3",
+        "q.l1.11.4",
+        "q.l1.11.5",
+        "q.l1.11.6",
+        "q.l1.11.7",
+        "q.l1.11.8"
+      ]
     },
     {
       "id": "l1.12",
       "title": "综合短文阅读",
       "status": "draft",
-      "stage": "planned"
+      "stage": "available",
+      "intro": "综合辨认人物、地点、动作和转折，依据原文复述一段行旅故事。",
+      "mainSkills": [
+        "skill.ferry-custom",
+        "skill.mainline"
+      ],
+      "exampleIds": [
+        "p.ex.ferry-custom",
+        "p.ex.mainline"
+      ],
+      "questionIds": [
+        "q.l1.12.1",
+        "q.l1.12.2",
+        "q.l1.12.3",
+        "q.l1.12.4",
+        "q.l1.12.5",
+        "q.l1.12.6",
+        "q.l1.12.7",
+        "q.l1.12.8"
+      ]
     }
   ],
   "units": [
@@ -615,27 +6329,55 @@
   "assessments": [
     {
       "id": "check.1",
-      "stage": "planned",
+      "stage": "available",
       "status": "draft",
-      "questionIds": []
+      "questionIds": [
+        "q.check.1.1",
+        "q.check.1.2",
+        "q.check.1.3",
+        "q.check.1.4",
+        "q.check.1.5",
+        "q.check.1.6"
+      ]
     },
     {
       "id": "check.2",
-      "stage": "planned",
+      "stage": "available",
       "status": "draft",
-      "questionIds": []
+      "questionIds": [
+        "q.check.2.1",
+        "q.check.2.2",
+        "q.check.2.3",
+        "q.check.2.4",
+        "q.check.2.5",
+        "q.check.2.6"
+      ]
     },
     {
       "id": "check.3",
-      "stage": "planned",
+      "stage": "available",
       "status": "draft",
-      "questionIds": []
+      "questionIds": [
+        "q.check.3.1",
+        "q.check.3.2",
+        "q.check.3.3",
+        "q.check.3.4",
+        "q.check.3.5",
+        "q.check.3.6"
+      ]
     },
     {
       "id": "check.4",
-      "stage": "planned",
+      "stage": "available",
       "status": "draft",
-      "questionIds": []
+      "questionIds": [
+        "q.check.4.1",
+        "q.check.4.2",
+        "q.check.4.3",
+        "q.check.4.4",
+        "q.check.4.5",
+        "q.check.4.6"
+      ]
     }
   ]
 }
