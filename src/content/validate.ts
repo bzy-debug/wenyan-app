@@ -78,11 +78,23 @@ export function validateCourse(raw: unknown) {
   for (const card of course.cards) {
     getSkill(card.skillId);
     const linked = card.questionIds.map(getQuestion);
+    const requiredLessons = new Map(
+      Object.entries(card.requiredLessonByQuestion ?? {}),
+    );
+    for (const [qid, lessonId] of requiredLessons) {
+      requireContent(
+        card.questionIds.includes(qid) &&
+          getLesson(lessonId).questionIds.includes(qid),
+        "回读题须属于指定知识卡和课文 " + card.id,
+      );
+    }
+    const baseTexts = linked
+      .filter((q) => !requiredLessons.has(q.id))
+      .map((q) => plainText(getPassage(q.passageId).text));
     requireContent(
       linked.every((q) => q.skillId === card.skillId) &&
-        new Set(linked.map((q) => plainText(getPassage(q.passageId).text)))
-          .size >= 2,
-      "知识卡需关联同一义项的多种语境 " + card.id,
+        new Set(baseTexts).size >= 2,
+      "知识卡需关联同一义项的多种语境，至少两种无需完成回读课 " + card.id,
     );
   }
   for (const lesson of course.lessons) {

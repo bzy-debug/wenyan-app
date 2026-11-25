@@ -12,7 +12,7 @@ const passage = computed(() =>
 </script>
 
 <template>
-  <blockquote class="q-passage" aria-label="原文">
+  <blockquote class="q-passage original-text" aria-label="原文">
     {{ passage.text }}
   </blockquote>
   <Choice

@@ -33,7 +33,7 @@ const annotated = computed(() =>
           >{{ skill.meaning }}
         </h3>
         <RichText :source="skill.detail" />
-        <blockquote>{{ passage.text }}</blockquote>
+        <blockquote class="original-text">{{ passage.text }}</blockquote>
         <small
           ><SourceCredit :passage="passage" /> ·
           <RichText :source="passage.gloss" inline
@@ -43,7 +43,7 @@ const annotated = computed(() =>
     <details v-if="annotated.length" class="lesson-glossary">
       <summary>本课词注</summary>
       <figure v-for="p in annotated" :key="p.id">
-        <blockquote>{{ p.text }}</blockquote>
+        <blockquote class="original-text">{{ p.text }}</blockquote>
         <figcaption><SourceCredit :passage="p" /></figcaption>
         <PassageGlosses :notes="p.glosses" />
       </figure>

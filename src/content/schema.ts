@@ -50,7 +50,11 @@ const span = entity.extend({
   end: z.int().positive(),
   text,
 });
-const card = entity.extend({ skillId: text, questionIds: ids });
+const card = entity.extend({
+  skillId: text,
+  questionIds: ids,
+  requiredLessonByQuestion: z.record(text, text).optional(),
+});
 const question = editorial.safeExtend({
   mode: z.enum(["choice", "span", "order"]),
   skillId: text,

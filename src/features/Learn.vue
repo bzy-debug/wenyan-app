@@ -264,7 +264,7 @@ function onStudyKey(event: KeyboardEvent) {
         <div class="source-caption">
           <SourceCredit :passage="passage" />
         </div>
-        <blockquote v-if="question.mode !== 'span'" class="q-passage">
+        <blockquote v-if="question.mode !== 'span'" class="q-passage original-text">
           {{ passage.text }}
         </blockquote>
         <QuestionInput

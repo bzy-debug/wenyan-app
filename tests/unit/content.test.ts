@@ -11,25 +11,26 @@ it("五级阅读路径完整，每一级的课次与检查齐全，所有练习�
   const levels = ["L1", "L2", "L3", "L4", "L5"];
   expect(course.levels.map((level) => level.id)).toEqual(levels);
   expect(course.completeness).toEqual(
-    levels.map((level) => ({
-      level,
-      units: 4,
+    [4, 12, 9, 6, 6].map((units, index) => ({
+      level: levels[index],
+      units,
       lessonsPerUnit: 3,
       lessonSize: 8,
       checkSize: 6,
-      questions: 120,
+      questions: units * 30,
     })),
   );
-  expect(course.units).toHaveLength(20);
-  expect(course.lessons).toHaveLength(60);
-  expect(course.assessments).toHaveLength(20);
-  expect(course.questions).toHaveLength(600);
+  expect(course.units).toHaveLength(37);
+  expect(course.lessons).toHaveLength(111);
+  expect(course.assessments).toHaveLength(37);
+  expect(course.questions).toHaveLength(1110);
   expect(new Set(course.questions.map((q) => q.mode))).toEqual(
     new Set(["choice", "span", "order"]),
   );
-  for (const [index, unit] of course.units.entries()) {
-    expect(unit.level).toBe(levels[Math.floor(index / 4)]);
-    expect(unit.id).toBe("u." + (index + 1));
+  expect(course.units.map((u) => u.level)).toEqual(
+    course.completeness.flatMap(({ level, units }) => Array(units).fill(level)),
+  );
+  for (const unit of course.units) {
     const lessons = course.lessons.filter((lesson) =>
       unit.lessonIds.includes(lesson.id),
     );

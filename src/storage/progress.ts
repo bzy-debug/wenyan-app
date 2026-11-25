@@ -113,10 +113,15 @@ export async function startRound(
       if (!schedule || schedule.due > localDay())
         throw new Error("这张知识卡尚未到期");
       questionIds = [
-        nextContext(card, schedule.lastQuestionId, (id) => {
-          const question = byId(course.questions, id);
-          return byId(course.passages, question.passageId).text;
-        }),
+        nextContext(
+          card,
+          schedule.lastQuestionId,
+          (id) => {
+            const question = byId(course.questions, id);
+            return byId(course.passages, question.passageId).text;
+          },
+          state.completedIds,
+        ),
       ];
     } else {
       if (!state.mistakes.includes(targetId)) throw new Error("这道题已经订正");

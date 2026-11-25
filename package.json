@@ -10,8 +10,9 @@
     "dev": "vite",
     "typecheck": "vue-tsc --noEmit",
     "validate:content": "tsx scripts/validate-content.ts",
+    "validate:coverage": "tsx scripts/word-index/report.ts --check",
     "test": "vitest run",
-    "check": "npm run typecheck && npm run validate:content && npm test",
+    "check": "npm run typecheck && npm run validate:content && npm run validate:coverage && npm test",
     "build": "npm run typecheck && npm run validate:content && vite build",
     "preview": "vite preview",
     "test:e2e": "playwright test"

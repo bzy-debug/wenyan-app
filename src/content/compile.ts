@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { blocks, fields, fail, required, type Block } from "./markdown";
+import { plainText } from "./passage-text";
 import { validateCompleteness, validateCourse } from "./validate";
 import type { Assessment, Course, Lesson, Passage, ReviewCard } from "./schema";
 import {
@@ -11,7 +12,13 @@ import {
 } from "./markdown-entities";
 export { documentHeader } from "./markdown";
 
-const types = ["等级", "正文", "知识点", "原文", ...Object.keys(modes)];
+export const courseSectionTypes = [
+  "等级",
+  "正文",
+  "知识点",
+  "原文",
+  ...Object.keys(modes),
+];
 const split = (text = "") => (text.trim() ? text.trim().split(/\s+/) : []);
 
 function stage(b: Block, f: Record<string, string>): Lesson["stage"] {
@@ -55,7 +62,11 @@ function compileTarget(
       ? ["正文", "知识点", "原文", ...Object.keys(modes)]
       : ["原文", ...Object.keys(modes)],
   );
-  const tf = fields(b, [...(lesson ? ["简介"] : []), "进度", ...editorialKeys]);
+  const tf = fields(b, [
+    ...(lesson ? ["简介", "回读"] : []),
+    "进度",
+    ...editorialKeys,
+  ]);
   const questions = target.sections
     .filter((s) => Object.hasOwn(modes, s.kind))
     .map((s) => readQuestion(s, passages, course.spans));
@@ -85,6 +96,43 @@ function compileTarget(
   };
   if (entry.stage === "available" && !entry.body)
     fail(b, "可学课文需要 ## 正文");
+  for (const line of tf.回读?.split("\n") ?? []) {
+    const [skillId, exampleId, ...extra] = split(line);
+    if (!skillId || !exampleId || extra.length)
+      fail(b, "回读每行填写已有知识点 ID 和本课例句 ID");
+    const card = course.cards.find((item) => item.skillId === skillId);
+    if (!card) fail(b, "回读只能引用路径中已讲过的知识点：" + skillId);
+    if (entry.mainSkills.includes(skillId)) fail(b, "重复回读：" + skillId);
+    if (!target.sections.some((s) => s.kind === "原文" && s.id === exampleId))
+      fail(b, "回读例句须在本课中定义：" + exampleId);
+    const practice = questions.filter((q) => q.skillId === skillId);
+    const earlierExamples = course.lessons.flatMap((lesson) => {
+      const index = lesson.mainSkills.indexOf(skillId);
+      return index < 0 ? [] : [lesson.exampleIds[index]];
+    });
+    const earlierQuestions = course.questions.filter(
+      (q) => q.skillId === skillId && !questions.includes(q),
+    );
+    const previousTexts = new Set(
+      [...earlierExamples, ...earlierQuestions.map((q) => q.passageId)].map(
+        (id) => plainText(passages.get(id)!.text),
+      ),
+    );
+    if (
+      !practice.some(
+        (q) => !previousTexts.has(plainText(passages.get(q.passageId)!.text)),
+      )
+    )
+      fail(b, "回读须用新语境考查已有义项：" + skillId);
+    entry.mainSkills.push(skillId);
+    entry.exampleIds.push(exampleId);
+    for (const q of practice) {
+      // A question explicitly chosen by the original author stays available.
+      if (card.questionIds.includes(q.id)) continue;
+      card.questionIds.push(q.id);
+      (card.requiredLessonByQuestion ??= Object.create(null))[q.id] = entry.id;
+    }
+  }
   for (const s of target.sections.filter((s) => s.kind === "知识点")) {
     const sf = fields(s, [
       "义项",
@@ -126,7 +174,7 @@ export function compileCourse(sources: Record<string, string>): Course {
   const locations = new Map<string, Block>();
   const passages = new Map<string, Passage>();
   for (const [file, text] of Object.entries(sources)) {
-    const [head, ...sections] = blocks(file, text, types);
+    const [head, ...sections] = blocks(file, text, courseSectionTypes);
     if (!["课程", "单元", "课文", "检查"].includes(head.kind))
       fail(head, "文档类型应为课程、单元、课文或检查");
     for (const b of [head, ...sections]) {

@@ -56,8 +56,15 @@ export function nextContext(
   card: ReviewCard,
   previous: string,
   passageText: (questionId: string) => string,
+  completedLessons: readonly string[] = [],
 ): string {
-  const ids = card.questionIds;
+  const requiredLessons = new Map(
+    Object.entries(card.requiredLessonByQuestion ?? {}),
+  );
+  const ids = card.questionIds.filter((id) => {
+    const lessonId = requiredLessons.get(id);
+    return lessonId === undefined || completedLessons.includes(lessonId);
+  });
   const previousIndex = ids.indexOf(previous);
   const priorText = plainText(passageText(previous));
   for (let offset = 1; offset <= ids.length; offset++) {

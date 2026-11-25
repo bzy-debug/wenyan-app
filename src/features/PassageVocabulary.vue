@@ -44,7 +44,7 @@ const matching = computed(() => {
       <ChevronDown :size="17" aria-hidden="true" />
     </summary>
     <figure>
-      <blockquote>{{ entry.passage.text }}</blockquote>
+      <blockquote class="original-text">{{ entry.passage.text }}</blockquote>
       <figcaption><SourceCredit :passage="entry.passage" /></figcaption>
     </figure>
     <div class="links">

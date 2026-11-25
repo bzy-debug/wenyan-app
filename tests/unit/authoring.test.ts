@@ -157,3 +157,62 @@ it("检查使用独立于本单元示范和正课练习的新文段", () => {
     "单元检查须使用新语境",
   );
 });
+
+const returnLesson = [
+  "# 课文：一周后的气温 {#return}",
+  "简介：读另一处测温站的记录。",
+  "回读：increase mountain",
+  "## 正文",
+  "村里已放晴，看看山上今天比昨天冷暖如何。",
+  "## 原文：教学例句 {#mountain}",
+  "> 站点甲：昨日 2 ℃，今日 3 ℃。",
+  "译文：气温上升一摄氏度。",
+  "## 单选：山上今天比昨天怎样？ {#mountain-change}",
+  "考点：increase",
+  "语境：mountain",
+  "- [ ] 更冷",
+  "  理由：3 比 2 大。",
+  "- [x] 更暖",
+  "提示：看看今日的记录。",
+  "解析：从 2 到 3，气温上升。",
+].join("\n");
+const withReturn = {
+  ...example,
+  "unit.md": example["unit.md"].replace("课序：rise", "课序：rise return"),
+  "return.md": returnLesson,
+};
+it("隔课用新例句回读一个旧义项，保留同一张复习卡", () => {
+  const c = compileCourse(withReturn);
+  expect(c.lessons[1]).toMatchObject({
+    mainSkills: ["increase"],
+    exampleIds: ["mountain"],
+  });
+  expect(c.cards).toEqual([
+    {
+      id: "card.increase",
+      skillId: "increase",
+      questionIds: ["warmer", "later", "mountain-change"],
+      requiredLessonByQuestion: { "mountain-change": "return" },
+    },
+  ]);
+});
+it.each([
+  ["未教", returnLesson.replace("回读：increase", "回读：unknown"), "已讲过"],
+  [
+    "借用外课例句",
+    returnLesson.replace("increase mountain", "increase afternoon"),
+    "本课中定义",
+  ],
+  [
+    "只改标点",
+    returnLesson.replace(
+      "站点甲：昨日 2 ℃，今日 3 ℃。",
+      "昨晨 5 ℃！今晨 8 ℃。",
+    ),
+    "新语境",
+  ],
+])("回读拒绝%s", (_, body, message) => {
+  expect(() => compileCourse({ ...withReturn, "return.md": body })).toThrow(
+    message,
+  );
+});

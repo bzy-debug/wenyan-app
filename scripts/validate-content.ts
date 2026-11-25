@@ -2,8 +2,7 @@ import { compileReadings } from "../src/content/compileReadings";
 import { validateUnseenTexts } from "../src/content/validate";
 import { resolve } from "node:path";
 import { readCourse, readSources } from "../src/content/node";
-import { compileCourse } from "../src/content/compile";
-import { blocks, fields, required } from "../src/content/markdown";
+import { checkUnit } from "./check-unit";
 import { compilePilot, pilotPassages } from "../src/content/compilePilot";
 
 const root = resolve("content/v1/course");
@@ -18,27 +17,9 @@ if (
 }
 
 if (folder) {
-  // Authors can validate a unit even while other chapters are being written.
-  // Use the production compiler and the same unit size contract as this book.
-  const source = readSources(resolve(root, folder));
-  const [unit] = blocks(folder + "/unit.md", source["unit.md"] ?? "", []);
-  if (unit.kind !== "单元") throw new Error(folder + "/unit.md：需要单元文档");
-  const meta = fields(unit, ["等级", "简介", "课序", "检查"]);
-  const level = required(unit, meta, "等级");
-  const preview = compileCourse({
-    ...source,
-    "course.md": [
-      "# 课程：单元独立校验 {#validation}",
-      "简介：" + unit.title,
-      "单元：" + unit.id,
-      "完整性：" + level + " 1 3 8 6 30",
-      "## 等级：" + level + " {#" + level + "}",
-      "目标：校验本单元。",
-    ].join("\n"),
-  });
-  const glossary = preview.passages.flatMap((p) => p.glosses);
+  const report = checkUnit(readSources(root), folder);
   console.log(
-    `${folder} · ${unit.title}：${preview.lessons.length} 节课、${preview.assessments.length} 次检查、${preview.questions.length} 道练习、${glossary.length} 条随文词注通过校验。`,
+    `${folder} · ${report.title}：${report.lessons} 节课、1 次检查、${report.questions} 道练习、${report.notes} 条随文词注通过校验。`,
   );
 } else {
   const course = readCourse(root);

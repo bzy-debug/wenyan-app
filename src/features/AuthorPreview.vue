@@ -188,7 +188,7 @@ function download() {
           <template v-if="question && passage">
             <h2><RichText :source="question.prompt" inline /></h2>
             <small><SourceCredit :passage="passage" /></small>
-            <blockquote v-if="question.mode !== 'span'">
+            <blockquote v-if="question.mode !== 'span'" class="original-text">
               {{ passage.text }}
             </blockquote>
             <QuestionInput

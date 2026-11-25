@@ -1,6 +1,6 @@
 # 文言拾阶
 
-面向中文母语成人的文言文阅读练习。五个等级共 20 个单元、60 节课、20 次单元检查，合计 600 道题。打开一课先读句子、动手作答，需要时可以翻看讲解。所有关卡都能自由进入。
+面向中文母语成人的文言文阅读练习。五个等级共 37 个单元、111 节课、37 次单元检查，合计 1110 道题。打开一课先读句子、动手作答，需要时可以翻看讲解。所有关卡都能自由进入。
 
 [完整课程路径](https://bzy-debug.github.io/wenyan-app/#/path) · [整篇自读](https://bzy-debug.github.io/wenyan-app/#/read) · [课程范围与教学依据](docs/CURRICULUM.md)
 
@@ -28,7 +28,7 @@ npx playwright install --with-deps chromium
 npm run test:e2e
 ```
 
-`check` 执行 vue-tsc、课程完整性检查和 Vitest。Playwright 在桌面和手机视口测试 dist 生产包，涵盖自由选课、跨课续学、求助、作答反馈、刷新和断网场景。云环境已有 Chromium 时可设置 `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium`。运行 `npm run preview` 后访问输出地址的 `/wenyan-app/` 路径。
+`check` 执行 vue-tsc、课程完整性检查、教材词条证据核对和 Vitest。Playwright 在桌面和手机视口测试 dist 生产包，涵盖自由选课、跨课续学、求助、作答反馈、刷新和断网场景。云环境已有 Chromium 时可设置 `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium`。运行 `npm run preview` 后访问输出地址的 `/wenyan-app/` 路径。
 
 ## 学习记录和离线使用
 
@@ -64,4 +64,5 @@ npm run test:e2e
 | 等级衔接与整篇自读 | [从 L1 接着读 L2](docs/screenshots/desktop-levels.webp) | [手机读《梦溪笔谈》](docs/screenshots/mobile-reader.webp) |
 | 按字查课文中的意思 | [桌面查词](docs/screenshots/desktop-words.webp) | [手机查词](docs/screenshots/mobile-words.webp) |
 | 从原文找证据 | [桌面练习](docs/screenshots/desktop-span.webp) | [手机练习](docs/screenshots/mobile-span.webp) |
+| 诗词对读与查字 | [桌面读《江雪》](docs/screenshots/desktop-verse.webp) | [手机按部首查“楫”](docs/screenshots/mobile-lookup.webp) |
 | 完成一课 | [桌面结算](docs/screenshots/desktop-result.webp) | [手机结算](docs/screenshots/mobile-result.webp) |

@@ -131,7 +131,7 @@ const learned = computed(
         <div v-if="expanded.has(skill.id)" class="definition">
           <RichText :source="skill.detail" />
           <figure v-for="example in examples" :key="example.id">
-            <blockquote>{{ example.text }}</blockquote>
+            <blockquote class="original-text">{{ example.text }}</blockquote>
             <figcaption>
               <SourceCredit :passage="example" />
               · <RichText :source="example.gloss" inline />
