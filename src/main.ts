@@ -1,6 +1,10 @@
 import { createApp, type Component } from "vue";
 import { createRouter, createWebHashHistory } from "vue-router";
 import App from "./app/App.vue";
+import {
+  openReadyRelease,
+  registerOfflineCourse,
+} from "./services/courseUpdate";
 import PageUnavailable from "./app/PageUnavailable.vue";
 import { learningPath } from "./features/learningPath";
 import "./app/styles.css";
@@ -100,4 +104,14 @@ router.afterEach((to) => {
   document.title = to.meta.title + " · 文言拾阶";
 });
 const app = createApp(App).use(router);
-void router.isReady().then(() => app.mount("#app"));
+void router.isReady().then(async () => {
+  const path = router.currentRoute.value.path;
+  if (
+    ["/path", "/today", "/settings"].includes(path) &&
+    (await openReadyRelease())
+  )
+    return;
+  app.mount("#app");
+  if (document.readyState === "complete") void registerOfflineCourse();
+  else window.addEventListener("load", registerOfflineCourse, { once: true });
+});
