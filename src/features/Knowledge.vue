@@ -3,12 +3,14 @@ import { computed, ref } from "vue";
 import { RouterLink } from "vue-router";
 import { BookOpen, ChevronDown, Search } from "@lucide/vue";
 import { byId, course } from "../content";
+import PassageVocabulary from "./PassageVocabulary.vue";
 import SourceCredit from "../components/SourceCredit.vue";
 import RichText from "../components/RichText.vue";
 import { progress } from "../storage/progress";
 import { intervals } from "../domain/review";
 import { learningPath } from "./learningPath";
 
+const view = ref<"skills" | "words">("skills");
 const query = ref("");
 const area = ref("");
 const onlyLearned = ref(false);
@@ -58,79 +60,97 @@ const learned = computed(
   <main class="shell knowledge">
     <h1>知识库</h1>
     <p class="lead">想不起一个字怎么用？搜一搜，点开就能看例句。</p>
+    <div class="views" role="group" aria-label="知识库内容">
+      <button :aria-pressed="view === 'skills'" @click="view = 'skills'">
+        知识点
+      </button>
+      <button :aria-pressed="view === 'words'" @click="view = 'words'">
+        随文词义
+      </button>
+    </div>
     <div class="filters">
       <label class="search">
         <Search :size="18" aria-hidden="true" />
         <input
           v-model="query"
           type="search"
-          aria-label="搜索知识点"
-          placeholder="搜索字、义项或用法"
+          :aria-label="view === 'words' ? '搜索随文词义' : '搜索知识点'"
+          :placeholder="
+            view === 'words' ? '搜索字词、释义或出处' : '搜索字、义项或用法'
+          "
         />
       </label>
-      <select v-model="area" aria-label="知识领域">
+      <select v-if="view === 'skills'" v-model="area" aria-label="知识领域">
         <option value="">全部领域</option>
         <option v-for="item in areas" :key="item">{{ item }}</option>
       </select>
-      <label class="toggle"
+      <label v-if="view === 'skills'" class="toggle"
         ><input v-model="onlyLearned" type="checkbox" />只看已学（{{
           learned
         }}）</label
       >
     </div>
-    <p class="count" role="status">共 {{ visible.length }} 个知识点</p>
-    <div v-if="!visible.length" class="empty">
-      <p>没有查到，试试换个字或清除筛选。</p>
-      <button
-        class="secondary"
-        @click="
-          query = '';
-          area = '';
-          onlyLearned = false;
-        "
-      >
-        清除筛选
-      </button>
-    </div>
-    <details
-      v-for="{ skill, schedule, examples, lessons } in visible"
-      :key="skill.id"
-      class="entry"
-      :open="expanded.has(skill.id)"
-      @toggle="toggleDefinition(skill.id, $event)"
-    >
-      <summary>
-        <div>
-          <small>{{ skill.area }}</small>
-          <h2>{{ skill.word }} · {{ skill.meaning }}</h2>
-        </div>
-        <span class="mastery" :class="{ learned: schedule }">{{
-          schedule ? intervals[schedule.level] + " 天复习一次" : "还没学"
-        }}</span>
-        <ChevronDown :size="17" class="chevron" aria-hidden="true" />
-      </summary>
-      <div v-if="expanded.has(skill.id)" class="definition">
-        <RichText :source="skill.detail" />
-        <figure v-for="example in examples" :key="example.id">
-          <blockquote>{{ example.text }}</blockquote>
-          <figcaption>
-            <SourceCredit :passage="example" />
-            · <RichText :source="example.gloss" inline />
-          </figcaption>
-        </figure>
-        <p v-if="schedule">
-          下次复习 <time :datetime="schedule.due">{{ schedule.due }}</time>
-        </p>
-        <div v-if="lessons.length" class="sources">
-          <RouterLink
-            v-for="lesson in lessons"
-            :key="lesson.id"
-            :to="'/learn/' + lesson.id"
-            ><BookOpen :size="14" />练一练 · {{ lesson.title }}</RouterLink
-          >
-        </div>
+    <PassageVocabulary
+      v-if="view === 'words'"
+      :course="course"
+      :query="query"
+      @clear="query = ''"
+    />
+    <template v-else>
+      <p class="count" role="status">共 {{ visible.length }} 个知识点</p>
+      <div v-if="!visible.length" class="empty">
+        <p>没有查到，试试换个字或清除筛选。</p>
+        <button
+          class="secondary"
+          @click="
+            query = '';
+            area = '';
+            onlyLearned = false;
+          "
+        >
+          清除筛选
+        </button>
       </div>
-    </details>
+      <details
+        v-for="{ skill, schedule, examples, lessons } in visible"
+        :key="skill.id"
+        class="entry"
+        :open="expanded.has(skill.id)"
+        @toggle="toggleDefinition(skill.id, $event)"
+      >
+        <summary>
+          <div>
+            <small>{{ skill.area }}</small>
+            <h2>{{ skill.word }} · {{ skill.meaning }}</h2>
+          </div>
+          <span class="mastery" :class="{ learned: schedule }">{{
+            schedule ? intervals[schedule.level] + " 天复习一次" : "还没学"
+          }}</span>
+          <ChevronDown :size="17" class="chevron" aria-hidden="true" />
+        </summary>
+        <div v-if="expanded.has(skill.id)" class="definition">
+          <RichText :source="skill.detail" />
+          <figure v-for="example in examples" :key="example.id">
+            <blockquote>{{ example.text }}</blockquote>
+            <figcaption>
+              <SourceCredit :passage="example" />
+              · <RichText :source="example.gloss" inline />
+            </figcaption>
+          </figure>
+          <p v-if="schedule">
+            下次复习 <time :datetime="schedule.due">{{ schedule.due }}</time>
+          </p>
+          <div v-if="lessons.length" class="sources">
+            <RouterLink
+              v-for="lesson in lessons"
+              :key="lesson.id"
+              :to="'/learn/' + lesson.id"
+              ><BookOpen :size="14" />练一练 · {{ lesson.title }}</RouterLink
+            >
+          </div>
+        </div>
+      </details>
+    </template>
   </main>
 </template>
 
@@ -138,6 +158,23 @@ const learned = computed(
 .knowledge {
   max-width: 940px;
   padding-bottom: 48px;
+}
+.views {
+  display: flex;
+  gap: 8px;
+  margin: 14px 0;
+}
+.views button {
+  min-height: 44px;
+  padding: 6px 15px;
+  border-radius: 7px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+.views button[aria-pressed="true"] {
+  color: var(--accent-strong);
+  background: #eeecff;
+  border-color: currentColor;
 }
 .filters,
 .toggle,

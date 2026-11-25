@@ -134,3 +134,30 @@ export function required(
   if (!values[key]?.trim()) fail(block, "缺少字段「" + key + "」");
   return values[key];
 }
+
+/** Each annotation explains a word as it occurs in this particular passage. */
+export function readGlosses(block: Block, passage: string, notes?: string) {
+  if (notes === undefined) return [];
+  const terms = new Set<string>();
+  return notes
+    .trim()
+    .split("\n")
+    .map((line) => {
+      const colon = line.indexOf("：");
+      const term = line.slice(0, colon).trim();
+      const meaning = line.slice(colon + 1).trim();
+      if (
+        colon < 1 ||
+        !term ||
+        !meaning ||
+        !passage.includes(term) ||
+        terms.has(term)
+      )
+        fail(
+          block,
+          "词注须写作「原文字词：此处释义」，字词须见于本段且不重复：" + line,
+        );
+      terms.add(term);
+      return { term, meaning };
+    });
+}

@@ -8,41 +8,62 @@ import {
 it("五级阅读路径完整，每一级的课次与检查齐全，所有练习归属明确", () => {
   const course = validateCourse(raw);
   expect(() => validateCompleteness(course)).not.toThrow();
-  const path = [
-    ["L1", [1, 2, 3, 4]],
-    ["L2", [5, 6, 7, 8, 29, 30, 21, 22, 23, 24, 33, 34, 35]],
-    ["L3", [9, 10, 11, 12, 31, 32, 25, 26, 27, 28, 36, 37, 38]],
-    ["L4", [13, 14, 15, 16]],
-    ["L5", [17, 18, 19, 20]],
-  ] as const;
-  const levelIds = path.map(([id]) => id);
-  expect(course.levels.map((l) => l.id)).toEqual(levelIds);
-  expect(course.completeness.map((p) => p.level)).toEqual(levelIds);
-  const steps = path.flatMap(([level, ids]) =>
-    ids.map((n) => [level, "u." + n]),
+  const levels = ["L1", "L2", "L3", "L4", "L5"];
+  expect(course.levels.map((level) => level.id)).toEqual(levels);
+  expect(course.completeness).toEqual(
+    levels.map((level) => ({
+      level,
+      units: 4,
+      lessonsPerUnit: 3,
+      lessonSize: 8,
+      checkSize: 6,
+      questions: 120,
+    })),
   );
-  expect(course.units.map((u) => [u.level, u.id])).toEqual(steps);
-  expect(course.lessons).toHaveLength(114);
-  expect(course.assessments).toHaveLength(38);
-  expect(course.questions).toHaveLength(1140);
-  for (const [id, units] of path) {
-    const members = course.units.filter((u) => u.level === id);
-    const lessonIds = new Set(members.flatMap((u) => u.lessonIds));
-    const checkIds = new Set(members.map((u) => u.assessmentId));
-    const lessons = course.lessons.filter((l) => lessonIds.has(l.id));
-    const checks = course.assessments.filter((c) => checkIds.has(c.id));
+  expect(course.units).toHaveLength(20);
+  expect(course.lessons).toHaveLength(60);
+  expect(course.assessments).toHaveLength(20);
+  expect(course.questions).toHaveLength(600);
+  expect(new Set(course.questions.map((q) => q.mode))).toEqual(
+    new Set(["choice", "span", "order"]),
+  );
+  for (const [index, unit] of course.units.entries()) {
+    expect(unit.level).toBe(levels[Math.floor(index / 4)]);
+    expect(unit.id).toBe("u." + (index + 1));
+    const lessons = course.lessons.filter((lesson) =>
+      unit.lessonIds.includes(lesson.id),
+    );
+    const check = course.assessments.find(
+      (check) => check.id === unit.assessmentId,
+    )!;
+    const ids = new Set(
+      [...lessons, check].flatMap((target) => target.questionIds),
+    );
+    expect(ids.size).toBe(30);
+    const exercises = course.questions.filter((q) => ids.has(q.id));
+    const texts = new Set(exercises.map((q) => q.passageId));
     expect(
-      lessons.every(
-        (l) => l.stage === "available" && l.questionIds.length === 8,
-      ),
+      course.passages.some((p) => texts.has(p.id) && p.glosses.length > 0),
+      unit.title + " 可在原句中查词",
     ).toBe(true);
-    expect(
-      checks.every(
-        (c) => c.stage === "available" && c.questionIds.length === 6,
+    const cited = course.passages.filter(
+      (p) => texts.has(p.id) && p.kind === "source",
+    );
+    expect(cited.length, unit.title + " 应让读者练读古籍原文").toBeGreaterThan(
+      0,
+    );
+    for (const p of cited) expect(p.source?.url, p.id).toMatch(/^https:\/\//);
+    for (const lesson of lessons)
+      expect(lesson.body.trim(), lesson.title).not.toBe("");
+    const choiceQuestions = exercises.filter((q) => q.mode === "choice");
+    const positions = new Set(
+      choiceQuestions.map((q) =>
+        q.options.findIndex((o) => o.id === q.answer[0]),
       ),
-    ).toBe(true);
-    const questions = [...lessons, ...checks].flatMap((t) => t.questionIds);
-    expect(new Set(questions).size).toBe(units.length * 30);
+    );
+    expect(positions.size, unit.title + " 的单选正确答案位置").toBeGreaterThan(
+      1,
+    );
   }
 });
 it.each([
@@ -81,7 +102,9 @@ it.each([
   [
     "越界选段",
     (c: Course) => {
-      c.spans[0].end = 900;
+      const span = c.spans[0];
+      span.end =
+        c.passages.find((p) => p.id === span.passageId)!.text.length + 1;
     },
   ],
   [
@@ -93,7 +116,7 @@ it.each([
   [
     "排序缺项",
     (c: Course) => {
-      c.questions[5].answer.pop();
+      c.questions.find((q) => q.mode === "order")!.answer.pop();
     },
   ],
   [
@@ -125,7 +148,7 @@ it.each([
   [
     "古籍无出处",
     (c: Course) => {
-      c.passages[0].kind = "source";
+      delete c.passages.find((p) => p.kind === "source")!.source;
     },
   ],
 ] as const)("拒绝%s", (_, mutate) => {

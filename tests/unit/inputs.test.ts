@@ -21,6 +21,7 @@ function show(mode: Question["mode"], locked = false) {
         '<QuestionInput :course="course" :question="question" :selected="selected" :locked="locked" @select="selected = $event" />',
     }),
   );
+  return question;
 }
 
 it.each(["choice", "span"] as const)("%s 支持键盘选择和替换", async (mode) => {
@@ -37,15 +38,16 @@ it.each(["choice", "span"] as const)("%s 支持键盘选择和替换", async (mo
 
 it("排序可以撤回，不允许重复添加动作", async () => {
   const user = userEvent.setup();
-  show("order");
-  const hear = screen.getByRole("button", {
-    name: "听见鼓声",
+  const question = show("order");
+  const action = question.options[0].label!;
+  const selected = screen.getByRole("button", {
+    name: action,
   }) as HTMLButtonElement;
-  await user.click(hear);
-  expect(hear.disabled).toBe(true);
-  expect(screen.getAllByRole("listitem")[0].textContent).toContain("听见鼓声");
+  await user.click(selected);
+  expect(selected.disabled).toBe(true);
+  expect(screen.getAllByRole("listitem")[0].textContent).toContain(action);
   await user.click(screen.getByRole("button", { name: "撤回上一步" }));
-  expect(hear.disabled).toBe(false);
+  expect(selected.disabled).toBe(false);
   expect(screen.getAllByRole("listitem")[0].textContent).toContain("待选");
 });
 

@@ -5,11 +5,11 @@ import { roundResult, type RoundKind } from "../../src/domain/progression";
 const questions = course.questions;
 describe("首答与判定", () => {
   it("重试保留初次结果及提示标记", () => {
-    const first = recordFirst({}, "q.1", { correct: false, hinted: true });
-    expect(recordFirst(first, "q.1", { correct: true, hinted: false })).toBe(
+    const first = recordFirst({}, "first", { correct: false, hinted: true });
+    expect(recordFirst(first, "first", { correct: true, hinted: false })).toBe(
       first,
     );
-    expect(first["q.1"]).toEqual({ correct: false, hinted: true });
+    expect(first.first).toEqual({ correct: false, hinted: true });
   });
   it("排序必须完整并完全匹配原序", () => {
     const q = questions.find((q) => q.mode === "order")!;
@@ -41,7 +41,6 @@ describe("首答与判定", () => {
         selected: [],
         feedback: false,
         hinted: true,
-        xp: 0,
       };
       const withAnswers = (correct: boolean, hinted: boolean) =>
         roundResult({

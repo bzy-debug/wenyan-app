@@ -1,9 +1,8 @@
-import { fields, fail, required, type Block } from "./markdown";
+import { fields, fail, readGlosses, required, type Block } from "./markdown";
 import type { Course, Passage, Question, Skill } from "./schema";
 export const modes = {
   单选: "choice",
   找原文证据: "span",
-  选段: "span", // 已下载的早期课稿仍可在作者工作台打开。
   排序: "order",
 } as const;
 export const editorialKeys = ["状态", "审核人"];
@@ -35,6 +34,7 @@ export function readPassage(b: Block): Passage {
   if (!text.join("").trim()) fail(b, "请用 Markdown 引用 > 写出原文");
   const f = fields({ ...b, lines }, [
     "译文",
+    "词注",
     "原文权利",
     "译注权利",
     "出处",
@@ -43,6 +43,7 @@ export function readPassage(b: Block): Passage {
     "底本链接",
     ...editorialKeys,
   ]);
+  const passage = text.join("\n");
   const source =
     b.title === "古籍引文"
       ? {
@@ -58,7 +59,8 @@ export function readPassage(b: Block): Passage {
     id: b.id,
     kind: source ? "source" : "teaching",
     source,
-    text: text.join("\n"),
+    text: passage,
+    glosses: readGlosses(b, passage, f.词注),
     gloss: required(b, f, "译文"),
     textRights: source
       ? required(b, f, "原文权利")

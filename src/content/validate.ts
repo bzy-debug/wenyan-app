@@ -1,3 +1,4 @@
+import { plainText } from "./passage-text";
 import { courseSchema, type Course } from "./schema";
 
 function requireContent(ok: unknown, message: string): asserts ok {
@@ -79,7 +80,8 @@ export function validateCourse(raw: unknown) {
     const linked = card.questionIds.map(getQuestion);
     requireContent(
       linked.every((q) => q.skillId === card.skillId) &&
-        new Set(linked.map((q) => getPassage(q.passageId).text)).size >= 2,
+        new Set(linked.map((q) => plainText(getPassage(q.passageId).text)))
+          .size >= 2,
       "知识卡需关联同一义项的多种语境 " + card.id,
     );
   }
@@ -142,6 +144,12 @@ export function validateCourse(raw: unknown) {
     ...course.questions.map((q) => q.passageId),
   ]);
   for (const passage of course.passages) {
+    const terms = passage.glosses.map((note) => note.term);
+    requireContent(
+      terms.length === new Set(terms).size &&
+        terms.every((term) => passage.text.includes(term)),
+      "词注须与本段原文对应且不重复 " + passage.id,
+    );
     requireContent(
       usedPassages.has(passage.id),
       "原文未被任何例句或练习引用 " + passage.id,
@@ -247,10 +255,6 @@ export function validateCompleteness(course: Course) {
       "有学习单元的等级缺少完整性声明：" + unit.level,
     );
   }
-}
-
-function plainText(text: string) {
-  return text.normalize("NFKC").replace(/[\p{P}\p{Cf}\s]+/gu, "");
 }
 
 /** Check for a full short text or thirty consecutive shared characters from

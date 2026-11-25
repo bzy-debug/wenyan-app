@@ -36,13 +36,16 @@ if (folder) {
       "目标：校验本单元。",
     ].join("\n"),
   });
+  const glossary = preview.passages.flatMap((p) => p.glosses);
   console.log(
-    `${folder} · ${unit.title}：${preview.lessons.length} 节课、${preview.assessments.length} 次检查、${preview.questions.length} 道练习通过校验。`,
+    `${folder} · ${unit.title}：${preview.lessons.length} 节课、${preview.assessments.length} 次检查、${preview.questions.length} 道练习、${glossary.length} 条随文词注通过校验。`,
   );
 } else {
   const course = readCourse(root);
   const pilot = compilePilot(readSources(resolve("content/v1/pilot")));
   const readers = compileReadings(readSources(resolve("content/v1/readings")));
+  const glossary = course.passages.flatMap((p) => p.glosses);
+  const terms = new Set(glossary.map((entry) => entry.term));
   const independent = readers.map((r) => ({ id: r.id, text: r.passage }));
   validateUnseenTexts(independent, course.passages);
   validateUnseenTexts(pilotPassages(pilot), [
@@ -57,6 +60,6 @@ if (folder) {
       );
   }
   console.log(
-    `${course.title} · ${course.units.length} 个单元、${course.lessons.length} 节课、${course.assessments.length} 次检查、${course.questions.length} 道练习、${pilot.forms.length} 篇独立试读、${readers.length} 篇自读文选。Markdown 编译及校验通过。`,
+    `${course.title} · ${course.units.length} 个单元、${course.lessons.length} 节课、${course.assessments.length} 次检查、${course.questions.length} 道练习、${glossary.length} 条随文词注（${terms.size} 个不同字词）、${pilot.forms.length} 篇独立试读、${readers.length} 篇自读文选。Markdown 编译及校验通过。`,
   );
 }

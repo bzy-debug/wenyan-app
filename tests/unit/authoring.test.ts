@@ -25,6 +25,7 @@ it("用气象课文独立编译新领域、自由课序与隐式知识卡", () =
     },
   ]);
   expect(c.questions[0].answer).toEqual(["warmer.o1"]);
+  expect(c.questions[1].answer).toEqual(["later.o2"]);
   expect(c.assessments[0].questionIds).toEqual(["sequence"]);
   expect(c.questions[2].answer).toEqual(["sequence.o2", "sequence.o1"]);
 });

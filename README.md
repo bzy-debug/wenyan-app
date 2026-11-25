@@ -1,10 +1,10 @@
 # 文言拾阶
 
-面向中文母语成人的文言文阅读练习。L1–L5 教学草稿包含 38 个单元、114 节课、38 次单元自测，共 1140 道练习。可以从任意一课或单元自测开始。点进课程就读句子、动手作答，需要时再打开本课讲解。课程、练习、复习和学习记录都在浏览器内运行。
+面向中文母语成人的文言文阅读练习。五个等级共 20 个单元、60 节课、20 次单元检查，合计 600 道题。打开一课先读句子、动手作答，需要时可以翻看讲解。所有关卡都能自由进入。
 
 [完整课程路径](https://bzy-debug.github.io/wenyan-app/#/path) · [整篇自读](https://bzy-debug.github.io/wenyan-app/#/read) · [课程范围与教学依据](docs/CURRICULUM.md)
 
-课程从单句辨义逐步过渡到通读史传、论说和散文。常用词专题覆盖 160 个字头、168 个义项。知识库共收录 318 个具体知识点，每个知识点都有多语境复习卡。八篇独立自读材料提供按需查词、口头复述和原文证据自校，其中包括明代寓言和清代完整游记。
+从辨清单句中的动作，到跟住长段的论证，最后借辞书独立研读。知识库可检索课内的随文词义并回到原句。十二篇自读文选单列，供读者查词、复述和用原文自校。每个单元所据的教材篇章及改编方法见[教学参考](docs/TEACHING_REFERENCES.md)。
 
 ## 编写与预览课程
 
@@ -34,7 +34,7 @@ npm run test:e2e
 
 打开应用就能沿完整课程路径学习。首页标出下一项推荐练习，也支持在同一条路线中直接跳至任意等级。每节课都能随时进入、离开和续学。在普通课里点「不知道」可以看答案和点拨，按自己的节奏继续。看完一轮题目就算完成，同一种练习的完成经验固定。首次作答情况用于安排下次复习的时间，到期复习会换一个语境。经验值、连续学习记录和进度保存在当前浏览器，设置页支持备份导出与恢复。首次联网打开后，等待应用资源缓存完毕，即可在此设备离线学习。安装入口随浏览器而异。
 
-新版会自动迁移上一版的本地进度，也能导入其 v2 备份。旧格式只保存过关清单与最近一次练习结果，能据此恢复的完成记录会一并带入。
+新编课程使用独立的课程标识。学习记录及备份与对应课程绑定。
 
 ## GitHub Pages 发布
 
@@ -46,6 +46,7 @@ npm run test:e2e
 
 | 路径 | 职责 |
 | --- | --- |
+| references | 编课用的三本教材，与网站构建分开 |
 | content/v1、src/content、scripts | Markdown 课稿、构建期编译、数据契约与校验 |
 | src/domain、src/storage | 判题、复习阶梯、进度规则、IndexedDB 与备份 |
 | src/components/questions、src/features | Vue 答题组件、学习、路径、复习、知识库、设置与试用页面 |
@@ -61,5 +62,6 @@ npm run test:e2e
 | --- | --- | --- |
 | 默认首页 · 完整课程路径 | [桌面首页](docs/screenshots/desktop-home.webp) | [手机首页](docs/screenshots/mobile-home.webp) |
 | 等级衔接与整篇自读 | [从 L1 接着读 L2](docs/screenshots/desktop-levels.webp) | [手机读《梦溪笔谈》](docs/screenshots/mobile-reader.webp) |
+| 按字查课文中的意思 | [桌面查词](docs/screenshots/desktop-words.webp) | [手机查词](docs/screenshots/mobile-words.webp) |
 | 从原文找证据 | [桌面练习](docs/screenshots/desktop-span.webp) | [手机练习](docs/screenshots/mobile-span.webp) |
 | 完成一课 | [桌面结算](docs/screenshots/desktop-result.webp) | [手机结算](docs/screenshots/mobile-result.webp) |

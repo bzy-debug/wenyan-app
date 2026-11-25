@@ -2,8 +2,9 @@ import { test, expect } from "@playwright/test";
 import { buffer } from "node:stream/consumers";
 import { readSources } from "../../src/content/node";
 import { compilePilot } from "../../src/content/compilePilot";
+import { course } from "./course";
 
-const [before] = compilePilot(readSources("content/v1/pilot")).forms;
+const [before, after] = compilePilot(readSources("content/v1/pilot")).forms;
 
 test("从设置进入阅读自测，同意后作答，可保存、导出与删除反馈", async ({
   page,
@@ -14,19 +15,30 @@ test("从设置进入阅读自测，同意后作答，可保存、导出与删�
   await page.getByRole("link", { name: "去做自测" }).click();
   await expect(page).toHaveURL(/#\/pilot$/);
   await expect(page).toHaveTitle("阅读自测 · 文言拾阶");
-  await expect(page.getByRole("heading", { level: 1, name: "阅读自测" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { level: 1, name: "阅读自测" }),
+  ).toBeVisible();
   const start = page.getByRole("button", { name: "开始第一篇" });
-  const origin = page.locator("section").filter({ has: start }).locator("small");
-  await expect(origin).toContainText("自编教学短文");
+  const origin = page
+    .locator("section")
+    .filter({ has: start })
+    .locator("small");
+  const sourceLabel =
+    before.kind === "teaching" ? "自编教学短文" : before.attribution!;
+  await expect(origin).toContainText(sourceLabel);
   const editorialStatus = /草稿|待审[核校]|已审核|已发布/u;
   await expect(origin).not.toContainText(editorialStatus);
   await expect(start).toBeDisabled();
   await expect(page.getByRole("button", { name: "开始第二篇" })).toBeDisabled();
-  await page.getByRole("checkbox", {
-    name: "我同意在本机保存这次自测的答案和自愿填写的反馈。",
-  }).check();
+  await page
+    .getByRole("checkbox", {
+      name: "我同意在本机保存这次自测的答案和自愿填写的反馈。",
+    })
+    .check();
   await start.click();
-  const activeOrigin = page.locator("form small").filter({ hasText: "自编教学短文" });
+  const activeOrigin = page
+    .locator("form small")
+    .filter({ hasText: sourceLabel });
   await expect(activeOrigin).toBeVisible();
   await expect(activeOrigin).not.toContainText(editorialStatus);
   for (const [i, q] of before.questions.entries()) {
@@ -60,7 +72,12 @@ test("从设置进入阅读自测，同意后作答，可保存、导出与删�
   const download = page.waitForEvent("download");
   await page.getByRole("button", { name: "导出答案和反馈" }).click();
   const contents = await buffer(await (await download).createReadStream());
-  expect(JSON.parse(contents.toString("utf8")).submissions).toMatchObject([
+  const record = JSON.parse(contents.toString("utf8"));
+  expect(record).toMatchObject({
+    courseId: course.id,
+    courseVersion: course.version,
+  });
+  expect(record.submissions).toMatchObject([
     {
       formId: before.id,
       material: { id: before.id, version: before.version },
@@ -78,4 +95,36 @@ test("从设置进入阅读自测，同意后作答，可保存、导出与删�
   await page.getByRole("button", { name: "确认删除全部自测记录" }).click();
   await expect(page.getByText("本机自测记录已删除。")).toBeVisible();
   await expect(start).toBeDisabled();
+});
+
+test("学习后篇也可独立进入，断句与感想留空仍可保存阅读答案", async ({
+  page,
+}) => {
+  await page.goto("./#/pilot");
+  await page.getByRole("checkbox").check();
+  await page.getByRole("button", { name: "开始第二篇" }).click();
+  await expect(page.getByRole("heading", { name: after.title })).toBeVisible();
+  for (const [index, question] of after.questions.entries()) {
+    await page
+      .locator("fieldset.question")
+      .nth(index)
+      .getByRole("radio")
+      .nth(question.correct)
+      .check();
+  }
+  await page.getByRole("button", { name: "保存作答与反馈" }).click();
+  await expect(page.getByText("自测记录已保存", { exact: true })).toBeVisible();
+  await page.reload();
+  const section = page
+    .locator(".pilot-section")
+    .filter({ has: page.getByRole("heading", { name: after.title }) });
+  await section.locator("summary").click();
+  for (const question of after.questions) {
+    await expect(
+      section.getByText("你的选择：" + question.options[question.correct], {
+        exact: true,
+      }),
+    ).toBeVisible();
+  }
+  await expect(page.getByRole("button", { name: "开始第一篇" })).toBeVisible();
 });

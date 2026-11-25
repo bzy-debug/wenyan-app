@@ -31,6 +31,9 @@ async function show(page: typeof Home | typeof Path | typeof Result) {
   render(page, { global: { plugins: [router] } });
 }
 
+const firstUnit = course.units[0];
+const [firstId, secondId] = firstUnit.lessonIds;
+
 beforeEach(() => {
   progress.value = emptyProgress();
 });
@@ -38,14 +41,16 @@ afterEach(cleanup);
 
 it("今日学习推荐一项练习，本单元其余课与检查可直接进入", async () => {
   await show(Home);
-  const track = screen.getByRole("list", { name: "古今词义学习顺序" });
+  const track = screen.getByRole("list", {
+    name: firstUnit.title + "学习顺序",
+  });
   expect(within(track).getAllByRole("listitem")).toHaveLength(4);
   const active = track.querySelector('[aria-current="step"]') as HTMLElement;
   expect(
     within(active)
       .getByRole("link", { name: /开始学习/ })
       .getAttribute("href"),
-  ).toBe("/learn/l1.1");
+  ).toBe("/learn/" + firstId);
   expect(within(track).getAllByRole("link")).toHaveLength(4);
   expect(
     screen.getByRole("link", { name: "完整路径" }).getAttribute("href"),
@@ -84,7 +89,6 @@ it("五级同页列出，未完成首课也能访问最后一课和每项检查"
     hinted: false,
     feedback: null,
     attempts: {},
-    xp: 0,
   };
   progress.value = {
     ...emptyProgress(),
@@ -144,7 +148,6 @@ it("复习中途回今日学习能接着本轮学习，课程全部完成后推�
       attempts: {},
       feedback: null,
       hinted: false,
-      xp: 0,
     },
   };
   await show(Home);
@@ -160,13 +163,15 @@ it("复习中途回今日学习能接着本轮学习，课程全部完成后推�
 });
 
 it("完成首课后仍能再练，并推荐第二课", async () => {
-  progress.value = { ...emptyProgress(), completedIds: ["l1.1"] };
+  progress.value = { ...emptyProgress(), completedIds: [firstId] };
   await show(Home);
-  const track = screen.getByRole("list", { name: "古今词义学习顺序" });
+  const track = screen.getByRole("list", {
+    name: firstUnit.title + "学习顺序",
+  });
   const completed = within(track).getByRole("link", { name: /已完成 · 再练/ });
-  expect(completed.getAttribute("href")).toBe("/learn/l1.1");
+  expect(completed.getAttribute("href")).toBe("/learn/" + firstId);
   const next = within(track).getByRole("link", { name: /开始学习/ });
-  expect(next.getAttribute("href")).toBe("/learn/l1.2");
+  expect(next.getAttribute("href")).toBe("/learn/" + secondId);
   expect(next.closest("li")?.getAttribute("aria-current")).toBe("step");
 });
 

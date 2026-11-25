@@ -1,5 +1,7 @@
 import { z } from "zod";
-import { blocks, fail, fields, required } from "./markdown";
+import { blocks, fail, fields, readGlosses, required } from "./markdown";
+
+import { glossSchema } from "./schema";
 
 const text = z.string().trim().min(1);
 const readingSchema = z.object({
@@ -16,7 +18,7 @@ const readingSchema = z.object({
   status: z.enum(["草稿", "已审核", "已发布"]),
   reviewer: text.optional(),
   passage: text,
-  glosses: z.array(z.object({ term: text, meaning: text })).min(1),
+  glosses: z.array(glossSchema).min(1),
   prompts: z
     .array(z.object({ title: text, response: text, evidence: text }))
     .min(1),
@@ -48,18 +50,7 @@ export function compileReadings(files: Record<string, string>): Reading[] {
       const bodies = parts.filter((p) => p.kind === "正文");
       if (bodies.length !== 1) fail(head, "每篇自读须有一段正文");
       const passage = bodies[0].lines.join("\n").trim();
-      const terms = new Set<string>();
-      const glosses = required(head, meta, "词注")
-        .split("\n")
-        .map((line) => {
-          const at = line.indexOf("：");
-          const term = line.slice(0, at).trim();
-          const meaning = line.slice(at + 1).trim();
-          if (at < 1 || !meaning || !passage.includes(term) || terms.has(term))
-            fail(head, "词注须与正文对应且不重复：" + line);
-          terms.add(term);
-          return { term, meaning };
-        });
+      const glosses = readGlosses(head, passage, required(head, meta, "词注"));
       const prompts = parts
         .filter((p) => p.kind === "自校")
         .map((p) => {

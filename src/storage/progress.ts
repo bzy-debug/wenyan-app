@@ -10,7 +10,7 @@ import {
   reviewCard,
 } from "../domain/review";
 import { grade, recordFirst } from "../domain/session";
-import { backupText, migratePrevious, validateBackup } from "./backup";
+import { backupText, validateBackup } from "./backup";
 import { emptyProgress, type Progress } from "./model";
 
 export { validateBackup };
@@ -41,16 +41,7 @@ function publish(row: Row | undefined) {
   updateDay();
 }
 export async function initProgress(): Promise<void> {
-  const stored = await db.transaction("rw", records, async () => {
-    const row = await records.get(key);
-    if (row && "passedIds" in row.state) {
-      row.state = migratePrevious(row.state);
-      row.revision++;
-      await records.put(row);
-    }
-    return row;
-  });
-  publish(stored);
+  publish(await records.get(key));
   observer ??= liveQuery(() => records.get(key)).subscribe(publish);
   if (!dateTimer && typeof window !== "undefined") {
     dateTimer = setInterval(updateDay, 30_000);
@@ -122,7 +113,10 @@ export async function startRound(
       if (!schedule || schedule.due > localDay())
         throw new Error("这张知识卡尚未到期");
       questionIds = [
-        nextContext(card, schedule.lastQuestionId, course.questions),
+        nextContext(card, schedule.lastQuestionId, (id) => {
+          const question = byId(course.questions, id);
+          return byId(course.passages, question.passageId).text;
+        }),
       ];
     } else {
       if (!state.mistakes.includes(targetId)) throw new Error("这道题已经订正");
@@ -138,7 +132,6 @@ export async function startRound(
       selected: [],
       feedback: null,
       hinted: false,
-      xp: 0,
     };
   });
 }
@@ -268,7 +261,7 @@ export async function advance(roundId: string, qid: string) {
     if (r.kind === "lesson" || r.kind === "assessment")
       addUnique(state.completedIds, r.targetId);
     addUnique(state.days, localDay());
-    state.xp += result.xp - r.xp;
+    state.xp += result.xp;
     state.lastResult = result;
     state.active = null;
   });

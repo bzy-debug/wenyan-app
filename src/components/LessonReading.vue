@@ -3,6 +3,8 @@ import { computed } from "vue";
 import RichText from "./RichText.vue";
 import type { Course, Lesson } from "../content/schema";
 import SourceCredit from "./SourceCredit.vue";
+import PassageGlosses from "./PassageGlosses.vue";
+import { passagesOf } from "../content/passage-uses";
 
 const props = defineProps<{ course: Course; lesson: Lesson }>();
 const examples = computed(() =>
@@ -12,6 +14,9 @@ const examples = computed(() =>
       (p) => p.id === props.lesson.exampleIds[i],
     )!,
   })),
+);
+const annotated = computed(() =>
+  passagesOf(props.course, props.lesson).filter((p) => p.glosses.length),
 );
 </script>
 <template>
@@ -24,7 +29,8 @@ const examples = computed(() =>
     >
       <article v-for="{ skill, passage } in examples" :key="skill.id">
         <h3>
-          <span>{{ skill.word }}</span>{{ skill.meaning }}
+          <span>{{ skill.word }}</span
+          >{{ skill.meaning }}
         </h3>
         <RichText :source="skill.detail" />
         <blockquote>{{ passage.text }}</blockquote>
@@ -34,6 +40,14 @@ const examples = computed(() =>
         /></small>
       </article>
     </section>
+    <details v-if="annotated.length" class="lesson-glossary">
+      <summary>本课词注</summary>
+      <figure v-for="p in annotated" :key="p.id">
+        <blockquote>{{ p.text }}</blockquote>
+        <figcaption><SourceCredit :passage="p" /></figcaption>
+        <PassageGlosses :notes="p.glosses" />
+      </figure>
+    </details>
   </div>
 </template>
 <style scoped>
@@ -71,5 +85,25 @@ const examples = computed(() =>
 .usage-examples small {
   color: #666a80;
   line-height: 1.7;
+}
+.lesson-glossary {
+  margin-top: 16px;
+}
+.lesson-glossary summary {
+  cursor: pointer;
+  font-weight: 650;
+  padding: 10px 0;
+}
+.lesson-glossary figure {
+  margin: 0;
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+}
+.lesson-glossary blockquote {
+  margin: 0;
+}
+.lesson-glossary figcaption {
+  margin-top: 4px;
+  font-size: 0.85rem;
 }
 </style>

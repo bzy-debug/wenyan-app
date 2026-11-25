@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { course } from "../../src/content";
+import { byId, course } from "../../src/content";
 import {
   currentStreak,
   learnCard,
@@ -47,12 +47,25 @@ describe("知识卡调度", () => {
   });
   it("更换阅读语境，候选表末尾循环", () => {
     const card = course.cards[0];
+    const passage = (qid: string) =>
+      byId(course.passages, byId(course.questions, qid).passageId).text;
     for (const id of card.questionIds) {
-      const next = nextContext(card, id, course.questions);
-      const passage = (qid: string) =>
-        course.questions.find((q) => q.id === qid)?.passageId;
-      expect(passage(next)).not.toBe(passage(id));
+      expect(passage(nextContext(card, id, passage))).not.toBe(passage(id));
     }
+  });
+  it("同文异标点的两个摘录仍算同一语境", () => {
+    const card = { id: "hear", skillId: "hear", questionIds: ["a", "b", "c"] };
+    const texts: Record<string, string> = {
+      a: "闻声而起。",
+      b: "闻声，而起！",
+      c: "夜深，闻犬吠于门外。",
+    };
+    const passage = (id: string) => texts[id];
+    expect(nextContext(card, "a", passage)).toBe("c");
+    expect(nextContext(card, "c", passage)).toBe("a");
+    expect(() =>
+      nextContext({ ...card, questionIds: ["a", "b"] }, "a", passage),
+    ).toThrow("不同语境");
   });
   it("连续记录跨年，昨天的记录到今天结束前仍有效", () => {
     const days = ["2024-12-29", "2024-12-31", "2025-01-01"];

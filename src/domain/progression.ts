@@ -11,8 +11,6 @@ export interface Round {
   hinted: boolean;
   feedback: boolean | null;
   attempts: Attempts;
-  /** XP already credited by an older app before this round finished. */
-  xp: number;
 }
 export interface Result {
   roundId: string;
@@ -22,7 +20,7 @@ export interface Result {
   xp: number;
 }
 
-const reward: Record<RoundKind, number> = {
+export const completionXp: Readonly<Record<RoundKind, number>> = {
   lesson: 20,
   assessment: 30,
   review: 5,
@@ -41,6 +39,6 @@ export function roundResult(round: Round): Result {
     kind: round.kind,
     targetId: round.targetId,
     total: round.questionIds.length,
-    xp: reward[round.kind],
+    xp: completionXp[round.kind],
   };
 }

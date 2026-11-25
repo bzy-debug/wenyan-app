@@ -1,10 +1,20 @@
 import { test, expect } from "@playwright/test";
-import { readCourse } from "../../src/content/node";
+import {
+  course,
+  byId,
+  firstLesson,
+  firstQuestion as first,
+  incorrectAnswer,
+  optionText,
+  submit,
+} from "./course";
 
-const course = readCourse();
-const first = course.questions.find((q) => q.id === "q.1")!;
-const firstWrong = first.options.find((o) => o.label === "缓步前行")!;
-const firstAnswer = first.options.find((o) => o.id === first.answer[0])!;
+const wrong = incorrectAnswer(first);
+const mistake =
+  first.mode === "order"
+    ? "第 1 步是“" + optionText(first, first.answer[0]) + "”"
+    : byId(first.options, wrong[0]).reason;
+const href = "#/learn/" + firstLesson.id;
 
 test("首页默认显示完整路线，能从今日学习返回并直接开始首课", async ({
   page,
@@ -22,7 +32,7 @@ test("首页默认显示完整路线，能从今日学习返回并直接开始�
   const editorialNote = page.getByText("课程试读稿，待审校", { exact: true });
   await expect(editorialNote).toHaveCount(0);
   const start = page.getByRole("link", { name: /^开始学习 · / });
-  await expect(start).toHaveAttribute("href", /#\/learn\/l1\.1$/);
+  await expect(start).toHaveAttribute("href", href);
   await page.evaluate(() => document.fonts.ready);
   await save("home");
   await page.getByRole("link", { name: "今日学习", exact: true }).click();
@@ -32,7 +42,7 @@ test("首页默认显示完整路线，能从今日学习返回并直接开始�
   const current = page.locator('.track [aria-current="step"]');
   await expect(current.getByRole("link", { name: /开始学习/ })).toHaveAttribute(
     "href",
-    /#\/learn\/l1\.1$/,
+    href,
   );
   await page.getByRole("link", { name: "完整路径" }).click();
   await expect(page.locator("section.unit-track")).toHaveCount(
@@ -44,28 +54,40 @@ test("首页默认显示完整路线，能从今日学习返回并直接开始�
   await expect(
     page.getByRole("heading", { name: first.prompt, exact: true }),
   ).toBeVisible();
-  await expect(page.locator(".source-caption")).toHaveText("教学例句");
+  const passage = byId(course.passages, first.passageId);
+  await expect(page.locator(".source-caption")).toContainText(
+    passage.source?.work ?? "教学例句",
+  );
+  await save("lesson");
   await expect(page.getByRole("button", { name: /关键提示/ })).toHaveCount(0);
   await guide.click();
-  await expect(page.getByRole("dialog").getByText("见犬而走。", { exact: true })).toBeVisible();
-  await page.getByRole("button", { name: "回到练习" }).click();
-  const submit = page.getByRole("button", { name: "提交答案" });
-  await expect(submit).toBeDisabled();
-  await page.getByRole("button", { name: /缓步前行/ }).click();
-  await submit.click();
+  const example = byId(course.passages, firstLesson.exampleIds[0]);
   await expect(
-    page.getByText(firstWrong.reason, { exact: true }),
+    page
+      .getByRole("dialog")
+      .locator(".usage-examples article")
+      .first()
+      .locator("blockquote"),
+  ).toHaveText(example.text);
+  await page.getByRole("button", { name: "回到练习" }).click();
+  await expect(page.getByRole("button", { name: "提交答案" })).toBeDisabled();
+  await submit(page, first, wrong);
+  await expect(
+    page
+      .locator(".answer-feedback")
+      .getByText(mistake, { exact: first.mode !== "order" }),
   ).toBeVisible();
   await expect(page.locator(".correct-answer")).toContainText(
-    firstAnswer.label!,
+    first.answer.map((id) => optionText(first, id)).join(" → "),
   );
   await page.reload();
   await expect(
-    page.getByText(firstWrong.reason, { exact: true }),
+    page
+      .locator(".answer-feedback")
+      .getByText(mistake, { exact: first.mode !== "order" }),
   ).toBeVisible();
   await page.getByRole("button", { name: "再试一次" }).click();
-  await page.getByRole("button", { name: /奔跑/ }).click();
-  await submit.click();
+  await submit(page, first);
   const details = page
     .locator("details")
     .filter({ has: page.locator("summary", { hasText: "看解析" }) });
@@ -78,38 +100,33 @@ test("首页默认显示完整路线，能从今日学习返回并直接开始�
   await expect(details.getByText("句意", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "下一题" }).click();
   await page.getByRole("button", { name: "不知道", exact: true }).click();
-  await expect(page.getByRole("heading", { name: "看看这题怎么读" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "看看这题怎么读" }),
+  ).toBeVisible();
   await page.getByRole("button", { name: "下一题" }).click();
-  const answers = [
-    [/^钟声$/],
-    [/快跑进去/],
-    [/^村$/],
-    [/^听见鼓声$/, /^拿起兵器$/, /^走出军营$/],
-    [/^走$/],
-    [/老师已离开，学生仍在堂中/],
-  ];
-  for (const [i, items] of answers.entries()) {
-    if (i === 0) {
-      await expect(
-        page.getByText("童子闻钟声，乃入堂。", { exact: true }),
-      ).toBeVisible();
+  const remaining = firstLesson.questionIds.slice(2);
+  for (const [i, id] of remaining.entries()) {
+    const question = byId(course.questions, id);
+    if (question.mode === "span") {
+      const passage = byId(course.passages, question.passageId);
+      await expect(page.locator(".q-passage")).toHaveText(passage.text);
       const evidence = page.getByRole("group", { name: "原文证据选项" });
-      await expect(
-        evidence.getByRole("button", { name: /^钟声$/ }),
-      ).toBeEnabled();
-      await expect(evidence.getByRole("button")).toHaveCount(3);
+      await expect(evidence.getByRole("button")).toHaveCount(
+        question.options.length,
+      );
       await save("span");
     }
-    for (const name of items) await page.getByRole("button", { name }).click();
-    await submit.click();
+    await submit(page, question);
     await expect(page.getByRole("heading", { name: "答对了" })).toBeVisible();
     await page
       .getByRole("button", {
-        name: i === answers.length - 1 ? "完成练习" : "下一题",
+        name: i === remaining.length - 1 ? "完成练习" : "下一题",
       })
       .click();
   }
-  await expect(page.getByRole("heading", { name: "这节课学完了" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "这节课学完了" }),
+  ).toBeVisible();
   await expect(page.getByText("+20 XP", { exact: true })).toBeVisible();
   await save("result");
   expect(
@@ -118,7 +135,7 @@ test("首页默认显示完整路线，能从今日学习返回并直接开始�
     ),
   ).toBe(true);
   await page.getByRole("link", { name: "查看课程路径" }).click();
-  await expect(page.locator('#level-L1 a[href$="#/learn/l1.1"]')).toContainText(
+  await expect(page.locator('#level-L1 a[href$="' + href + '"]')).toContainText(
     "已完成",
   );
 });

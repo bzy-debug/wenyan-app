@@ -4,6 +4,7 @@ import { ArrowLeft, ChevronDown } from "@lucide/vue";
 import { RouterLink } from "vue-router";
 import { downloadText } from "../services/download";
 import RichText from "../components/RichText.vue";
+import { course } from "../content";
 import { pilot, type PilotForm } from "../content/pilot";
 import {
   readPilotRecords,
@@ -52,10 +53,7 @@ const findRecord = (form: PilotForm) =>
 const forms = computed(() =>
   pilot.forms.map((current) => {
     const record = findRecord(current);
-    // Legacy records only contain option indexes. Resolve them against their original revision.
     const form = record?.material ?? current;
-    const hasMaterial =
-      !record || Boolean(record.material) || record.version === current.version;
     const explanations = form.questions.map((question) => {
       const answer = record?.answers.find((a) => a.questionId === question.id);
       return {
@@ -63,7 +61,7 @@ const forms = computed(() =>
         selection: answer ? question.options[answer.selected] : "",
       };
     });
-    return { form, record, explanations, hasMaterial };
+    return { form, record, explanations };
   }),
 );
 async function load() {
@@ -142,6 +140,8 @@ async function download() {
   const payload = {
     kind: "wenyan-reading-pilot",
     version: pilot.version,
+    courseId: course.id,
+    courseVersion: course.version,
     submissions: records.value,
   };
   try {
@@ -174,7 +174,7 @@ async function download() {
         </label>
       </div>
       <section
-        v-for="{ form, record, explanations, hasMaterial } in forms"
+        v-for="{ form, record, explanations } in forms"
         :key="form.id"
         class="pilot-section"
       >
@@ -185,7 +185,7 @@ async function download() {
         <h2>{{ form.title }}</h2>
         <template v-if="record">
           <p>自测记录已保存</p>
-          <details v-if="hasMaterial">
+          <details>
             <summary>
               查看作答与解析 <ChevronDown :size="16" aria-hidden="true" />
             </summary>
@@ -224,7 +224,6 @@ async function download() {
             <p>参考大意：{{ form.extension.interpretation }}</p>
             <p v-if="record.feedback">你的反馈：{{ record.feedback }}</p>
           </details>
-          <p v-else>这份记录对应旧版材料。仍可导出当时的答案和反馈。</p>
         </template>
         <button
           v-else

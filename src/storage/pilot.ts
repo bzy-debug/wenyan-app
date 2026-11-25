@@ -1,10 +1,11 @@
 import Dexie, { type Table } from "dexie";
+import { course } from "../content";
 import { scoreReading, type PilotForm } from "../content/pilot";
 
 export interface PilotRecord {
   formId: string;
   version: number;
-  material?: PilotForm;
+  material: PilotForm;
   consentVersion: 1;
   completedAt: string;
   answers: ReturnType<typeof scoreReading>;
@@ -17,7 +18,7 @@ export interface PilotRecord {
 class PilotDatabase extends Dexie {
   submissions!: Table<PilotRecord, string>;
   constructor() {
-    super("wenyan-reading-pilot");
+    super("wenyan-reading-pilot:" + course.id);
     this.version(1).stores({ submissions: "&formId" });
   }
 }

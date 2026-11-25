@@ -67,33 +67,56 @@ test("L5 深链定位后可直接学该级课程，整篇自读可查词、自�
   await page.goto("./#/path?level=L5");
   await expect(page.locator("#title-L5")).toBeInViewport();
   const question = await startFirstLesson(page, "L5");
-  const source = course.passages.find((p) => p.id === question.passageId)!.source!;
+  const passage = course.passages.find((p) => p.id === question.passageId)!;
+  const source = passage.source;
   const credit = page.locator(".source-caption");
-  await expect(credit).toHaveText(source.work);
-  await expect(credit.getByRole("link", { name: source.work })).toHaveAttribute(
-    "href", source.url!,
-  );
+  if (source?.url) {
+    await expect(
+      credit.getByRole("link", { name: source.work }),
+    ).toHaveAttribute("href", source.url);
+  } else {
+    await expect(credit).toContainText(source?.work ?? "教学例句");
+  }
   await page.goBack();
   await expect(page).toHaveURL(/level=L5$/);
   await page.getByRole("link", { name: "整篇自读" }).click();
-  const gorge = compileReadings(readSources("content/v1/readings")).find(
-    (reading) => reading.id === "gorge",
-  )!;
-  const gloss = gorge.glosses.find((entry) => entry.term === "践跻")!.meaning;
-  await page.locator('a[href$="#/read/gorge"]').click();
-  await expect(page.getByRole("heading", { name: gorge.title })).toBeVisible();
-  await expect(page.getByText(gloss, { exact: true })).toBeHidden();
-  await page.getByText("查词", { exact: true }).click();
-  await expect(page.getByText(gloss, { exact: true })).toBeVisible();
-  const prompt = page.locator(".retell details").nth(1);
-  await expect(prompt.locator("blockquote")).toBeHidden();
-  await prompt.locator("summary").click();
-  await expect(prompt.locator("blockquote")).toHaveText(gorge.prompts[1].evidence);
-  await expect(page.getByRole("link", { name: "核对底本" })).toHaveAttribute(
-    "href",
-    gorge.source,
-  );
-  await expect(page.locator("article footer").getByText(gorge.edition, { exact: true })).toBeVisible();
+  const readings = compileReadings(readSources("content/v1/readings"));
+  const links = page.locator(".reading-list a");
+  await expect(links).toHaveCount(readings.length);
+  for (const reading of readings) {
+    const entry = page.locator('a[href$="#/read/' + reading.id + '"]');
+    await entry.click();
+    await expect(
+      page.getByRole("heading", { name: reading.title }),
+    ).toBeVisible();
+    const glosses = page.locator(".lookup");
+    await expect(glosses.locator("dd").first()).toBeHidden();
+    await glosses.locator("summary").click();
+    await expect(glosses.locator("dd").first()).toHaveText(
+      reading.glosses[0].meaning,
+    );
+    const prompt = page.locator(".retell details").first();
+    await expect(prompt.locator("blockquote")).toBeHidden();
+    await prompt.locator("summary").click();
+    await expect(prompt.locator("blockquote")).toHaveText(
+      reading.prompts[0].evidence,
+    );
+    await expect(page.getByRole("link", { name: "核对底本" })).toHaveAttribute(
+      "href",
+      reading.source,
+    );
+    await expect(
+      page
+        .locator("article footer")
+        .getByText(reading.edition, { exact: true }),
+    ).toBeVisible();
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    ).toBe(true);
+    await page.getByRole("link", { name: "自读篇目" }).click();
+  }
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= innerWidth,

@@ -21,11 +21,14 @@ const skill = editorial.safeExtend({
   detail: text,
   area: text,
 });
+export const glossSchema = z.object({ term: text, meaning: text });
+export type WordGloss = z.infer<typeof glossSchema>;
 const passage = editorial
   .safeExtend({
     kind: z.enum(["teaching", "source"]),
     text,
     gloss: text,
+    glosses: z.array(glossSchema).default([]),
     textRights: text,
     glossRights: text,
     source: z

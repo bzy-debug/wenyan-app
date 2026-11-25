@@ -1,5 +1,11 @@
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
-import { cleanup, fireEvent, render, screen, within } from "@testing-library/vue";
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  within,
+} from "@testing-library/vue";
 import userEvent from "@testing-library/user-event";
 import { createMemoryHistory, createRouter } from "vue-router";
 import { course } from "../../src/content";
@@ -81,7 +87,6 @@ it("从未完成课程进入订正时直接切换，由存储层暂存课程", a
       hinted: false,
       feedback: null,
       attempts: {},
-      xp: 0,
     },
     mistakes: [q.id],
   };
@@ -106,7 +111,6 @@ it("到期卡提交后切换页面，仍可从暂存入口恢复原语境", asyn
         hinted: false,
         feedback: true,
         attempts: { [q.id]: { correct: true, hinted: false } },
-        xp: 0,
       },
     ],
   };
@@ -127,10 +131,21 @@ it("知识库可按进度及搜索词筛选，展开后可读取释义", async (
   await userEvent.click(screen.getByRole("checkbox", { name: /只看已学/ }));
   expect(screen.getByRole("status").textContent).toContain("1");
   await userEvent.click(screen.getByText(skill.word + " · " + skill.meaning));
-  const definition = (await screen.findByText(skill.detail)).closest("details")!;
+  const definition = (await screen.findByText(skill.detail)).closest(
+    "details",
+  )!;
   expect(definition.open).toBe(true);
   const entry = within(definition);
-  expect(entry.getByText("教学例句", { exact: true })).toBeTruthy();
+  const lesson = course.lessons.find((l) => l.mainSkills.includes(skill.id))!;
+  const example = course.passages.find(
+    (p) => p.id === lesson.exampleIds[lesson.mainSkills.indexOf(skill.id)],
+  )!;
+  expect(
+    entry.getByText(example.text, { selector: "blockquote" }),
+  ).toBeTruthy();
+  expect(definition.querySelector("figcaption")?.textContent).toContain(
+    example.source?.work ?? "教学例句",
+  );
   expect(entry.getByText(/下次复习/)).toBeTruthy();
   expect(entry.queryByText(/^(?:待审核|已审核|已发布|草稿)$/)).toBeNull();
   await userEvent.type(screen.getByRole("searchbox"), "完全无法匹配的词");

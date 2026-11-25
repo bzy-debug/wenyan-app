@@ -1,4 +1,5 @@
-import type { Question, ReviewCard } from "../content/schema";
+import { plainText } from "../content/passage-text";
+import type { ReviewCard } from "../content/schema";
 
 export const intervals = [1, 3, 7, 14, 30, 60] as const;
 export interface CardState {
@@ -54,15 +55,14 @@ export function reviewCard(
 export function nextContext(
   card: ReviewCard,
   previous: string,
-  questions: Question[],
+  passageText: (questionId: string) => string,
 ): string {
   const ids = card.questionIds;
   const previousIndex = ids.indexOf(previous);
-  const priorPassage = questions.find((q) => q.id === previous)?.passageId;
+  const priorText = plainText(passageText(previous));
   for (let offset = 1; offset <= ids.length; offset++) {
     const id = ids[(previousIndex + offset) % ids.length];
-    if (questions.find((q) => q.id === id)?.passageId !== priorPassage)
-      return id;
+    if (plainText(passageText(id)) !== priorText) return id;
   }
   throw new Error("知识卡缺少不同语境：" + card.id);
 }

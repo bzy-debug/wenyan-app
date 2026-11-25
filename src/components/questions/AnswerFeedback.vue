@@ -4,6 +4,7 @@ import { Check, Lightbulb } from "@lucide/vue";
 import { byId, optionText } from "../../content";
 import type { Course, Question } from "../../content/schema";
 import RichText from "../RichText.vue";
+import PassageGlosses from "../PassageGlosses.vue";
 
 const props = defineProps<{
   course: Course;
@@ -59,6 +60,7 @@ const cue = computed(() => {
       <p class="translation">
         <b>句意</b> <RichText :source="passage.gloss" inline />
       </p>
+      <PassageGlosses :notes="passage.glosses" />
     </details>
   </section>
 </template>

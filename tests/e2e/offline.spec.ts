@@ -1,7 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { readCourse } from "../../src/content/node";
-
-const first = readCourse().questions.find((q) => q.id === "q.1")!;
+import { firstQuestion as first } from "./course";
 
 test("子路径的生产包可安装，离线刷新后可开始学习", async ({
   page,

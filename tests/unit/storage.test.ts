@@ -2,6 +2,7 @@ import "fake-indexeddb/auto";
 import Dexie from "dexie";
 import { beforeEach, expect, it, vi } from "vitest";
 import { byId, course } from "../../src/content";
+import type { Question } from "../../src/content/schema";
 import { learnCard, localDay, shiftDay } from "../../src/domain/review";
 import { backupText } from "../../src/storage/backup";
 import { emptyProgress } from "../../src/storage/model";
@@ -22,8 +23,14 @@ import {
 } from "../../src/storage/progress";
 
 const lesson = course.lessons[0],
-  card = course.cards[0],
+  initial = byId(course.questions, lesson.questionIds[0]),
+  card = course.cards.find((card) => card.skillId === initial.skillId)!,
   today = () => localDay();
+function wrongAnswer(q: Question) {
+  return q.mode === "order"
+    ? [...q.answer].reverse()
+    : [q.options.find((option) => !q.answer.includes(option.id))!.id];
+}
 beforeEach(async () => {
   await initProgress();
   await importBackup(backupText(emptyProgress()));
@@ -75,8 +82,7 @@ it("先求助不记为错题，重试选错才加入；只揭示订正答案不�
   await revealAnswer(r.id, q.id);
   expect(progress.value.mistakes).toEqual([]);
   await retryAnswer(r.id, q.id);
-  const wrong = q.options.find((o) => !q.answer.includes(o.id))!;
-  await submitAnswer(r.id, q.id, [wrong.id]);
+  await submitAnswer(r.id, q.id, wrongAnswer(q));
   expect(progress.value.mistakes).toEqual([q.id]);
   const correction = await begin("mistake", q.id);
   await revealAnswer(correction.id, q.id);
@@ -87,8 +93,7 @@ it("先求助不记为错题，重试选错才加入；只揭示订正答案不�
 it("错答后重试与备份恢复保留第一次证据，不影响奖励", async () => {
   const r = await begin();
   const q = byId(course.questions, r.questionIds[0]);
-  const wrong = q.options.find((o) => !q.answer.includes(o.id))!;
-  await submitAnswer(r.id, q.id, [wrong.id]);
+  await submitAnswer(r.id, q.id, wrongAnswer(q));
   await retryAnswer(r.id, q.id);
   await submitAnswer(r.id, q.id, q.answer);
   const saved = validateBackup(await exportBackup());
@@ -123,11 +128,7 @@ it("六题单元检查全答错仍完成并领全额经验", async () => {
   const r = await begin("assessment", course.assessments[0].id);
   for (const qid of r.questionIds) {
     const q = byId(course.questions, qid);
-    const wrong =
-      q.mode === "order"
-        ? [...q.answer].reverse()
-        : [q.options.find((o) => !q.answer.includes(o.id))!.id];
-    await submitAnswer(r.id, qid, wrong);
+    await submitAnswer(r.id, qid, wrongAnswer(q));
     await advance(r.id, qid);
   }
   expect(progress.value.completedIds).toEqual([r.targetId]);
@@ -203,59 +204,36 @@ it("无效备份和其他课程备份均不覆盖原进度", async () => {
   const badIndex = JSON.parse(prior);
   badIndex.progress.active.index = 100;
   const wrongCourse = { ...JSON.parse(prior), courseId: "other" };
-  for (const raw of [badIndex, wrongCourse]) {
+  const obsolete = { ...JSON.parse(prior), version: 2 };
+  for (const raw of [badIndex, wrongCourse, obsolete]) {
     await expect(importBackup(JSON.stringify(raw))).rejects.toThrow();
     expect(await exportBackup()).toBe(prior);
   }
 });
-it("老备份与 IndexedDB 记录可迁移，保留旧 XP、已通过关卡及上次完成的课", async () => {
-  const { completedIds: _ids, paused: _paused, ...rest } = emptyProgress();
-  const state = {
-    ...rest,
-    passedIds: [lesson.id],
-    xp: 20,
-    lastResult: {
-      kind: "lesson",
-      roundId: "r1",
-      targetId: course.lessons[1].id,
-      total: 8,
-      earned: 0,
-      passed: false,
-      xp: 0,
-      coverage: course.lessons[1].mainSkills.map((id) => ({
-        id,
-        earned: 0,
-        total: 4,
-      })),
-    },
+
+it("同一浏览器中的另一门课程既不计入当前进度，也不被备份恢复覆盖", async () => {
+  const db = new Dexie("wenyan-learning");
+  db.version(1).stores({ progress: "key" });
+  const row = {
+    key: "another-course:v1",
+    revision: 1,
+    state: { ...emptyProgress(), xp: 75 },
   };
-  const text = JSON.stringify({
-    format: "wenyan-progress",
-    courseVersion: course.version,
-    courseId: course.id,
-    version: 2,
-    progress: state,
-  });
-  expect(validateBackup(text).completedIds).toEqual([
-    lesson.id,
-    course.lessons[1].id,
-  ]);
-  const legacy = new Dexie("wenyan-learning");
-  legacy.version(1).stores({ progress: "key" });
-  const key = course.id + ":v" + course.version;
   try {
-    const row = await legacy.table("progress").get(key);
-    await legacy
-      .table("progress")
-      .put({ key, revision: row.revision + 1, state });
+    await db.table("progress").put(row);
     await initProgress();
-    expect(progress.value.completedIds).toEqual([
-      lesson.id,
-      course.lessons[1].id,
-    ]);
-    expect(progress.value.xp).toBe(20);
-    expect(JSON.parse(await exportBackup()).version).toBe(3);
+    expect(progress.value.xp).toBe(0);
+    const round = await begin();
+    for (const id of round.questionIds) {
+      await submitAnswer(round.id, id, byId(course.questions, id).answer);
+      await advance(round.id, id);
+    }
+    const saved = await exportBackup();
+    await importBackup(backupText(emptyProgress()));
+    await importBackup(saved);
+    expect(validateBackup(await exportBackup()).xp).toBe(20);
+    expect(await db.table("progress").get(row.key)).toEqual(row);
   } finally {
-    legacy.close();
+    db.close();
   }
 });

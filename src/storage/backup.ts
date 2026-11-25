@@ -3,7 +3,7 @@ import { byId, course } from "../content";
 import { grade } from "../domain/session";
 import { intervals, shiftDay } from "../domain/review";
 import type { Progress } from "./model";
-import type { Round } from "../domain/progression";
+import { completionXp, type Round } from "../domain/progression";
 
 const id = z
   .string()
@@ -24,7 +24,6 @@ const round = z.strictObject({
   selected: ids,
   hinted: z.boolean(),
   feedback: z.boolean().nullable(),
-  xp: count,
   attempts: record(
     z.strictObject({ correct: z.boolean(), hinted: z.boolean() }),
   ),
@@ -36,7 +35,7 @@ const result = z.strictObject({
   total: count,
   xp: count,
 });
-const common = {
+const model = z.strictObject({
   mistakes: ids,
   xp: count,
   days: z.array(day).refine((xs) => xs.length === new Set(xs).size),
@@ -48,40 +47,24 @@ const common = {
       lastQuestionId: id,
     }),
   ),
-};
-const model = z.strictObject({
-  ...common,
   completedIds: ids,
   active: round.nullable(),
   paused: z.array(round),
   lastResult: result.nullable(),
 });
-const previous = z.strictObject({
-  ...common,
-  passedIds: ids,
-  active: round.extend({ index: z.int().min(-1) }).nullable(),
-  lastResult: result
-    .extend({
-      passed: z.boolean(),
-      earned: count,
-      coverage: z.array(z.strictObject({ id, earned: count, total: count })),
-    })
-    .nullable(),
-});
-const envelope = {
+const backupVersion = 4;
+const backup = z.strictObject({
   format: z.literal("wenyan-progress"),
   courseId: z.literal(course.id),
   courseVersion: z.literal(course.version),
-};
-const backup = z.discriminatedUnion("version", [
-  z.strictObject({ ...envelope, version: z.literal(2), progress: previous }),
-  z.strictObject({ ...envelope, version: z.literal(3), progress: model }),
-]);
+  version: z.literal(backupVersion),
+  progress: model,
+});
 export function backupText(progress: Progress): string {
   return JSON.stringify(
     {
       format: "wenyan-progress",
-      version: 3,
+      version: backupVersion,
       courseId: course.id,
       courseVersion: course.version,
       progress,
@@ -131,15 +114,6 @@ function checkRound(r: Round, p: Progress) {
     r.selected.every((id) => q.options.some((o) => o.id === id)) &&
       r.selected.length <= q.answer.length,
   );
-  // The only pre-awarded XP is from a v2 in-progress review.
-  check(
-    r.xp === 0 ||
-      (r.kind === "review" &&
-        r.xp === 5 &&
-        p.xp >= 5 &&
-        r.attempts[q.id]?.correct &&
-        !r.attempts[q.id].hinted),
-  );
   if (r.feedback !== null) {
     check(r.attempts[q.id]);
     if (r.selected.length === 0) check(r.feedback === false && r.hinted);
@@ -176,38 +150,13 @@ function checkProgress(p: Progress): Progress {
     const ordinary = r.kind === "lesson" || r.kind === "assessment";
     check(
       r.total === (ordinary ? items.length : 1) &&
+        r.xp === completionXp[r.kind] &&
         r.xp <= p.xp &&
         !rounds.some((round) => round.id === r.roundId),
     );
     if (ordinary) check(p.completedIds.includes(r.targetId));
   }
   return p;
-}
-/** Existing on-device v2 records and v2 portable backups use the same upgrade. */
-export function migratePrevious(input: unknown): Progress {
-  const legacy = previous.parse(input);
-  const { passedIds, active, lastResult, ...rest } = legacy;
-  const completedIds = [...passedIds];
-  if (
-    lastResult &&
-    (lastResult.kind === "lesson" || lastResult.kind === "assessment") &&
-    !completedIds.includes(lastResult.targetId)
-  )
-    completedIds.push(lastResult.targetId);
-  const result = lastResult && {
-    roundId: lastResult.roundId,
-    kind: lastResult.kind,
-    targetId: lastResult.targetId,
-    total: lastResult.total,
-    xp: lastResult.xp,
-  };
-  return checkProgress({
-    ...rest,
-    completedIds,
-    active: active && { ...active, index: Math.max(0, active.index) },
-    paused: [],
-    lastResult: result,
-  });
 }
 export function validateBackup(text: string): Progress {
   if (text.length > 4_000_000) throw new Error("备份超过 4 MB");
@@ -219,7 +168,5 @@ export function validateBackup(text: string): Progress {
   }
   const parsed = backup.safeParse(raw);
   if (!parsed.success) throw new Error("备份格式、日期或版本无效");
-  return parsed.data.version === 2
-    ? migratePrevious(parsed.data.progress)
-    : checkProgress(parsed.data.progress);
+  return checkProgress(parsed.data.progress);
 }
