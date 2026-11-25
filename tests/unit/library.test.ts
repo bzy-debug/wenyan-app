@@ -57,12 +57,12 @@ it("今日学习推荐一项练习，本单元其余课与检查可直接进入"
   ).toBe("/path");
 });
 
-it("课程路径默认从 L1 开始，推荐入口可直接作答，五个路标均可定位", async () => {
+it("课程路径默认从 L1 开始，推荐入口可直接作答，各阶段路标均可定位", async () => {
   await show(Path);
   const levels = within(
     screen.getByRole("navigation", { name: "跳到学习等级" }),
   );
-  const ids = ["L1", "L2", "L3", "L4", "L5"];
+  const ids = course.levels.map((level) => level.id);
   expect(levels.getAllByRole("link")).toHaveLength(ids.length);
   for (const id of ids) {
     const link = levels.getByRole("link", { name: new RegExp("^" + id) });
@@ -76,7 +76,7 @@ it("课程路径默认从 L1 开始，推荐入口可直接作答，五个路标
   ).toBe("/learn/" + first.id);
 });
 
-it("五级同页列出，未完成首课也能访问最后一课和每项检查", async () => {
+it("各阶段同页列出，未完成首课也能访问最后一课和每项检查", async () => {
   const first = course.lessons[0];
   const last = course.lessons.at(-1)!;
   const round: Round = {
@@ -101,7 +101,7 @@ it("五级同页列出，未完成首课也能访问最后一课和每项检查"
     },
   };
   await show(Path);
-  const sections = screen.getAllByRole("region", { name: /^L[1-5]/ });
+  const sections = screen.getAllByRole("region", { name: /^L\d+/ });
   expect(sections.map((section) => section.id)).toEqual(
     course.levels.map((level) => "level-" + level.id),
   );

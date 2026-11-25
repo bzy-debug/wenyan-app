@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { studyScope } from "../../scripts/word-index/study-scope";
 import {
   coverage,
   type Alignment,
@@ -127,5 +128,110 @@ describe("教材词目覆盖", () => {
     expect(
       inspect({ ...citation, questionId: "q4", secondary: true })[0].verified,
     ).toHaveLength(1);
+  });
+});
+
+describe("逐义教学范围", () => {
+  const first = context("a", "客适齐。", 0);
+  const second = { ...context("b", "舟人适楚。", 0), location: first.location };
+  const later = context("late", "适有客至。", 2);
+  const course = {
+    questions: [
+      ...card.questions,
+      { id: "later", passageId: "late", skillId: "lookup" },
+    ],
+    passages: [first, second, later].map((p) => ({
+      ...p,
+      glosses: [{ term: "适", meaning: "宜于此处。" }],
+    })),
+    lessons: [{ id: first.location, questionIds: ["q1", "q2"] }],
+  };
+  const rows = coverage(
+    card,
+    [first, second, later],
+    [entry, { ...entry, number: "999" }],
+    [sense],
+    [],
+  );
+  const lookup = [
+    ["193", "三", "恰巧", "late", "适有客至", "later", "检查接下来发生的事。"],
+  ];
+
+  const tables = {
+    sections: [
+      ["193", "适", "一"],
+      ["193", "适", "二"],
+      ["193", "适", "三"],
+      ["999", "适", "全条"],
+    ],
+    lookup,
+    glosses: [] as string[][],
+  };
+  it("每个原书分项单独决定熟读、查读或遇到再查，同形词头仍分编号", () => {
+    const [header, core, assisted, deferred, homograph] = studyScope(
+      rows,
+      course,
+      tables,
+    );
+    expect(header).toContain("初学独立题");
+    expect(core.slice(3, 9)).toEqual([
+      "应熟读",
+      "一 · 前往",
+      first.location,
+      "q1 q2",
+      "—",
+      "—",
+    ]);
+    expect(assisted.slice(3, 9)).toEqual([
+      "查读已考",
+      "三 · 恰巧",
+      "—",
+      "—",
+      "—",
+      "later",
+    ]);
+    expect(deferred.slice(2, 5)).toEqual(["适", "遇到再查", "二"]);
+    expect(homograph.slice(1, 5)).toEqual(["999", "适", "遇到再查", "全条"]);
+    expect(studyScope(rows, course, tables, "999")).toEqual([
+      header,
+      homograph,
+    ]);
+  });
+
+  it("查读证据必须能在该题原文中找到，且同号不能重记同一题", () => {
+    expect(() =>
+      studyScope(rows, course, { ...tables, lookup: [...lookup, ...lookup] }),
+    ).toThrow("查读");
+    const misplaced = [
+      ["193", "三", "恰巧", "a", "客适齐", "later", "试填句中"],
+    ];
+    expect(() =>
+      studyScope(rows, course, { ...tables, lookup: misplaced }),
+    ).toThrow("查读");
+    const unknown = [
+      ["193", "十", "恰巧", "late", "适有客至", "later", "核对后句"],
+    ];
+    expect(() =>
+      studyScope(rows, course, { ...tables, lookup: unknown }),
+    ).toThrow("原书小项");
+  });
+  it("有引文和对应词注的随文查读仍无查读题号", () => {
+    const glosses = [["999", "全条", "恰巧", "late", "适", "适有客至"]];
+    const [, row] = studyScope(rows, course, { ...tables, glosses }, "999");
+    expect(row.slice(3, 9)).toEqual([
+      "随文查读",
+      "全条 · 恰巧",
+      "—",
+      "—",
+      "—",
+      "—",
+    ]);
+    const withoutGloss = {
+      ...course,
+      passages: course.passages.map((p) => ({ ...p, glosses: [] })),
+    };
+    expect(() =>
+      studyScope(rows, withoutGloss, { ...tables, glosses }),
+    ).toThrow("词注");
   });
 });

@@ -237,3 +237,104 @@ it("同一浏览器中的另一门课程既不计入当前进度，也不被备�
     db.close();
   }
 });
+
+it("题目下架后从本课首题继续，保留其余会话、复习计划和经验", async () => {
+  const old = "q.story.l3.1.2";
+  const target = byId(course.lessons, "l3.1");
+  const affectedCard = course.cards.find(
+    (entry) => entry.skillId === "skill.story.l3.1.1",
+  )!;
+  const check = byId(course.assessments, "check.17");
+  const other = await begin();
+  await selectAnswer(other.id, initial.id, initial.answer);
+  const testRound = await begin("assessment", check.id);
+  const practice = await begin("lesson", target.id);
+  const priorDay = shiftDay(today(), -1);
+  const db = new Dexie("wenyan-learning");
+  db.version(1).stores({ progress: "key" });
+  try {
+    const records = db.table("progress");
+    const row = await records.get(`${course.id}:v${course.version}`);
+    const historical = validateBackup(await exportBackup());
+    historical.active!.questionIds[1] = old;
+    historical.active!.index = 1;
+    historical.active!.attempts = {
+      [practice.questionIds[0]]: { correct: true, hinted: false },
+    };
+    historical.paused.find((r) => r.id === testRound.id)!.questionIds[5] =
+      "q.check.17.6";
+    historical.paused.push({
+      ...practice,
+      id: "old-mistake",
+      kind: "mistake",
+      targetId: old,
+      questionIds: [old],
+    });
+    historical.cards[affectedCard.id] = learnCard(priorDay, old);
+    historical.paused.push({
+      ...practice,
+      id: "old-review",
+      kind: "review",
+      targetId: affectedCard.id,
+      questionIds: [old],
+    });
+    historical.mistakes = [old, initial.id];
+    historical.xp = 25;
+    historical.days = [priorDay];
+    historical.completedIds = [lesson.id];
+    historical.lastResult = {
+      kind: "mistake",
+      roundId: "older-result",
+      targetId: old,
+      total: 1,
+      xp: 5,
+    };
+    await records.put({
+      ...row,
+      revision: row.revision + 1,
+      state: historical,
+    });
+    await initProgress();
+
+    const restored = validateBackup(await exportBackup());
+    expect(restored).toMatchObject({
+      mistakes: [initial.id],
+      xp: 25,
+      days: [priorDay],
+      completedIds: [lesson.id],
+      lastResult: null,
+      active: {
+        kind: "lesson",
+        targetId: target.id,
+        questionIds: target.questionIds,
+        index: 0,
+        attempts: {},
+      },
+    });
+    expect(restored.active!.id).not.toBe(practice.id);
+    expect(restored.paused).toHaveLength(2);
+    expect(restored.paused[0]).toMatchObject({
+      id: other.id,
+      selected: initial.answer,
+    });
+    expect(restored.paused[1]).toMatchObject({
+      targetId: check.id,
+      questionIds: check.questionIds,
+    });
+    expect(restored.cards[affectedCard.id]).toEqual({
+      ...learnCard(priorDay, old),
+      lastQuestionId: "",
+    });
+    await expect(
+      submitAnswer(practice.id, practice.questionIds[0]),
+    ).rejects.toThrow("已更新");
+    const review = await begin("review", affectedCard.id);
+    expect(affectedCard.questionIds).toContain(review.questionIds[0]);
+    const corrected = await begin("mistake", initial.id);
+    expect(corrected.questionIds).toEqual([initial.id]);
+    const resume = await begin("lesson", target.id);
+    expect(resume.id).toBe(restored.active!.id);
+  } finally {
+    db.close();
+  }
+});

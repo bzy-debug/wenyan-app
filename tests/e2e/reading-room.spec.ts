@@ -3,6 +3,7 @@ import { readCourse, readSources } from "../../src/content/node";
 import { compileReadings } from "../../src/content/compileReadings";
 
 const course = readCourse();
+const lastLevel = course.levels.at(-1)!.id;
 
 async function startFirstLesson(page: Page, level: string) {
   const lessonId = course.units.find((unit) => unit.level === level)!
@@ -27,13 +28,13 @@ test("首页的等级路标只定位，后退能回到原等级，也能直接�
   await page.goto("./");
   await expect(page).toHaveURL(/#\/path$/);
   const directory = page.getByRole("navigation", { name: "跳到学习等级" });
-  await expect(directory.getByRole("link")).toHaveCount(5);
+  await expect(directory.getByRole("link")).toHaveCount(course.levels.length);
   const groups = page.locator("section[id^=level-]");
-  await expect(groups).toHaveCount(5);
+  await expect(groups).toHaveCount(course.levels.length);
   expect(
     await groups.evaluateAll((sections) => sections.map((s) => s.id)),
-  ).toEqual(["level-L1", "level-L2", "level-L3", "level-L4", "level-L5"]);
-  for (const id of ["L2", "L5"]) {
+  ).toEqual(course.levels.map((level) => "level-" + level.id));
+  for (const id of ["L2", lastLevel]) {
     await directory.getByRole("link", { name: new RegExp("^" + id) }).click();
     await expect(page).toHaveURL(new RegExp("level=" + id + "$"));
     await expect(page.locator("#title-" + id)).toBeInViewport();
@@ -54,19 +55,21 @@ test("无效等级的深链仍能查看完整路线，从首课开始", async ({
   await page.goto("./#/path?level=unknown");
   const first = course.lessons[0];
   const question = course.questions.find((q) => q.id === first.questionIds[0])!;
-  await expect(page.locator("section[id^=level-]")).toHaveCount(5);
+  await expect(page.locator("section[id^=level-]")).toHaveCount(
+    course.levels.length,
+  );
   await page.getByRole("link", { name: "开始学习 · " + first.title }).click();
   await expect(
     page.getByRole("heading", { name: question.prompt, exact: true }),
   ).toBeVisible();
 });
 
-test("L5 深链定位后可直接学该级课程，整篇自读可查词、自校", async ({
+test("最后阶段的深链定位后可直接学该级课程，整篇自读可查词、自校", async ({
   page,
 }) => {
-  await page.goto("./#/path?level=L5");
-  await expect(page.locator("#title-L5")).toBeInViewport();
-  const question = await startFirstLesson(page, "L5");
+  await page.goto("./#/path?level=" + lastLevel);
+  await expect(page.locator("#title-" + lastLevel)).toBeInViewport();
+  const question = await startFirstLesson(page, lastLevel);
   const passage = course.passages.find((p) => p.id === question.passageId)!;
   const source = passage.source;
   const credit = page.locator(".source-caption");
@@ -78,7 +81,7 @@ test("L5 深链定位后可直接学该级课程，整篇自读可查词、自�
     await expect(credit).toContainText(source?.work ?? "教学例句");
   }
   await page.goBack();
-  await expect(page).toHaveURL(/level=L5$/);
+  await expect(page).toHaveURL(new RegExp("level=" + lastLevel + "$"));
   await page.getByRole("link", { name: "整篇自读" }).click();
   const readings = compileReadings(readSources("content/v1/readings"));
   const links = page.locator(".reading-list a");

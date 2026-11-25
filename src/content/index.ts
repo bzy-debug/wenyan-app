@@ -1,6 +1,7 @@
 import course from "virtual:wenyan-course";
 import type { Question } from "./schema";
 export { course };
+export const knowledgeAreas = [...new Set(course.skills.map((skill) => skill.area))];
 export const byId = <T extends { id: string }>(
   items: readonly T[],
   id: string,

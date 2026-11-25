@@ -15,23 +15,46 @@ export function courseMarkdown(): Plugin {
   };
   let contentRoot = "";
   const prefix = "virtual:wenyan-";
+  const questionModule = prefix + "course-questions";
+  let splitCourse = false;
+  let compiledCourse: ReturnType<typeof compileCourse> | undefined;
+
   const moduleFor = (id: string) =>
     Object.hasOwn(groups, id.slice(prefix.length)) && id.startsWith(prefix);
   return {
     name: "wenyan-markdown",
     configResolved(config) {
       contentRoot = resolve(config.root, "content/v1");
+      splitCourse = config.command === "build";
+    },
+    buildStart() {
+      compiledCourse = undefined;
     },
     resolveId(id) {
-      if (moduleFor(id)) return "\0" + id;
+      if (moduleFor(id) || (splitCourse && id === questionModule))
+        return "\0" + id;
     },
     load(id) {
-      if (!id.startsWith("\0") || !moduleFor(id.slice(1))) return;
-      const key = id.slice(prefix.length + 1) as keyof typeof groups;
+      const virtualId = id.slice(1);
+      const questionChunk = splitCourse && virtualId === questionModule;
+      if (!id.startsWith("\0") || (!moduleFor(virtualId) && !questionChunk))
+        return;
+      const key = questionChunk
+        ? "course"
+        : (virtualId.slice(prefix.length) as keyof typeof groups);
       const dir = join(contentRoot, key);
       const sources = readSources(dir);
       for (const file of Object.keys(sources))
         this.addWatchFile(join(dir, file));
+      // Each static import fits in Workbox's precache, including on the first offline lesson.
+      if (splitCourse && key === "course") {
+        compiledCourse ??= compileCourse(sources);
+        const { questions, ...course } = compiledCourse;
+        if (questionChunk)
+          return "export default " + JSON.stringify(questions) + ";";
+        return `import questions from ${JSON.stringify(questionModule)};
+          export default { ...${JSON.stringify(course)}, questions };`;
+      }
       return "export default " + JSON.stringify(groups[key](sources)) + ";";
     },
     configureServer(server) {

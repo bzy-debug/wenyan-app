@@ -6,9 +6,10 @@ import { compileReadings } from "../../src/content/compileReadings";
 const files = readSources(resolve("content/v1/readings"));
 const file = Object.keys(files)[0];
 const original = files[file];
-it("十二篇自读原文提供可靠底本、逐字可找的证据和查词线索", () => {
+it("各篇自读原文提供可靠底本、逐字可找的证据和查词线索", () => {
   const readings = compileReadings(files);
-  expect(readings).toHaveLength(12);
+  expect(readings).toHaveLength(13);
+  expect(readings.find((r) => r.id === "blind-bird")?.prompts).toHaveLength(4);
   expect(new Set(readings.map((r) => r.id)).size).toBe(readings.length);
   expect(new Set(readings.map((r) => r.work)).size).toBeGreaterThanOrEqual(8);
   expect(

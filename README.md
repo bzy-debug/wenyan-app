@@ -1,10 +1,10 @@
 # 文言拾阶
 
-面向中文母语成人的文言文阅读练习。五个等级共 37 个单元、111 节课、37 次单元检查，合计 1110 道题。打开一课先读句子、动手作答，需要时可以翻看讲解。所有关卡都能自由进入。
+面向中文母语成人的文言文阅读练习。六个阶段共 52 个单元、156 节课、52 次单元检查，合计 1560 道题。打开一课先读句子、动手作答，需要时可以翻看讲解。所有关卡都能自由进入。
 
-[完整课程路径](https://bzy-debug.github.io/wenyan-app/#/path) · [整篇自读](https://bzy-debug.github.io/wenyan-app/#/read) · [课程范围与教学依据](docs/CURRICULUM.md)
+[完整课程路径](https://bzy-debug.github.io/wenyan-app/#/path) · [整篇自读](https://bzy-debug.github.io/wenyan-app/#/read) · [课程范围与教学依据](docs/curriculum/SCOPE.md)
 
-从辨清单句中的动作，到跟住长段的论证，最后借辞书独立研读。知识库可检索课内的随文词义并回到原句。十二篇自读文选单列，供读者查词、复述和用原文自校。每个单元所据的教材篇章及改编方法见[教学参考](docs/TEACHING_REFERENCES.md)。
+从辨清单句中的动作，到跟住长段的论证，最后借辞书独立研读。知识库可检索课内的随文词义并回到原句。十三篇自读文选单列，供读者查词、复述和用原文自校。每个单元所据的教材篇章及改编方法见[教学参考](docs/TEACHING_REFERENCES.md)。
 
 ## 编写与预览课程
 
@@ -28,7 +28,7 @@ npx playwright install --with-deps chromium
 npm run test:e2e
 ```
 
-`check` 执行 vue-tsc、课程完整性检查、教材词条证据核对和 Vitest。Playwright 在桌面和手机视口测试 dist 生产包，涵盖自由选课、跨课续学、求助、作答反馈、刷新和断网场景。云环境已有 Chromium 时可设置 `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium`。运行 `npm run preview` 后访问输出地址的 `/wenyan-app/` 路径。
+`check` 执行 vue-tsc、课程完整性检查、教材词条及六个领域的教学证据校验和 Vitest。Playwright 在桌面和手机视口测试 dist 生产包，涵盖自由选课、跨课续学、求助、作答反馈、刷新和断网场景。云环境已有 Chromium 时可设置 `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium`。运行 `npm run preview` 后访问输出地址的 `/wenyan-app/` 路径。
 
 ## 学习记录和离线使用
 
@@ -62,6 +62,7 @@ npm run test:e2e
 | --- | --- | --- |
 | 默认首页 · 完整课程路径 | [桌面首页](docs/screenshots/desktop-home.webp) | [手机首页](docs/screenshots/mobile-home.webp) |
 | 等级衔接与整篇自读 | [从 L1 接着读 L2](docs/screenshots/desktop-levels.webp) | [手机读《梦溪笔谈》](docs/screenshots/mobile-reader.webp) |
+| 按知识领域找课与检索句式 | [桌面搜状语后置](docs/screenshots/desktop-knowledge.webp) | [手机搜状语后置](docs/screenshots/mobile-knowledge.webp) |
 | 按字查课文中的意思 | [桌面查词](docs/screenshots/desktop-words.webp) | [手机查词](docs/screenshots/mobile-words.webp) |
 | 从原文找证据 | [桌面练习](docs/screenshots/desktop-span.webp) | [手机练习](docs/screenshots/mobile-span.webp) |
 | 诗词对读与查字 | [桌面读《江雪》](docs/screenshots/desktop-verse.webp) | [手机按部首查“楫”](docs/screenshots/mobile-lookup.webp) |

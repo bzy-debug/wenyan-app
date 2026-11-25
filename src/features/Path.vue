@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
+import { knowledgeAreas } from "../content";
 import { ArrowRight, BookOpen, ListChecks } from "@lucide/vue";
 import { completedCount, currentTarget, inProgress, learningPath } from "./learningPath";
 import CourseLevels from "./CourseLevels.vue";
@@ -74,6 +75,18 @@ const completedChecks = computed(() => completedCount(assessments));
           <BookOpen :size="17" aria-hidden="true" />整篇自读
         </RouterLink>
       </div>
+      <details class="area-picker">
+        <summary>按知识领域找课</summary>
+        <nav aria-label="按知识领域找课">
+          <RouterLink
+            v-for="area in knowledgeAreas"
+            :key="area"
+            :to="{ path: '/knowledge', query: { area } }"
+          >
+            {{ area }}
+          </RouterLink>
+        </nav>
+      </details>
     </header>
     <CourseLevels :selected="jumpLevel" />
     <section
@@ -136,6 +149,31 @@ const completedChecks = computed(() => completedCount(assessments));
 .path-actions .text-link {
   min-height: 44px;
   font-size: 14px;
+}
+.area-picker {
+  margin: -8px 0 20px;
+  font-size: 14px;
+}
+.area-picker summary {
+  width: fit-content;
+  padding: 12px 0;
+  cursor: pointer;
+  font-weight: 600;
+}
+.area-picker nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 8px;
+}
+.area-picker a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 4px 12px;
+  border-radius: 6px;
+  color: var(--accent-strong);
+  background: var(--surface);
+  border: 1px solid var(--line);
 }
 .map-level {
   scroll-margin-top: 16px;

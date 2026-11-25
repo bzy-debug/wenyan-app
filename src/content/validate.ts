@@ -1,4 +1,4 @@
-import { plainText } from "./passage-text";
+import { passageExcerpts, plainText } from "./passage-text";
 import { courseSchema, type Course } from "./schema";
 
 function requireContent(ok: unknown, message: string): asserts ok {
@@ -278,10 +278,7 @@ export function validateUnseenTexts(
   const training = taught.map((p) => ({ id: p.id, text: plainText(p.text) }));
   for (const passage of heldOut) {
     const text = plainText(passage.text);
-    const chars = Array.from(text);
-    const length = Math.min(30, chars.length);
-    for (let i = 0; i <= chars.length - length; i++) {
-      const excerpt = chars.slice(i, i + length).join("");
+    for (const excerpt of passageExcerpts(text)) {
       const found = training.find((p) => p.text.includes(excerpt));
       if (found)
         throw new Error(

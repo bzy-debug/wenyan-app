@@ -10,6 +10,8 @@ export default defineConfig(({ command, isPreview }) => ({
       output: {
         // UI-only releases can reuse the independently hashed course data.
         manualChunks(id) {
+          if (id === "\0virtual:wenyan-course-questions")
+            return "course-questions";
           if (id === "\0virtual:wenyan-course") return "course-data";
         },
       },

@@ -3,6 +3,7 @@ import { resolve } from "node:path";
 import { readCourse, readSources } from "../../src/content/node";
 import { compileReadings } from "../../src/content/compileReadings";
 import { contexts, coverage } from "./coverage";
+import { studyScope } from "./study-scope";
 
 const directory = resolve("docs/curriculum/word-index");
 function table(filename: string, header: string[]) {
@@ -89,12 +90,13 @@ const returns = table("returns.tsv", [
 }));
 const [mode = "--check", term, ...rest] = process.argv.slice(2);
 if (
-  !["--write", "--check", "--lookup"].includes(mode) ||
-  (mode === "--lookup") !== Boolean(term) ||
+  !["--write", "--check", "--lookup", "--scope"].includes(mode) ||
+  (mode === "--lookup" && !term) ||
+  (mode !== "--lookup" && mode !== "--scope" && Boolean(term)) ||
   rest.length
 ) {
   throw new Error(
-    "用法：npx tsx scripts/word-index/report.ts [--check | --write | --lookup 字或顺序号]",
+    "用法：npx tsx scripts/word-index/report.ts [--check | --write | --lookup 字或顺序号 | --scope [字或顺序号]]",
   );
 }
 const course = readCourse();
@@ -112,7 +114,36 @@ const corpus = contexts(
   compileReadings(readSources(resolve("content/v1/readings"))),
 );
 const stats = coverage(course, corpus, entries, alignments, returns);
-if (mode === "--lookup") {
+const lookupSenses = table("lookup-senses.tsv", [
+  "顺序号",
+  "教材小项",
+  "可借助释条读出的义项",
+  "原文ID",
+  "所据语句",
+  "查读题ID",
+  "核对办法",
+]);
+const scopeRows = studyScope(
+  stats,
+  course,
+  {
+    lookup: lookupSenses,
+    sections: table("sense-sections.tsv", ["顺序号", "词头", "一级小项"]),
+    glosses: table("gloss-senses.tsv", [
+      "顺序号",
+      "教材小项",
+      "随文可查的句中义",
+      "原文ID",
+      "词注词头",
+      "所据语句",
+    ]),
+  },
+  mode === "--scope" ? term : undefined,
+);
+const scopeReport = scopeRows.map((row) => row.join("\t")).join("\n");
+if (mode === "--scope") {
+  console.log(scopeReport);
+} else if (mode === "--lookup") {
   const found = stats.filter(
     ({ entry }) =>
       entry.number === term ||
@@ -156,6 +187,7 @@ if (mode === "--lookup") {
       throw new Error(name + " 与当前课程不符。运行 --write，然后复核差异。");
     }
   }
+  output("study-scope.tsv", scopeReport + "\n");
   const rows = [
     [
       "组",

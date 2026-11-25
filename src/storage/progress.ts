@@ -33,15 +33,82 @@ let dateTimer: ReturnType<typeof setInterval> | undefined;
 function updateDay() {
   today.value = localDay();
 }
-function publish(row: Row | undefined) {
+const currentQuestions = new Set(
+  course.questions.map((question) => question.id),
+);
+
+function freshRound(
+  kind: RoundKind,
+  targetId: string,
+  questionIds: string[],
+): Round {
+  return {
+    id: crypto.randomUUID(),
+    kind,
+    targetId,
+    questionIds: [...questionIds],
+    index: 0,
+    attempts: {},
+    selected: [],
+    feedback: null,
+    hinted: false,
+  };
+}
+
+// Content revisions can retire a question without changing the course identity.
+function reconcileQuestions(state: Progress): boolean {
+  let changed = false;
+  function restore(round: Round | null): Round | null {
+    if (!round || round.questionIds.every((id) => currentQuestions.has(id)))
+      return round;
+    changed = true;
+    if (round.kind === "lesson" || round.kind === "assessment") {
+      const targets =
+        round.kind === "lesson" ? course.lessons : course.assessments;
+      const target = targets.find((item) => item.id === round.targetId);
+      if (target?.questionIds.length)
+        return freshRound(round.kind, target.id, target.questionIds);
+    }
+    return null;
+  }
+  state.active = restore(state.active);
+  state.paused = state.paused.map(restore).filter((round) => round !== null);
+  const mistakes = state.mistakes.filter((id) => currentQuestions.has(id));
+  if (mistakes.length !== state.mistakes.length) {
+    state.mistakes = mistakes;
+    changed = true;
+  }
+  for (const card of Object.values(state.cards)) {
+    if (card.lastQuestionId && !currentQuestions.has(card.lastQuestionId)) {
+      // No surviving passage to avoid on the next review; retain the schedule.
+      card.lastQuestionId = "";
+      changed = true;
+    }
+  }
+  if (
+    state.lastResult?.kind === "mistake" &&
+    !currentQuestions.has(state.lastResult.targetId)
+  ) {
+    state.lastResult = null;
+    changed = true;
+  }
+  return changed;
+}
+
+async function publish(row: Row | undefined): Promise<void> {
   if (row && row.revision > revision) {
+    if (reconcileQuestions(row.state)) {
+      // Re-read inside the write transaction in case another tab has answered.
+      await edit(() => {});
+      return;
+    }
     revision = row.revision;
     progress.value = row.state;
   }
   updateDay();
 }
 export async function initProgress(): Promise<void> {
-  publish(await records.get(key));
+  await publish(await records.get(key));
   observer ??= liveQuery(() => records.get(key)).subscribe(publish);
   if (!dateTimer && typeof window !== "undefined") {
     dateTimer = setInterval(updateDay, 30_000);
@@ -52,12 +119,13 @@ async function edit(fn: (state: Progress) => void) {
   const row = await db.transaction("rw", records, async () => {
     const previous = await records.get(key);
     const state = previous?.state ?? emptyProgress();
+    reconcileQuestions(state);
     fn(state);
     const next: Row = { key, revision: (previous?.revision ?? -1) + 1, state };
     await records.put(next);
     return next;
   });
-  publish(row);
+  await publish(row);
 }
 export function dueCards() {
   const records = progress.value.cards;
@@ -69,7 +137,9 @@ export function streak(): number {
   return currentStreak(progress.value.days, today.value);
 }
 export async function exportBackup(): Promise<string> {
-  return backupText((await records.get(key))?.state ?? emptyProgress());
+  const state = (await records.get(key))?.state ?? emptyProgress();
+  reconcileQuestions(state);
+  return backupText(state);
 }
 export async function importBackup(text: string): Promise<void> {
   const parsed = validateBackup(text);
@@ -117,6 +187,7 @@ export async function startRound(
           card,
           schedule.lastQuestionId,
           (id) => {
+            if (!id) return "";
             const question = byId(course.questions, id);
             return byId(course.passages, question.passageId).text;
           },
@@ -127,17 +198,7 @@ export async function startRound(
       if (!state.mistakes.includes(targetId)) throw new Error("这道题已经订正");
       questionIds = [byId(course.questions, targetId).id];
     }
-    state.active = {
-      id: crypto.randomUUID(),
-      kind,
-      targetId,
-      questionIds: [...questionIds],
-      index: 0,
-      attempts: {},
-      selected: [],
-      feedback: null,
-      hinted: false,
-    };
+    state.active = freshRound(kind, targetId, questionIds);
   });
 }
 function requireRound(state: Progress, roundId: string, qid?: string): Round {

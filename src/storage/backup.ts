@@ -44,7 +44,7 @@ const model = z.strictObject({
       level: count.max(intervals.length - 1),
       due: day,
       lastDay: day,
-      lastQuestionId: id,
+      lastQuestionId: z.union([id, z.literal("")]),
     }),
   ),
   completedIds: ids,
@@ -133,7 +133,8 @@ function checkProgress(p: Progress): Progress {
   for (const [id, state] of Object.entries(p.cards)) {
     const card = byId(course.cards, id);
     check(
-      byId(course.questions, state.lastQuestionId).skillId === card.skillId,
+      !state.lastQuestionId ||
+        byId(course.questions, state.lastQuestionId).skillId === card.skillId,
     );
     check(state.due === shiftDay(state.lastDay, intervals[state.level]));
   }

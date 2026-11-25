@@ -7,13 +7,13 @@ import {
   submit,
 } from "./course";
 
-test("自由选择等级与课程，完成五级全部练习、求助和独立检查", async ({
+test("自由选择等级与课程，完成整条路径的练习、求助和独立检查", async ({
   page,
 }) => {
   test.setTimeout(900_000);
   await page.goto("./#/path");
   const levels = page.getByRole("navigation", { name: "跳到学习等级" });
-  await expect(levels.getByRole("link")).toHaveCount(5);
+  await expect(levels.getByRole("link")).toHaveCount(course.levels.length);
   const ids = course.units.flatMap((unit) => [
     ...unit.lessonIds,
     unit.assessmentId,

@@ -1,25 +1,38 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import { RouterLink } from "vue-router";
+import { RouterLink, useRoute, useRouter } from "vue-router";
 import { BookOpen, ChevronDown, Search } from "@lucide/vue";
-import { byId, course } from "../content";
+import { byId, course, knowledgeAreas } from "../content";
 import PassageVocabulary from "./PassageVocabulary.vue";
 import SourceCredit from "../components/SourceCredit.vue";
 import RichText from "../components/RichText.vue";
 import { progress } from "../storage/progress";
 import { intervals } from "../domain/review";
-import { learningPath } from "./learningPath";
+import { learningPath, unitOfTarget } from "./learningPath";
 
 const view = ref<"skills" | "words">("skills");
 const query = ref("");
-const area = ref("");
+const route = useRoute();
+const router = useRouter();
+const area = computed({
+  get() {
+    const selected = route.query.area;
+    return typeof selected === "string" && knowledgeAreas.includes(selected)
+      ? selected
+      : "";
+  },
+  set(selected: string) {
+    void router.replace({
+      query: { ...route.query, area: selected || undefined },
+    });
+  },
+});
 const onlyLearned = ref(false);
 const expanded = ref(new Set<string>());
 function toggleDefinition(id: string, event: Event) {
   if ((event.currentTarget as HTMLDetailsElement).open) expanded.value.add(id);
   else expanded.value.delete(id);
 }
-const areas = [...new Set(course.skills.map((skill) => skill.area))];
 const sources = course.skills.map((skill) => {
   const card = course.cards.find((candidate) => candidate.skillId === skill.id);
   const lessons = learningPath.lessons.filter((lesson) =>
@@ -30,7 +43,19 @@ const sources = course.skills.map((skill) => {
     const passageId = lesson.exampleIds[index];
     return passageId ? [byId(course.passages, passageId)] : [];
   });
-  return { skill, card, examples, lessons };
+  const locations = lessons.map((lesson) => ({
+    lesson,
+    unit: unitOfTarget(lesson.id),
+  }));
+  const searchable = [
+    skill.word,
+    skill.meaning,
+    skill.short,
+    skill.detail,
+    skill.area,
+    ...lessons.map((lesson) => lesson.title),
+  ].join(" ").toLowerCase();
+  return { skill, card, examples, locations, searchable };
 });
 const entries = computed(() =>
   sources.map((entry) => ({
@@ -40,16 +65,12 @@ const entries = computed(() =>
 );
 const visible = computed(() => {
   const keyword = query.value.trim().toLowerCase();
-  return entries.value.filter(({ skill, schedule }) => {
-    const searchable = [skill.word, skill.meaning, skill.detail, skill.area]
-      .join(" ")
-      .toLowerCase();
-    return (
+  return entries.value.filter(
+    ({ skill, schedule, searchable }) =>
       (!area.value || skill.area === area.value) &&
       (!onlyLearned.value || schedule) &&
-      searchable.includes(keyword)
-    );
-  });
+      searchable.includes(keyword),
+  );
 });
 const learned = computed(
   () => entries.value.filter((entry) => entry.schedule).length,
@@ -59,7 +80,9 @@ const learned = computed(
 <template>
   <main class="shell knowledge">
     <h1>知识库</h1>
-    <p class="lead">想不起一个字怎么用？搜一搜，点开就能看例句。</p>
+    <p class="lead">
+      按字词、句式或阅读方法查找知识点，点开条目可看例句和所属课文。
+    </p>
     <div class="views" role="group" aria-label="知识库内容">
       <button :aria-pressed="view === 'skills'" @click="view = 'skills'">
         知识点
@@ -76,13 +99,13 @@ const learned = computed(
           type="search"
           :aria-label="view === 'words' ? '搜索随文词义' : '搜索知识点'"
           :placeholder="
-            view === 'words' ? '搜索字词、释义或出处' : '搜索字、义项或用法'
+            view === 'words' ? '搜索字词、释义或出处' : '搜索字词、句式或课名'
           "
         />
       </label>
       <select v-if="view === 'skills'" v-model="area" aria-label="知识领域">
         <option value="">全部领域</option>
-        <option v-for="item in areas" :key="item">{{ item }}</option>
+        <option v-for="item in knowledgeAreas" :key="item">{{ item }}</option>
       </select>
       <label v-if="view === 'skills'" class="toggle"
         ><input v-model="onlyLearned" type="checkbox" />只看已学（{{
@@ -112,7 +135,7 @@ const learned = computed(
         </button>
       </div>
       <details
-        v-for="{ skill, schedule, examples, lessons } in visible"
+        v-for="{ skill, schedule, examples, locations } in visible"
         :key="skill.id"
         class="entry"
         :open="expanded.has(skill.id)"
@@ -129,6 +152,7 @@ const learned = computed(
           <ChevronDown :size="17" class="chevron" aria-hidden="true" />
         </summary>
         <div v-if="expanded.has(skill.id)" class="definition">
+          <p class="skill-tip">{{ skill.short }}</p>
           <RichText :source="skill.detail" />
           <figure v-for="example in examples" :key="example.id">
             <blockquote class="original-text">{{ example.text }}</blockquote>
@@ -140,14 +164,14 @@ const learned = computed(
           <p v-if="schedule">
             下次复习 <time :datetime="schedule.due">{{ schedule.due }}</time>
           </p>
-          <div v-if="lessons.length" class="sources">
-            <RouterLink
-              v-for="lesson in lessons"
-              :key="lesson.id"
-              :to="'/learn/' + lesson.id"
-              ><BookOpen :size="14" />练一练 · {{ lesson.title }}</RouterLink
-            >
-          </div>
+          <ul v-if="locations.length" class="sources" aria-label="所属课文">
+            <li v-for="{ lesson, unit } in locations" :key="lesson.id">
+              <span v-if="unit">{{ unit.level }} · {{ unit.title }}</span>
+              <RouterLink :to="'/learn/' + lesson.id">
+                <BookOpen :size="16" aria-hidden="true" />{{ lesson.title }}
+              </RouterLink>
+            </li>
+          </ul>
         </div>
       </details>
     </template>
@@ -281,11 +305,30 @@ figcaption,
   color: var(--muted);
 }
 .sources {
-  margin-top: 13px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
   flex-wrap: wrap;
+  gap: 6px 20px;
+}
+.sources li {
+  min-width: 0;
+}
+.sources li span {
+  display: block;
+}
+.skill-tip {
+  margin: 0 0 5px;
+  font-weight: 600;
 }
 .sources a {
+  min-height: 44px;
+  font-size: 15px;
+  font-weight: 600;
   color: var(--accent);
+}
+.sources a svg {
+  flex-shrink: 0;
 }
 .filters {
   padding: 14px 16px;

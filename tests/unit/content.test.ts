@@ -5,25 +5,34 @@ import {
   validateCompleteness,
   validateCourse,
 } from "../../src/content/validate";
-it("五级阅读路径完整，每一级的课次与检查齐全，所有练习归属明确", () => {
+it("阅读路径完整，每一级的课次与检查齐全，所有练习归属明确", () => {
   const course = validateCourse(raw);
   expect(() => validateCompleteness(course)).not.toThrow();
-  const levels = ["L1", "L2", "L3", "L4", "L5"];
-  expect(course.levels.map((level) => level.id)).toEqual(levels);
-  expect(course.completeness).toEqual(
-    [4, 12, 9, 6, 6].map((units, index) => ({
-      level: levels[index],
-      units,
+  expect(course.levels.map((level) => level.title)).toEqual([
+    "读懂单句",
+    "辨清词义",
+    "理清句法",
+    "读完一篇叙事",
+    "研读散文与论说",
+    "借辞书独立研读",
+  ]);
+  expect(course.completeness.map((rule) => rule.level)).toEqual(
+    course.levels.map((level) => level.id),
+  );
+  for (const rule of course.completeness) {
+    expect(rule.units).toBeGreaterThan(0);
+    expect(rule).toMatchObject({
       lessonsPerUnit: 3,
       lessonSize: 8,
       checkSize: 6,
-      questions: units * 30,
-    })),
-  );
-  expect(course.units).toHaveLength(37);
-  expect(course.lessons).toHaveLength(111);
-  expect(course.assessments).toHaveLength(37);
-  expect(course.questions).toHaveLength(1110);
+      questions: rule.units * 30,
+    });
+  }
+  const unitCount = course.completeness.reduce((n, rule) => n + rule.units, 0);
+  expect(course.units).toHaveLength(unitCount);
+  expect(course.lessons).toHaveLength(unitCount * 3);
+  expect(course.assessments).toHaveLength(unitCount);
+  expect(course.questions).toHaveLength(unitCount * 30);
   expect(new Set(course.questions.map((q) => q.mode))).toEqual(
     new Set(["choice", "span", "order"]),
   );
