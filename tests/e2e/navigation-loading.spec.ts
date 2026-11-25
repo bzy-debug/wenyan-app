@@ -1,5 +1,5 @@
 import { buffer } from "node:stream/consumers";
-import { expect, test, type Request, type Response } from "@playwright/test";
+import { expect, test, type Request } from "@playwright/test";
 import { byId, course, firstLesson, firstQuestion, submit } from "./course";
 
 test.use({ serviceWorkers: "block" });
@@ -64,21 +64,20 @@ for (const entry of ["站内链接", "带查询的直链"] as const) {
       entry === "站内链接" ? "#/settings" : "#/settings?from=backup&tab=local";
     const settingsAsset = /\/assets\/Settings-[^/]+\.js$/;
     let documents = 0;
-    const missingAsset = (response: Response) =>
-      settingsAsset.test(response.url()) && response.status() === 404;
+    let served404s = 0;
     page.on("request", (request) => {
       if (request.isNavigationRequest() && request.frame() === page.mainFrame())
         documents++;
     });
-    await page.route(settingsAsset, (route) =>
-      route.fulfill({
+    await page.route(settingsAsset, async (route) => {
+      await route.fulfill({
         status: 404,
         contentType: "text/plain",
         body: "Not found",
-      }),
-    );
+      });
+      served404s++;
+    });
 
-    const first404 = page.waitForResponse(missingAsset);
     if (entry === "站内链接") {
       await page.goto("./");
       await page.getByRole("link", { name: "设置", exact: true }).click();
@@ -88,10 +87,13 @@ for (const entry of ["站内链接", "带查询的直链"] as const) {
     const failed = page.getByRole("heading", { name: "这个页面没能打开" });
     const retry = page.getByRole("button", { name: "重新打开" });
     await expect(failed).toBeVisible();
-    await first404;
+    await page.waitForLoadState("networkidle");
+    expect(served404s).toBeGreaterThan(0);
     expect(documents).toBe(1);
 
-    await Promise.all([page.waitForResponse(missingAsset), retry.click()]);
+    const firstAttempt404s = served404s;
+    await retry.click();
+    await expect.poll(() => served404s).toBeGreaterThan(firstAttempt404s);
     await expect(failed).toBeVisible();
     await page.waitForLoadState("networkidle");
     expect(documents).toBe(2);
