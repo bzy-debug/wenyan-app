@@ -70,7 +70,7 @@ async function openGuide() {
   await nextTick();
   guide.value?.showModal();
 }
-const finishedRound = ref("");
+const completedHere = ref(false);
 const reviewMode = computed(() => !targetId.value);
 
 async function openTarget() {
@@ -122,10 +122,10 @@ function next() {
     q = question.value;
   if (!r || !q) return;
   void act(async () => {
-    if (r.index === r.questionIds.length - 1) finishedRound.value = r.id;
     await advance(r.id, q.id);
-    if (progress.value.lastResult?.roundId === r.id && !progress.value.active) {
-      await router.push("/result");
+    if (progress.value.lastResult?.roundId === r.id) {
+      completedHere.value = true;
+      await router.replace("/result");
     }
   });
 }
@@ -239,7 +239,11 @@ function onStudyKey(event: KeyboardEvent) {
         <h1>这节练习暂时打不开</h1>
         <RouterLink class="primary" to="/path">查看课程路径</RouterLink>
       </section>
-      <section v-else-if="!round && !finishedRound">
+      <section v-else-if="!round && completedHere">
+        <h1>练习已完成</h1>
+        <RouterLink class="primary" to="/result" replace>查看结果</RouterLink>
+      </section>
+      <section v-else-if="!round && !saving">
         <h1>还没有要继续的练习</h1>
         <RouterLink class="primary" :to="reviewMode ? '/review' : '/path'">{{
           reviewMode ? "去复习" : "查看课程路径"

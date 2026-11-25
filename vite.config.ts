@@ -19,7 +19,7 @@ export default defineConfig(({ command, isPreview }) => ({
     courseMarkdown(),
     vue(),
     VitePWA({
-      registerType: "autoUpdate",
+      registerType: "prompt",
       manifest: {
         lang: "zh-CN",
         name: "文言拾阶 · 古文阅读练习",
@@ -37,6 +37,9 @@ export default defineConfig(({ command, isPreview }) => ({
         })),
       },
       workbox: {
+        // Keep the current page's lazy-loaded chunks until its last tab closes.
+        skipWaiting: false,
+        clientsClaim: true,
         globPatterns: ["**/*.{js,css,html,png,svg,webp,webmanifest}"],
         cleanupOutdatedCaches: true,
         navigateFallback: "index.html",

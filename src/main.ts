@@ -1,27 +1,42 @@
-import { createApp } from "vue";
+import { createApp, type Component } from "vue";
 import { createRouter, createWebHashHistory } from "vue-router";
 import App from "./app/App.vue";
+import PageUnavailable from "./app/PageUnavailable.vue";
 import { learningPath } from "./features/learningPath";
 import "./app/styles.css";
 
-const learn = () => import("./features/Learn.vue");
+// Resolve a failed download at the requested route, so retry reloads the right URL.
+function page(load: () => Promise<{ default: Component } | Component>) {
+  return async () => {
+    try {
+      const view = await load();
+      return "default" in view ? view.default : view;
+    } catch (error) {
+      console.error("无法载入页面", error);
+      return PageUnavailable;
+    }
+  };
+}
+
+const study = () => import("./features/studyPages");
+const learn = page(() => study().then(({ Learn }) => Learn));
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [
     { path: "/", redirect: "/path" },
     {
       path: "/today",
-      component: () => import("./features/Home.vue"),
+      component: page(() => import("./features/Home.vue")),
       meta: { title: "今日学习" },
     },
     {
       path: "/path",
-      component: () => import("./features/Path.vue"),
+      component: page(() => import("./features/Path.vue")),
       meta: { title: "课程路径" },
     },
     {
       path: "/read/:id?",
-      component: () => import("./features/ReadingRoom.vue"),
+      component: page(() => import("./features/ReadingRoom.vue")),
       meta: { title: "整篇自读" },
     },
     {
@@ -36,32 +51,32 @@ const router = createRouter({
     },
     {
       path: "/result",
-      component: () => import("./features/Result.vue"),
+      component: page(() => study().then(({ Result }) => Result)),
       meta: { title: "练习完成", focused: true },
     },
     {
       path: "/review",
-      component: () => import("./features/Review.vue"),
+      component: page(() => import("./features/Review.vue")),
       meta: { title: "复习" },
     },
     {
       path: "/knowledge",
-      component: () => import("./features/Knowledge.vue"),
+      component: page(() => import("./features/Knowledge.vue")),
       meta: { title: "知识库" },
     },
     {
       path: "/settings",
-      component: () => import("./features/Settings.vue"),
+      component: page(() => import("./features/Settings.vue")),
       meta: { title: "设置" },
     },
     {
       path: "/pilot",
-      component: () => import("./features/Pilot.vue"),
+      component: page(() => import("./features/Pilot.vue")),
       meta: { title: "阅读自测" },
     },
     {
       path: "/author",
-      component: () => import("./features/AuthorPreview.vue"),
+      component: page(() => import("./features/AuthorPreview.vue")),
       meta: { title: "作者预览", focused: true, standalone: true },
     },
     { path: "/:pathMatch(.*)*", redirect: "/" },
